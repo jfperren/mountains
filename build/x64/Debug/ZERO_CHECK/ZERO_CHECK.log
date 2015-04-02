@@ -1,21 +1,5 @@
-﻿Build started 02.04.2015 15:07:31.
-     1>Project "C:\Users\jfperren\Git\opengl-terrain\build\ZERO_CHECK.vcxproj" on node 2 (Build target(s)).
-     1>CustomBuild:
-         Checking Build System
-         CMake is re-running because C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/generate.stamp is out-of-date.
-           the file 'C:/Users/jfperren/Git/opengl-terrain/common/icg_settings.cmake'
-           is newer than 'C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/generate.stamp.depend'
-           result='-1'
-         -- Intro to Graphics - Loading Common Configuration
-         -- Found GLFW: C:/Users/jfperren/Git/opengl-terrain/external/glfw/lib/x64/GLFW64.lib
-         -- Found GLEW: C:/Users/jfperren/Git/opengl-terrain/external/glew/lib/x64/glew64.lib
-         -- Could NOT find PkgConfig (missing:  PKG_CONFIG_EXECUTABLE) 
-         -- Found ANTTWEAKBAR: C:/Users/jfperren/Git/opengl-terrain/external/AntTweakBar/lib/x64/AntTweakBar64.lib
-         -- Configuring done
-         -- Generating done
-         -- Build files have been written to: C:/Users/jfperren/Git/opengl-terrain/build
-     1>Done Building Project "C:\Users\jfperren\Git\opengl-terrain\build\ZERO_CHECK.vcxproj" (Build target(s)).
+﻿Build started 02.04.2015 15:15:55.
 
 Build succeeded.
 
-Time Elapsed 00:00:00.56
+Time Elapsed 00:00:00.03

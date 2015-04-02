@@ -10,7 +10,7 @@ Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:22.
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:07.
 Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\3.2.0-rc1\CompilerIdC\CompilerIdC.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
   Cr‚ation du r‚pertoire "Debug\".
@@ -36,7 +36,7 @@ La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:01.72
+Temps ‚coul‚ 00:00:00.63
 
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -56,7 +56,7 @@ Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:24.
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:08.
 Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\3.2.0-rc1\CompilerIdCXX\CompilerIdCXX.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
   Cr‚ation du r‚pertoire "Debug\".
@@ -82,7 +82,7 @@ La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:01.86
+Temps ‚coul‚ 00:00:00.60
 
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -94,157 +94,157 @@ The CXX compiler identification is MSVC, found in "C:/Users/jfperren/Git/opengl-
 Determining if the C compiler works passed with the following output:
 Change Dir: C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec205697305.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2496168766.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
 Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:27.
-Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec205697305.vcxproj" sur le noud 1 (cibles par d‚faut).
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:09.
+Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2496168766.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
-  Cr‚ation du r‚pertoire "cmTryCompileExec205697305.dir\Debug\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec2496168766.dir\Debug\".
   Cr‚ation du r‚pertoire "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\".
-  Cr‚ation du r‚pertoire "cmTryCompileExec205697305.dir\Debug\cmTryCom.4E7B3ED8.tlog\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec2496168766.dir\Debug\cmTryCom.B7DD9777.tlog\".
 InitializeBuildStatus:
-  Cr‚ation de "cmTryCompileExec205697305.dir\Debug\cmTryCom.4E7B3ED8.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
+  Cr‚ation de "cmTryCompileExec2496168766.dir\Debug\cmTryCom.B7DD9777.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec205697305.dir\Debug\\" /Fd"cmTryCompileExec205697305.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCCompiler.c"
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2496168766.dir\Debug\\" /Fd"cmTryCompileExec2496168766.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCCompiler.c"
   Microsoft (R) C/C++ Optimizing Compiler Version 18.00.30501 for x64
   Copyright (C) Microsoft Corporation.  All rights reserved.
   
-  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec205697305.dir\Debug\\" /Fd"cmTryCompileExec205697305.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCCompiler.c"
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2496168766.dir\Debug\\" /Fd"cmTryCompileExec2496168766.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCCompiler.c"
   
   testCCompiler.c
 Link:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec205697305.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec205697305.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec205697305.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec205697305.dir\Debug\testCCompiler.obj
-  cmTryCompileExec205697305.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec205697305.exe
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2496168766.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2496168766.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2496168766.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec2496168766.dir\Debug\testCCompiler.obj
+  cmTryCompileExec2496168766.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2496168766.exe
 FinalizeBuildStatus:
-  Suppression du fichier "cmTryCompileExec205697305.dir\Debug\cmTryCom.4E7B3ED8.tlog\unsuccessfulbuild".
-  Mise … jour de l'horodatage "cmTryCompileExec205697305.dir\Debug\cmTryCom.4E7B3ED8.tlog\cmTryCompileExec205697305.lastbuildstate".
-G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec205697305.vcxproj" termin‚e (cibles par d‚faut).
+  Suppression du fichier "cmTryCompileExec2496168766.dir\Debug\cmTryCom.B7DD9777.tlog\unsuccessfulbuild".
+  Mise … jour de l'horodatage "cmTryCompileExec2496168766.dir\Debug\cmTryCom.B7DD9777.tlog\cmTryCompileExec2496168766.lastbuildstate".
+G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2496168766.vcxproj" termin‚e (cibles par d‚faut).
 
 La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:01.72
+Temps ‚coul‚ 00:00:00.67
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1058549356.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1981944447.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
 Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:29.
-Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec1058549356.vcxproj" sur le noud 1 (cibles par d‚faut).
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:10.
+Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec1981944447.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
-  Cr‚ation du r‚pertoire "cmTryCompileExec1058549356.dir\Debug\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec1981944447.dir\Debug\".
   Cr‚ation du r‚pertoire "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\".
-  Cr‚ation du r‚pertoire "cmTryCompileExec1058549356.dir\Debug\cmTryCom.162C6CB2.tlog\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec1981944447.dir\Debug\cmTryCom.5B598A04.tlog\".
 InitializeBuildStatus:
-  Cr‚ation de "cmTryCompileExec1058549356.dir\Debug\cmTryCom.162C6CB2.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
+  Cr‚ation de "cmTryCompileExec1981944447.dir\Debug\cmTryCom.5B598A04.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1058549356.dir\Debug\\" /Fd"cmTryCompileExec1058549356.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCCompilerABI.c"
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1981944447.dir\Debug\\" /Fd"cmTryCompileExec1981944447.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCCompilerABI.c"
   Microsoft (R) C/C++ Optimizing Compiler Version 18.00.30501 for x64
   Copyright (C) Microsoft Corporation.  All rights reserved.
   
-  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1058549356.dir\Debug\\" /Fd"cmTryCompileExec1058549356.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCCompilerABI.c"
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1981944447.dir\Debug\\" /Fd"cmTryCompileExec1981944447.dir\Debug\vc120.pdb" /Gd /TC /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCCompilerABI.c"
   
   CMakeCCompilerABI.c
 Link:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1058549356.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1058549356.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1058549356.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec1058549356.dir\Debug\CMakeCCompilerABI.obj
-  cmTryCompileExec1058549356.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1058549356.exe
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1981944447.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1981944447.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1981944447.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec1981944447.dir\Debug\CMakeCCompilerABI.obj
+  cmTryCompileExec1981944447.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1981944447.exe
 FinalizeBuildStatus:
-  Suppression du fichier "cmTryCompileExec1058549356.dir\Debug\cmTryCom.162C6CB2.tlog\unsuccessfulbuild".
-  Mise … jour de l'horodatage "cmTryCompileExec1058549356.dir\Debug\cmTryCom.162C6CB2.tlog\cmTryCompileExec1058549356.lastbuildstate".
-G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec1058549356.vcxproj" termin‚e (cibles par d‚faut).
+  Suppression du fichier "cmTryCompileExec1981944447.dir\Debug\cmTryCom.5B598A04.tlog\unsuccessfulbuild".
+  Mise … jour de l'horodatage "cmTryCompileExec1981944447.dir\Debug\cmTryCom.5B598A04.tlog\cmTryCompileExec1981944447.lastbuildstate".
+G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec1981944447.vcxproj" termin‚e (cibles par d‚faut).
 
 La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:02.06
+Temps ‚coul‚ 00:00:00.68
 
 
 Determining if the CXX compiler works passed with the following output:
 Change Dir: C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3535601279.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1747059184.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
 Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:32.
-Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec3535601279.vcxproj" sur le noud 1 (cibles par d‚faut).
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:11.
+Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec1747059184.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
-  Cr‚ation du r‚pertoire "cmTryCompileExec3535601279.dir\Debug\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec1747059184.dir\Debug\".
   Cr‚ation du r‚pertoire "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\".
-  Cr‚ation du r‚pertoire "cmTryCompileExec3535601279.dir\Debug\cmTryCom.31C5855F.tlog\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec1747059184.dir\Debug\cmTryCom.03CEAC66.tlog\".
 InitializeBuildStatus:
-  Cr‚ation de "cmTryCompileExec3535601279.dir\Debug\cmTryCom.31C5855F.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
+  Cr‚ation de "cmTryCompileExec1747059184.dir\Debug\cmTryCom.03CEAC66.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec3535601279.dir\Debug\\" /Fd"cmTryCompileExec3535601279.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCXXCompiler.cxx"
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec1747059184.dir\Debug\\" /Fd"cmTryCompileExec1747059184.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCXXCompiler.cxx"
   Microsoft (R) C/C++ Optimizing Compiler Version 18.00.30501 for x64
   Copyright (C) Microsoft Corporation.  All rights reserved.
   
-  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec3535601279.dir\Debug\\" /Fd"cmTryCompileExec3535601279.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCXXCompiler.cxx"
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec1747059184.dir\Debug\\" /Fd"cmTryCompileExec1747059184.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\testCXXCompiler.cxx"
   
   testCXXCompiler.cxx
 Link:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3535601279.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3535601279.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3535601279.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec3535601279.dir\Debug\testCXXCompiler.obj
-  cmTryCompileExec3535601279.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3535601279.exe
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1747059184.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1747059184.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1747059184.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec1747059184.dir\Debug\testCXXCompiler.obj
+  cmTryCompileExec1747059184.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1747059184.exe
 FinalizeBuildStatus:
-  Suppression du fichier "cmTryCompileExec3535601279.dir\Debug\cmTryCom.31C5855F.tlog\unsuccessfulbuild".
-  Mise … jour de l'horodatage "cmTryCompileExec3535601279.dir\Debug\cmTryCom.31C5855F.tlog\cmTryCompileExec3535601279.lastbuildstate".
-G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec3535601279.vcxproj" termin‚e (cibles par d‚faut).
+  Suppression du fichier "cmTryCompileExec1747059184.dir\Debug\cmTryCom.03CEAC66.tlog\unsuccessfulbuild".
+  Mise … jour de l'horodatage "cmTryCompileExec1747059184.dir\Debug\cmTryCom.03CEAC66.tlog\cmTryCompileExec1747059184.lastbuildstate".
+G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec1747059184.vcxproj" termin‚e (cibles par d‚faut).
 
 La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:02.02
+Temps ‚coul‚ 00:00:00.69
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2048851208.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec327185011.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
 Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:35.
-Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2048851208.vcxproj" sur le noud 1 (cibles par d‚faut).
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:12.
+Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec327185011.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
-  Cr‚ation du r‚pertoire "cmTryCompileExec2048851208.dir\Debug\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec327185011.dir\Debug\".
   Cr‚ation du r‚pertoire "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\".
-  Cr‚ation du r‚pertoire "cmTryCompileExec2048851208.dir\Debug\cmTryCom.5537729E.tlog\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec327185011.dir\Debug\cmTryCom.50E8141E.tlog\".
 InitializeBuildStatus:
-  Cr‚ation de "cmTryCompileExec2048851208.dir\Debug\cmTryCom.5537729E.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
+  Cr‚ation de "cmTryCompileExec327185011.dir\Debug\cmTryCom.50E8141E.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2048851208.dir\Debug\\" /Fd"cmTryCompileExec2048851208.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCXXCompilerABI.cpp"
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec327185011.dir\Debug\\" /Fd"cmTryCompileExec327185011.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCXXCompilerABI.cpp"
   Microsoft (R) C/C++ Optimizing Compiler Version 18.00.30501 for x64
   Copyright (C) Microsoft Corporation.  All rights reserved.
   
-  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2048851208.dir\Debug\\" /Fd"cmTryCompileExec2048851208.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCXXCompilerABI.cpp"
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec327185011.dir\Debug\\" /Fd"cmTryCompileExec327185011.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\DevTools\CMake\share\cmake-3.2\Modules\CMakeCXXCompilerABI.cpp"
   
   CMakeCXXCompilerABI.cpp
 Link:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2048851208.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2048851208.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2048851208.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec2048851208.dir\Debug\CMakeCXXCompilerABI.obj
-  cmTryCompileExec2048851208.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2048851208.exe
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec327185011.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec327185011.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec327185011.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec327185011.dir\Debug\CMakeCXXCompilerABI.obj
+  cmTryCompileExec327185011.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec327185011.exe
 FinalizeBuildStatus:
-  Suppression du fichier "cmTryCompileExec2048851208.dir\Debug\cmTryCom.5537729E.tlog\unsuccessfulbuild".
-  Mise … jour de l'horodatage "cmTryCompileExec2048851208.dir\Debug\cmTryCom.5537729E.tlog\cmTryCompileExec2048851208.lastbuildstate".
-G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2048851208.vcxproj" termin‚e (cibles par d‚faut).
+  Suppression du fichier "cmTryCompileExec327185011.dir\Debug\cmTryCom.50E8141E.tlog\unsuccessfulbuild".
+  Mise … jour de l'horodatage "cmTryCompileExec327185011.dir\Debug\cmTryCom.50E8141E.tlog\cmTryCompileExec327185011.lastbuildstate".
+G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec327185011.vcxproj" termin‚e (cibles par d‚faut).
 
 La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:01.85
+Temps ‚coul‚ 00:00:00.65
 
 
 
@@ -252,40 +252,40 @@ Temps ‚coul‚ 00:00:01.85
 Detecting CXX [] compiler features compiled with the following output:
 Change Dir: C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2328981611.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2795461289.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
 Microsoft (R) Build Engine, version 12.0.30501.0
 [Microsoft .NET Framework, Version 4.0.30319.34014]
 Copyright (C) Microsoft Corporation. Tous droits r‚serv‚s.
 
-La g‚n‚ration a d‚marr‚ 02.04.2015 14:45:38.
-Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2328981611.vcxproj" sur le noud 1 (cibles par d‚faut).
+La g‚n‚ration a d‚marr‚ 02.04.2015 15:15:13.
+Projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2795461289.vcxproj" sur le noud 1 (cibles par d‚faut).
 PrepareForBuild:
-  Cr‚ation du r‚pertoire "cmTryCompileExec2328981611.dir\Debug\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec2795461289.dir\Debug\".
   Cr‚ation du r‚pertoire "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\".
-  Cr‚ation du r‚pertoire "cmTryCompileExec2328981611.dir\Debug\cmTryCom.B32BABE3.tlog\".
+  Cr‚ation du r‚pertoire "cmTryCompileExec2795461289.dir\Debug\cmTryCom.EBBD8C62.tlog\".
 InitializeBuildStatus:
-  Cr‚ation de "cmTryCompileExec2328981611.dir\Debug\cmTryCom.B32BABE3.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
+  Cr‚ation de "cmTryCompileExec2795461289.dir\Debug\cmTryCom.EBBD8C62.tlog\unsuccessfulbuild", car "AlwaysCreate" a ‚t‚ sp‚cifi‚.
 ClCompile:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2328981611.dir\Debug\\" /Fd"cmTryCompileExec2328981611.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\feature_tests.cxx"
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2795461289.dir\Debug\\" /Fd"cmTryCompileExec2795461289.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\feature_tests.cxx"
   Microsoft (R) C/C++ Optimizing Compiler Version 18.00.30501 for x64
   Copyright (C) Microsoft Corporation.  All rights reserved.
   
-  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2328981611.dir\Debug\\" /Fd"cmTryCompileExec2328981611.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\feature_tests.cxx"
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2795461289.dir\Debug\\" /Fd"cmTryCompileExec2795461289.dir\Debug\vc120.pdb" /Gd /TP /errorReport:queue "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\feature_tests.cxx"
   
   feature_tests.cxx
 Link:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2328981611.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2328981611.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2328981611.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec2328981611.dir\Debug\feature_tests.obj
-  cmTryCompileExec2328981611.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2328981611.exe
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2795461289.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2795461289.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2795461289.lib" /MACHINE:X64  /machine:x64 /debug cmTryCompileExec2795461289.dir\Debug\feature_tests.obj
+  cmTryCompileExec2795461289.vcxproj -> C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2795461289.exe
 FinalizeBuildStatus:
-  Suppression du fichier "cmTryCompileExec2328981611.dir\Debug\cmTryCom.B32BABE3.tlog\unsuccessfulbuild".
-  Mise … jour de l'horodatage "cmTryCompileExec2328981611.dir\Debug\cmTryCom.B32BABE3.tlog\cmTryCompileExec2328981611.lastbuildstate".
-G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2328981611.vcxproj" termin‚e (cibles par d‚faut).
+  Suppression du fichier "cmTryCompileExec2795461289.dir\Debug\cmTryCom.EBBD8C62.tlog\unsuccessfulbuild".
+  Mise … jour de l'horodatage "cmTryCompileExec2795461289.dir\Debug\cmTryCom.EBBD8C62.tlog\cmTryCompileExec2795461289.lastbuildstate".
+G‚n‚ration du projet "C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\CMakeTmp\cmTryCompileExec2795461289.vcxproj" termin‚e (cibles par d‚faut).
 
 La g‚n‚ration a r‚ussi.
     0 Avertissement(s)
     0 Erreur(s)
 
-Temps ‚coul‚ 00:00:01.70
+Temps ‚coul‚ 00:00:00.65
 
 
     Feature record: CXX_FEATURE:1cxx_alias_templates

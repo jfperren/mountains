@@ -102,7 +102,7 @@ public:
         glDeleteTextures(1, &_tex);
     }
     
-    void draw(const mat4& model, const mat4& view, const mat4& projection, float time){
+    void draw(const mat4& model, const mat4& view, const mat4& projection){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
         // Bind textures
@@ -112,10 +112,7 @@ public:
         // Setup MVP
         mat4 MVP = projection*view*model;
         GLuint MVP_id = glGetUniformLocation(_pid, "mvp");
-        glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
-
-        // Pass the current time stamp to the shader.
-        glUniform1f(glGetUniformLocation(_pid, "time"), time);
+		glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
 
         // Draw
         glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);

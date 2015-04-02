@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGUID>{E0A1DA39-63C2-4E2E-8F77-638BEB37D02C}</ProjectGUID>
+    <ProjectGUID>{C5DD85F2-0E55-4E79-99AB-0A1A454414A7}</ProjectGUID>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
     <ProjectName>deployfile_terrain_generating_grid_vshader</ProjectName>
@@ -237,7 +237,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/ZERO_CHECK.vcxproj">
-      <Project>6AD346DC-2325-4337-B021-EE06EEC02F12</Project>
+      <Project>A3B69D26-8F71-4E3E-86F7-D1314838EFA8</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGUID>{04477459-EFF3-4411-9286-1146FB34E065}</ProjectGUID>
+    <ProjectGUID>{739DB046-9635-4799-AB6A-0772FF2043F2}</ProjectGUID>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
     <ProjectName>ALL_BUILD</ProjectName>
@@ -163,25 +163,19 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/ZERO_CHECK.vcxproj">
-      <Project>6AD346DC-2325-4337-B021-EE06EEC02F12</Project>
-    </ProjectReference>
-    <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/terrain_generating/deployfile_terrain_generating_cube_fshader.vcxproj">
-      <Project>BCD90D9E-69DE-4826-B245-733FA15E825C</Project>
-    </ProjectReference>
-    <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/terrain_generating/deployfile_terrain_generating_cube_vshader.vcxproj">
-      <Project>B64D7ABA-C7A9-4909-AB9B-FB00A81D2E28</Project>
+      <Project>A3B69D26-8F71-4E3E-86F7-D1314838EFA8</Project>
     </ProjectReference>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/terrain_generating/deployfile_terrain_generating_grid_fshader.vcxproj">
-      <Project>85612D24-8CAC-4F48-BE68-96A8B70D2457</Project>
+      <Project>AF1B82DD-3C44-4A65-8E8B-AD53A312C29D</Project>
     </ProjectReference>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/terrain_generating/deployfile_terrain_generating_grid_texture.vcxproj">
-      <Project>9DDC4F23-561F-4752-B856-91750B44839D</Project>
+      <Project>58C8997A-5C7C-4744-9D32-43A8D8CAA283</Project>
     </ProjectReference>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/terrain_generating/deployfile_terrain_generating_grid_vshader.vcxproj">
-      <Project>E0A1DA39-63C2-4E2E-8F77-638BEB37D02C</Project>
+      <Project>C5DD85F2-0E55-4E79-99AB-0A1A454414A7</Project>
     </ProjectReference>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/terrain_generating/terrain_generating.vcxproj">
-      <Project>575E9E22-9E79-40EC-B57D-D2F85340D1DA</Project>
+      <Project>C748BDF0-2259-479F-B20D-E1AFA2CC6457</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
