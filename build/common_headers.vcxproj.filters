@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jfperren\Git\opengl-terrain\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\jfperren\Git\opengl-terrain\common\check_error_gl.h">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="C:\Users\jfperren\Git\opengl-terrain\common\icg_common.h">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5040A4F1-73B3-47F6-8397-E6C933A9B390}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
