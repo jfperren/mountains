@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 2.8)
 #--- The exercise name is nothing else than the directory
 get_filename_component(EXERCISENAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 add_executable(${EXERCISENAME} cube.h trackball.h main.cpp _grid/grid.h)
