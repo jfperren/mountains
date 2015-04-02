@@ -120,7 +120,7 @@ void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw a quad on the ground.
-    mat4 quad_model_matrix = Eigen::Affine3f(Eigen::Translation3f(vec3(0.0f, -0.25f, 0.0f))).matrix();
+    mat4 quad_model_matrix = mat4::Identity();
     grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
 
     check_error_gl();

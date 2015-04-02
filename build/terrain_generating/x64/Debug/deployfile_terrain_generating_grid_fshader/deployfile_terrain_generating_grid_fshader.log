@@ -1,0 +1,8 @@
+﻿Build started 02.04.2015 15:40:01.
+     1>Project "C:\Users\jfperren\Git\opengl-terrain\build\terrain_generating\deployfile_terrain_generating_grid_fshader.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (x64\Debug\deployfile_terrain_generating_grid_fshader\) contains files shared from another project (deployfile_terrain_generating_grid_fshader.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>Done Building Project "C:\Users\jfperren\Git\opengl-terrain\build\terrain_generating\deployfile_terrain_generating_grid_fshader.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.19
