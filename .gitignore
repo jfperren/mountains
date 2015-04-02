@@ -1,0 +1,4 @@
+opengl-terrain/build/
+*.exe
+*.pdb
+*.ilk
