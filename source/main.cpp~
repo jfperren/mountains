@@ -185,12 +185,6 @@ void display(){
 #endif
 }
 
-void cleanup(){
-#ifdef WITH_ANTTWEAKBAR
-    TwTerminate();
-#endif
-}
-
 // Transforms glfw screen coordinates into normalized OpenGL coordinates.
 vec2 transform_screen_coords(int x, int y) {
     return vec2(2.0f * (float)x / WIDTH - 1.0f,
@@ -249,6 +243,5 @@ int main(int, char**){
     glfwSetMousePosCallback(mouse_pos);
     init();
     glfwMainLoop();
-    cleanup();
     return EXIT_SUCCESS;
 }
