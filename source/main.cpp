@@ -4,6 +4,11 @@
 #include "framebuffer/FrameBuffer.h"
 #include "fullscreenquad/FullScreenQuad.h"
 
+#ifdef WITH_ANTTWEAKBAR
+#include <AntTweakBar.h>
+TwBar *bar;
+#endif
+
 using namespace std;
 
 Grid grid;
@@ -116,7 +121,57 @@ void init(){
 	// Create fullScreenQuad on which we'll draw the noise
 	fullScreenQuad.init();
 
-    check_error_gl();
+    // Dummy variables that will be deleted and replaced by the ones used
+    // in our program
+    int a = 0;
+    bool vs = true;
+    bool gs = true;
+    bool fs = true;
+	float scale = 1.5f;
+    
+#ifdef WITH_ANTTWEAKBAR
+
+	// Noise
+	typedef enum { PERLIN, PERLIN2, PERLIN3, PERLIN4 } Noises;
+	Noises noise = PERLIN;
+	
+	TwEnumVal noisesEV[] = { {PERLIN, "PERLIN"}, {PERLIN2, "PERLIN2"}, {PERLIN3, "PERLIN3"}, {PERLIN4, "PERLIN4"} };
+	TwType noiseType;
+	
+	// Texture
+	typedef enum { TEXTURE, TEXTURE2, TEXTURE3, TEXTURE4 } Textures;
+	Textures texture = TEXTURE;
+	
+	TwEnumVal texturesEV[] = { {TEXTURE, "TEXTURE"}, {TEXTURE2, "TEXTURE2"}, {TEXTURE3, "TEXTURE3"}, {TEXTURE4, "TEXTURE4"} };
+	TwType textureType;
+	
+
+	TwInit(TW_OPENGL_CORE, NULL);
+	TwWindowSize(WIDTH, HEIGHT);
+	bar = TwNewBar("Settings");
+	
+	
+	TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
+	TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
+	TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
+	
+	TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &scale, " min=0 max=100 step=0.5 label='Height scale' ");
+	
+	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
+	TwAddVarRW(bar, "Noise", noiseType, &noise, NULL);
+	
+	textureType = TwDefineEnum("TextureType", texturesEV, 4);
+	TwAddVarRW(bar, "Texture", textureType, &texture, NULL);
+
+	///--- Callbacks
+	///--- https://github.com/davidcox/AntTweakBar/blob/master/examples/TwSimpleGLFW.c
+	glfwSetMouseButtonCallback((GLFWmousebuttonfun)TwEventMouseButtonGLFW);
+	glfwSetMouseButtonCallback((GLFWmousebuttonfun)TwEventMouseButtonGLFW);
+	glfwSetMousePosCallback((GLFWmouseposfun)TwEventMousePosGLFW);
+	glfwSetMouseWheelCallback((GLFWmousewheelfun)TwEventMouseWheelGLFW);
+	// glfwSetKeyCallback((GLFWkeyfun)TwEventKeyGLFW);
+	// glfwSetCharCallback((GLFWcharfun)TwEventCharGLFW);
+#endif
 }
 
 // Gets called for every frame.
@@ -142,8 +197,16 @@ void display(){
 	fb.unbind();
 	
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
+	
+#ifdef WITH_ANTTWEAKBAR
+	TwDraw();
+#endif
+}
 
-    check_error_gl();
+void cleanup(){
+#ifdef WITH_ANTTWEAKBAR
+    TwTerminate();
+#endif
 }
 
 // Transforms glfw screen coordinates into normalized OpenGL coordinates.
@@ -204,5 +267,6 @@ int main(int, char**){
     glfwSetMousePosCallback(mouse_pos);
     init();
     glfwMainLoop();
+    cleanup();
     return EXIT_SUCCESS;
 }
