@@ -4,5 +4,5 @@ project(opengl_terrain)
 #--- Load the common ICG configuration
 include(common/icg_settings.cmake)
 
-#--- Week 3
-add_subdirectory(terrain_generating)      
+#--- Project directories
+add_subdirectory(source)      

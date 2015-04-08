@@ -1,5 +1,11 @@
-﻿Build started 02.04.2015 15:15:55.
+﻿Build started 08.04.2015 13:50:40.
+     1>Project "C:\Users\jfperren\Git\opengl-terrain\build\ZERO_CHECK.vcxproj" on node 2 (Build target(s)).
+     1>CustomBuild:
+         Checking Build System
+         CMake does not need to re-run because C:/Users/jfperren/Git/opengl-terrain/build/CMakeFiles/generate.stamp is up-to-date.
+         CMake does not need to re-run because C:/Users/jfperren/Git/opengl-terrain/build/source/CMakeFiles/generate.stamp is up-to-date.
+     1>Done Building Project "C:\Users\jfperren\Git\opengl-terrain\build\ZERO_CHECK.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.03
+Time Elapsed 00:00:00.88
