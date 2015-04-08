@@ -1,6 +1,8 @@
 #include "icg_common.h"
 #include "trackball/trackball.h"
 #include "grid/grid.h"
+#include "framebuffer/FrameBuffer.h"
+#include "fullscreenquad/FullScreenQuad.h"
 
 using namespace std;
 
@@ -14,6 +16,15 @@ mat4 view_matrix;
 mat4 trackball_matrix;
 
 Trackball trackball;
+
+// Texture for noise
+GLuint height_map;
+
+const float HEIGHT_MAP_HEIGHT = 300;
+const float HEIGHT_MAP_WIDTH = 300;
+
+FrameBuffer fb(WIDTH, HEIGHT);
+FullScreenQuad fullScreenQuad;
 
 // Constants
 const float kZoomFactor = 2;
@@ -54,21 +65,6 @@ mat4 PerspectiveProjection(float fovy, float aspect, float near, float far){
 }
 
 mat4 LookAt(vec3 eye, vec3 center, vec3 up) {
-    // We need a function that converts from world coordinates into camera coordiantes.
-    //
-    // Cam coords to world coords is given by:
-    // X_world = R * X_cam + eye
-    //
-    // inverting it leads to:
-    //
-    // X_cam = R^T * X_world - R^T * eye
-    //
-    // Or as a homogeneous matrix:
-    // [ r_00 r_10 r_20 -r_0*eye
-    //   r_01 r_11 r_21 -r_1*eye
-    //   r_02 r_12 r_22 -r_2*eye
-    //      0    0    0        1 ]
-
     vec3 z_cam = (eye - center).normalized();
     vec3 x_cam = up.cross(z_cam).normalized();
     vec3 y_cam = z_cam.cross(x_cam);
@@ -103,8 +99,6 @@ void init(){
     // Sets background color.
     glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
     
-    grid.init();
-
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
     
@@ -112,6 +106,16 @@ void init(){
     view_matrix = Eigen::Affine3f(Eigen::Translation3f(0.0f, 0.0f, -4.0f)).matrix();
 
     trackball_matrix = mat4::Identity();
+
+	// Set height_map as the output of the FrameBuffer
+	height_map = fb.init();
+	// & Put it as texture for the grid
+	grid.init(height_map);
+
+
+	// Create fullScreenQuad on which we'll draw the noise
+	fullScreenQuad.init();
+
     check_error_gl();
 }
 
@@ -119,20 +123,25 @@ void init(){
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Draw a quad on the ground.
-    mat4 quad_model_matrix = mat4::Identity();
-
-
 	GLuint texture;
 
-	// Load texture
+	// Initialize height_map properties
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glfwLoadTexture2D("grid/grid_texture.tga", 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix, texture);
+    // Draw a quad on the ground.
+	mat4 quad_model_matrix = mat4::Identity();
+
+	///--- Render to FB
+	fb.bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fullScreenQuad.draw();
+	fb.unbind();
+	
+	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
 
     check_error_gl();
 }

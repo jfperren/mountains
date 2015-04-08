@@ -10,6 +10,7 @@ protected:
     GLuint _vao;          ///< vertex array object
     GLuint _vbo_position; ///< memory buffer for positions
     GLuint _vbo_index;    ///< memory buffer for indice
+	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
     GLuint _tex;          ///< Texture ID
     GLuint _num_indices;  ///< number of vertices to render
@@ -20,7 +21,7 @@ public:
 		return i + j * grid_dim;
 	}
 
-    void init(){
+    void init(GLuint texture){
         // Compile the shaders
         _pid = opengp::load_shaders("grid/grid_vshader.glsl", "grid/grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
@@ -38,28 +39,28 @@ public:
             	// Grid dimension
             	int grid_dim = 100;
 
-		// Put vertex positions
-		for (int i = 0; i < grid_dim; i++) {
-			for (int j = 0; j < grid_dim; j++) {
-				float x = float(i) * (2.0f / (grid_dim - 1)) - 1;
-				float y = float(j) * (2.0f / (grid_dim - 1)) - 1;
-				vertices.push_back(x);
-				vertices.push_back(y);
+			// Put vertex positions
+			for (int i = 0; i < grid_dim; i++) {
+				for (int j = 0; j < grid_dim; j++) {
+					float x = float(i) * (2.0f / (grid_dim - 1)) - 1;
+					float y = float(j) * (2.0f / (grid_dim - 1)) - 1;
+					vertices.push_back(x);
+					vertices.push_back(y);
+				}
 			}
-		}
 	
-		for (int i = 0; i < grid_dim - 1; i++) {
-			for (int j = 0; j < grid_dim - 1; j++) {
-				// triangle (i,j), (i+1, j), (i, j+1)
-				indices.push_back(get_vertex_index(i, j, grid_dim));
-				indices.push_back(get_vertex_index(i+1, j, grid_dim));
-				indices.push_back(get_vertex_index(i, j+1, grid_dim));
+			for (int i = 0; i < grid_dim - 1; i++) {
+				for (int j = 0; j < grid_dim - 1; j++) {
+					// triangle (i,j), (i+1, j), (i, j+1)
+					indices.push_back(get_vertex_index(i, j, grid_dim));
+					indices.push_back(get_vertex_index(i+1, j, grid_dim));
+					indices.push_back(get_vertex_index(i, j+1, grid_dim));
 				
-				indices.push_back(get_vertex_index(i+1, j, grid_dim));
-				indices.push_back(get_vertex_index(i, j+1, grid_dim));
-				indices.push_back(get_vertex_index(i+1, j+1, grid_dim));
+					indices.push_back(get_vertex_index(i+1, j, grid_dim));
+					indices.push_back(get_vertex_index(i, j+1, grid_dim));
+					indices.push_back(get_vertex_index(i+1, j+1, grid_dim));
+				}
 			}
-		}
 
             _num_indices = indices.size();
 
@@ -78,6 +79,32 @@ public:
             glEnableVertexAttribArray(loc_position);
             glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
         }
+
+		///--- Texture coordinates
+		{
+			const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
+				/*V2*/ 1.0f, 0.0f,
+				/*V3*/ 0.0f, 1.0f,
+				/*V4*/ 1.0f, 1.0f };
+
+			///--- Buffer
+			glGenBuffers(1, &_vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
+
+			///--- Attribute
+			GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
+			glEnableVertexAttribArray(vtexcoord_id);
+			glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+		}
+
+		// Pass texture to instance
+		this->_tex = texture;
+		// Everything folowing this that says GL_TEXTURE_2D refers to _tex
+		//glBindTexture(GL_TEXTURE_2D, _tex);
+
+		GLuint tex_id = glGetUniformLocation(_pid, "tex");
+		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
         
         // to avoid the current object being polluted
         glBindVertexArray(0);
@@ -91,7 +118,7 @@ public:
         
     }
     
-    void draw(const mat4& model, const mat4& view, const mat4& projection, GLuint texture){
+    void draw(const mat4& model, const mat4& view, const mat4& projection){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
@@ -101,7 +128,7 @@ public:
 
         // Bind textures
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, _tex);
 
         // Setup MVP
         mat4 MVP = projection*view*model;
@@ -112,7 +139,5 @@ public:
         glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);        
         glUseProgram(0);
-
-		glDeleteTextures(1, &texture);
     }
 };
