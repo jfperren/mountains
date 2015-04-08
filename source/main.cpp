@@ -121,7 +121,18 @@ void display(){
 
     // Draw a quad on the ground.
     mat4 quad_model_matrix = mat4::Identity();
-    grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
+
+
+	GLuint texture;
+
+	// Load texture
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glfwLoadTexture2D("grid/grid_texture.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix, texture);
 
     check_error_gl();
 }

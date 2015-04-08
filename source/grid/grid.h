@@ -79,17 +79,6 @@ public:
             glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
         }
         
-        // Load texture
-        glGenTextures(1, &_tex);
-        glBindTexture(GL_TEXTURE_2D, _tex);
-        glfwLoadTexture2D("grid/grid_texture.tga", 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                
-        // Texture uniforms
-        GLuint tex_id = glGetUniformLocation(_pid, "tex");
-        glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-        
         // to avoid the current object being polluted
         glBindVertexArray(0);
     }
@@ -99,15 +88,20 @@ public:
         glDeleteBuffers(1, &_vbo_index);
         glDeleteVertexArrays(1, &_vao);
         glDeleteProgram(_pid);
-        glDeleteTextures(1, &_tex);
+        
     }
     
-    void draw(const mat4& model, const mat4& view, const mat4& projection){
+    void draw(const mat4& model, const mat4& view, const mat4& projection, GLuint texture){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
+
+		// Texture uniforms
+		GLuint tex_id = glGetUniformLocation(_pid, "tex");
+		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+
         // Bind textures
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _tex);
+        glBindTexture(GL_TEXTURE_2D, texture);
 
         // Setup MVP
         mat4 MVP = projection*view*model;
@@ -118,5 +112,7 @@ public:
         glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);        
         glUseProgram(0);
+
+		glDeleteTextures(1, &texture);
     }
 };
