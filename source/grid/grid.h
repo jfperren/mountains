@@ -110,8 +110,6 @@ public:
 			
 		// Pass texture to instance
 		this->_tex = *height_map;
-		// Everything folowing this that says GL_TEXTURE_2D refers to _tex
-		//glBindTexture(GL_TEXTURE_2D, _tex);
 
 		GLuint tex_id = glGetUniformLocation(_pid, "tex");
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);

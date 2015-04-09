@@ -51,7 +51,7 @@ public:
         // TODO cleanup
     }
     
-    void drawNoise(int width, int height){
+    void drawNoise(int width, int height, float min_value, float max_value){
 		GLuint texture;
 
         glUseProgram(_pid);
@@ -59,6 +59,9 @@ public:
 			// Pass _width and _height
 			glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
 			glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
+			glUniform1f(glGetUniformLocation(_pid, "min_value"), min_value);
+			glUniform1f(glGetUniformLocation(_pid, "max_value"), max_value);
+
 			glUniform1i(glGetUniformLocation(_pid, "noise_type"), RANDOM_NOISE);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);        
         glBindVertexArray(0);

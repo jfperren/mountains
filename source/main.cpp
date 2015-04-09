@@ -124,7 +124,7 @@ void display(){
 	mat4 quad_model_matrix = mat4::Identity();
 
 	// Create random noise on texture height_map
-	noiseGenerator.createRandomNoise(HEIGHT_MAP_WIDTH, HEIGHT_MAP_HEIGHT, &height_map);
+	noiseGenerator.createRandomNoise(4, 4, 0, 1, &height_map);
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	grid.setHeightMap(&height_map);

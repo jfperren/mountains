@@ -13,7 +13,7 @@ public:
 		fsQuad.init();
 	}
 
-	void createRandomNoise(int width, int height, GLuint* texture) {
+	void createRandomNoise(int width, int height, float min_value, float max_value, GLuint* texture) {
 
 		// Create framebuffer with texture as output
 		FrameBuffer fb(width, height);
@@ -22,7 +22,7 @@ public:
 		///--- Render random noise on fullScreenQuad in the framebuffer
 		fb.bind();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			fsQuad.drawNoise(width, height);
+			fsQuad.drawNoise(width, height, min_value, max_value);
 		fb.unbind();
 	}
 };
