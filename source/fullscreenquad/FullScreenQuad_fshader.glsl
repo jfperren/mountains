@@ -11,8 +11,11 @@ uniform float max_height;
 
 uniform int noise_type;
 
+uniform sampler2D tex;
+
 const int RANDOM_NOISE = 0;
 const int PERLIN_NOISE = 1;
+const int PERLIN_NOISE_WITH_TEXTURE = 2;
 
 float f(float t) {
 	return 6 * pow(t, 5) - 15 * pow(t, 4) + 10 * pow(t, 3);
@@ -45,7 +48,7 @@ void main() {
 		//color = vec3(random, random, random);
 		color = vec3(noise, noise, noise);
 
-	} else if (noise_type == PERLIN_NOISE) {
+	} else if (noise_type == PERLIN_NOISE || noise_type == PERLIN_NOISE_WITH_TEXTURE) {
 		float x = uv[0] * noise_width;
 		float y = uv[1] * noise_height;
 
@@ -82,13 +85,18 @@ void main() {
 		float f_x = f(x_in_cell);
 		float f_y = f(y_in_cell);
 
-		float st = (1 - f_x) * s + f_x * t;
-		float uv = (1 - f_x) * u + f_x * v;
+		float s_t = (1 - f_x) * s + f_x * t;
+		float u_v = (1 - f_x) * u + f_x * v;
 
-		float noise = (1 - f_y) * st + f_y * uv;
+		float noise = (1 - f_y) * s_t + f_y * u_v;
 
 		// Clamp [- 4, 4] -> [min, max]
 		noise = clampToInterval(noise, -0.3, 0.3, min_height, max_height);
+
+		if (noise_type == PERLIN_NOISE_WITH_TEXTURE) {
+			// Add previous value
+			noise += texture(tex, uv)[0];
+		}
 
 		color = vec3(noise, noise, noise);
 	} else {

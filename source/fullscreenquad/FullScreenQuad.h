@@ -6,6 +6,7 @@ class FullScreenQuad{
 	// Types of noise
 	const static int RANDOM_NOISE = 0;
 	const static int PERLIN_NOISE = 1;
+	const static int PERLIN_NOISE_WITH_TEXTURE = 2;
 
 protected:
     GLuint _vao; ///< vertex array object
@@ -72,7 +73,7 @@ public:
         glUseProgram(0);
     }
 
-	void drawPerlinNoise(int width, int height, float min_height, float max_height){
+	void drawPerlinNoise(int width, int height, float min_height, float max_height, GLuint* tex = nullptr){
 
 		// Bind program & vertex array
 		glUseProgram(_pid);
@@ -83,10 +84,22 @@ public:
 		glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
 		glUniform1f(glGetUniformLocation(_pid, "min_height"), min_height);
 		glUniform1f(glGetUniformLocation(_pid, "max_height"), max_height);
+		
+		if (tex == nullptr) {
+			// Draw
+			glUniform1i(glGetUniformLocation(_pid, "noise_type"), PERLIN_NOISE);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		} else {
+			// Set texture input
+			glUniform1i(glGetUniformLocation(_pid, "tex"), 0 /*GL_TEXTURE0*/);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *tex);
 
-		// Draw
-		glUniform1i(glGetUniformLocation(_pid, "noise_type"), PERLIN_NOISE);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			// Tell shader & Draw
+			glUniform1i(glGetUniformLocation(_pid, "noise_type"), PERLIN_NOISE_WITH_TEXTURE);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		}
+		
 
 		// Unbind
 		glBindVertexArray(0);

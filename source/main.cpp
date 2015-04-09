@@ -114,7 +114,8 @@ void init(){
 
 	// Create random noise on texture height_map
 	//NoiseGenerator::createRandomNoise(10, 10, -1, 1, &height_map);
-	NoiseGenerator::createPerlinNoise(2, 2, 0, 1.5, &height_map);
+	//NoiseGenerator::createPerlinNoise(2, 2, 0, 1.5, &height_map);
+	NoiseGenerator::generateFractionalBrownianMotion(&height_map, 1.2, 2, 8);
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	grid.setHeightMap(&height_map);
