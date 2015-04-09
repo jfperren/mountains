@@ -111,7 +111,13 @@ void init(){
     trackball_matrix = mat4::Identity();
 
 	grid.init();
-	noiseGenerator.init();
+
+	// Create random noise on texture height_map
+	//NoiseGenerator::createRandomNoise(10, 10, -1, 1, &height_map);
+	NoiseGenerator::createPerlinNoise(2, 2, 0, 1.5, &height_map);
+
+	glViewport(0, 0, WIDTH, HEIGHT);
+	grid.setHeightMap(&height_map);
 
     check_error_gl();
 }
@@ -123,11 +129,6 @@ void display(){
     // Draw a quad on the ground.
 	mat4 quad_model_matrix = mat4::Identity();
 
-	// Create random noise on texture height_map
-	noiseGenerator.createRandomNoise(4, 4, -1, 1, &height_map);
-
-	glViewport(0, 0, WIDTH, HEIGHT);
-	grid.setHeightMap(&height_map);
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
 
     check_error_gl();

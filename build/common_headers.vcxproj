@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGUID>{1946959F-29AE-41A2-A5BD-EE7E3381E02E}</ProjectGUID>
+    <ProjectGUID>{A53F8EB2-7C9C-4BE6-A4CD-727462FF3470}</ProjectGUID>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
     <ProjectName>common_headers</ProjectName>
@@ -165,7 +165,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:/Users/jfperren/Git/opengl-terrain/build/ZERO_CHECK.vcxproj">
-      <Project>9CE4069F-989F-4817-A44D-7CB39D638CF5</Project>
+      <Project>A750196E-FA1E-4CC4-90BB-C91BBF0DE1DB</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

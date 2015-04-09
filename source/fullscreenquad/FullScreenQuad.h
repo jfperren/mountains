@@ -1,8 +1,8 @@
 #pragma once
 #include "icg_common.h"
 
-class FullScreenQuad{
 
+class FullScreenQuad{
 	// Types of noise
 	const static int RANDOM_NOISE = 0;
 	const static int PERLIN_NOISE = 1;
@@ -51,20 +51,45 @@ public:
         // TODO cleanup
     }
     
-    void drawNoise(int width, int height, float min_value, float max_value){
-		GLuint texture;
+    void drawRandomNoise(int width, int height, float min_height, float max_height){
 
+		// Bind program & vertex array
         glUseProgram(_pid);
         glBindVertexArray(_vao);
-			// Pass _width and _height
-			glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
-			glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
-			glUniform1f(glGetUniformLocation(_pid, "min_value"), min_value);
-			glUniform1f(glGetUniformLocation(_pid, "max_value"), max_value);
 
-			glUniform1i(glGetUniformLocation(_pid, "noise_type"), RANDOM_NOISE);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);        
+		// Pass parameters 
+		glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
+		glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
+		glUniform1f(glGetUniformLocation(_pid, "min_height"), min_height);
+		glUniform1f(glGetUniformLocation(_pid, "max_height"), max_height);
+
+		// Draw
+		glUniform1i(glGetUniformLocation(_pid, "noise_type"), RANDOM_NOISE);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
+
+		// Unbind
         glBindVertexArray(0);
         glUseProgram(0);
     }
+
+	void drawPerlinNoise(int width, int height, float min_height, float max_height){
+
+		// Bind program & vertex array
+		glUseProgram(_pid);
+		glBindVertexArray(_vao);
+
+		// Pass parameters
+		glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
+		glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
+		glUniform1f(glGetUniformLocation(_pid, "min_height"), min_height);
+		glUniform1f(glGetUniformLocation(_pid, "max_height"), max_height);
+
+		// Draw
+		glUniform1i(glGetUniformLocation(_pid, "noise_type"), PERLIN_NOISE);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		// Unbind
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
 };

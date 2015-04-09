@@ -5,6 +5,8 @@ class Grid{
 
 private:
 	static const int grid_dim_ = 512;
+	static const int WIDTH = 1;
+	static const int HEIGHT = 1;
 
 protected:
     GLuint _vao;          ///< vertex array object
@@ -42,8 +44,8 @@ public:
 			// Put vertex positions
 			for (int i = 0; i < grid_dim; i++) {
 				for (int j = 0; j < grid_dim; j++) {
-					float x = float(i) * (2.0f / (grid_dim - 1)) - 1;
-					float y = float(j) * (2.0f / (grid_dim - 1)) - 1;
+					float x = WIDTH * float(i) * (2.0f / (grid_dim - 1)) - 1;
+					float y = HEIGHT * float(j) * (2.0f / (grid_dim - 1)) - 1;
 					vertices.push_back(x);
 					vertices.push_back(y);
 				}

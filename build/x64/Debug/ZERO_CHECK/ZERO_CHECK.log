@@ -1,4 +1,4 @@
-﻿Build started 08.04.2015 20:02:13.
+﻿Build started 09.04.2015 14:56:12.
      1>Project "C:\Users\jfperren\Git\opengl-terrain\build\ZERO_CHECK.vcxproj" on node 2 (Build target(s)).
      1>CustomBuild:
          Checking Build System
@@ -8,4 +8,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.96
+Time Elapsed 00:00:01.60
