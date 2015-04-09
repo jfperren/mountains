@@ -90,9 +90,9 @@ public:
 
 				///--- Create texture for the color attachment
 				/// See Table.2 https://www.khronos.org/opengles/sdk/docs/man3/docbook4/xhtml/glTexImage2D.xml
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8,
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F,
 					_width, _height, 0,
-					GL_RGB, GL_UNSIGNED_BYTE, NULL); ///< how to load from buffer
+					GL_RED, GL_FLOAT, NULL); ///< how to load from buffer
 			}
 
 		///--- Tie it all together
