@@ -21,7 +21,7 @@ public:
 		return i + j * grid_dim;
 	}
 
-    void init(GLuint texture){
+    void init(){
         // Compile the shaders
         _pid = opengp::load_shaders("grid/grid_vshader.glsl", "grid/grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
@@ -79,33 +79,6 @@ public:
             glEnableVertexAttribArray(loc_position);
             glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
         }
-
-		///--- Texture coordinates
-		{
-			const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
-				/*V2*/ 1.0f, 0.0f,
-				/*V3*/ 0.0f, 1.0f,
-				/*V4*/ 1.0f, 1.0f };
-
-			///--- Buffer
-			glGenBuffers(1, &_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
-
-			///--- Attribute
-			GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
-			glEnableVertexAttribArray(vtexcoord_id);
-			glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-		}
-
-		// Pass texture to instance
-		this->_tex = texture;
-		// Everything folowing this that says GL_TEXTURE_2D refers to _tex
-		//glBindTexture(GL_TEXTURE_2D, _tex);
-
-		GLuint tex_id = glGetUniformLocation(_pid, "tex");
-		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-        
         // to avoid the current object being polluted
         glBindVertexArray(0);
     }
@@ -115,8 +88,34 @@ public:
         glDeleteBuffers(1, &_vbo_index);
         glDeleteVertexArrays(1, &_vao);
         glDeleteProgram(_pid);
-        
     }
+
+	void setHeightMap(GLuint* height_map) {
+		///--- Texture coordinates
+			
+		const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
+			/*V2*/ 1.0f, 0.0f,
+			/*V3*/ 0.0f, 1.0f,
+			/*V4*/ 1.0f, 1.0f };
+
+		///--- Buffer
+		glGenBuffers(1, &_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
+
+		///--- Attribute
+		GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
+		glEnableVertexAttribArray(vtexcoord_id);
+		glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+			
+		// Pass texture to instance
+		this->_tex = *height_map;
+		// Everything folowing this that says GL_TEXTURE_2D refers to _tex
+		//glBindTexture(GL_TEXTURE_2D, _tex);
+
+		GLuint tex_id = glGetUniformLocation(_pid, "tex");
+		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+	}
     
     void draw(const mat4& model, const mat4& view, const mat4& projection){
         glUseProgram(_pid);

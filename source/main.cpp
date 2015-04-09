@@ -3,8 +3,9 @@
 #include "grid/grid.h"
 #include "framebuffer/FrameBuffer.h"
 #include "fullscreenquad/FullScreenQuad.h"
+#include "noisegenerator/NoiseGenerator.h"
 
-using namespace std;
+; using namespace std;
 
 Grid grid;
 
@@ -25,6 +26,8 @@ const float HEIGHT_MAP_WIDTH = 300;
 
 FrameBuffer fb(WIDTH, HEIGHT);
 FullScreenQuad fullScreenQuad;
+
+NoiseGenerator noiseGenerator;
 
 // Constants
 const float kZoomFactor = 2;
@@ -107,14 +110,8 @@ void init(){
 
     trackball_matrix = mat4::Identity();
 
-	// Set height_map as the output of the FrameBuffer
-	height_map = fb.init();
-	// & Put it as texture for the grid
-	grid.init(height_map);
-
-
-	// Create fullScreenQuad on which we'll draw the noise
-	fullScreenQuad.init();
+	grid.init();
+	noiseGenerator.init();
 
     check_error_gl();
 }
@@ -123,24 +120,14 @@ void init(){
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	GLuint texture;
-
-	// Initialize height_map properties
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glfwLoadTexture2D("grid/grid_texture.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
     // Draw a quad on the ground.
 	mat4 quad_model_matrix = mat4::Identity();
 
-	///--- Render to FB
-	fb.bind();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		fullScreenQuad.draw();
-	fb.unbind();
-	
+	// Create random noise on texture height_map
+	noiseGenerator.createRandomNoise(HEIGHT_MAP_WIDTH, HEIGHT_MAP_HEIGHT, &height_map);
+
+	glViewport(0, 0, WIDTH, HEIGHT);
+	grid.setHeightMap(&height_map);
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
 
     check_error_gl();

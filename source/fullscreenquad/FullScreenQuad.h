@@ -2,20 +2,19 @@
 #include "icg_common.h"
 
 class FullScreenQuad{
+
+	// Types of noise
+	const static int RANDOM_NOISE = 0;
+	const static int PERLIN_NOISE = 1;
+
 protected:
     GLuint _vao; ///< vertex array object
     GLuint _pid; ///< GLSL shader program ID 
     GLuint _vbo; ///< memory buffer
     GLuint _tex; ///< Texture ID
 
-	// Dimensions compared to the unit vector
-	int _width = 3;
-	int _height = 3;
-
-	vec2 gradients[3][3];
-
 public:
-    void init(){ 
+    void init(){
         
         ///--- Compile the shaders
         _pid = opengp::load_shaders("fullscreenquad/FullScreenQuad_vshader.glsl", "fullscreenquad/FullScreenQuad_fshader.glsl");
@@ -52,20 +51,17 @@ public:
         // TODO cleanup
     }
     
-    void draw(){
+    void drawNoise(int width, int height){
 		GLuint texture;
-
-		
 
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 			// Pass _width and _height
-			glUniform1f(glGetUniformLocation(_pid, "noise_width"), _width);
-			glUniform1f(glGetUniformLocation(_pid, "noise_height"), _height);
+			glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
+			glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
+			glUniform1i(glGetUniformLocation(_pid, "noise_type"), RANDOM_NOISE);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);        
-        glBindVertexArray(0);        
+        glBindVertexArray(0);
         glUseProgram(0);
     }
-
-
 };
