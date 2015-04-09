@@ -1,8 +1,8 @@
 #version 330 core
 out vec3 color;
-in vec2 uv;
-uniform sampler2D tex;
+in float height;
+uniform sampler2D color1D;
 
 void main() {
-    color = texture(tex, uv).rgb;
+	color = texture(color1D, vec2(height, 1.0)).rgb;
 }

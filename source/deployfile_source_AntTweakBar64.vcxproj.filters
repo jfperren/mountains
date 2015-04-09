@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Alain\Desktop\opengl-terrain\source\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\Alain\Desktop\opengl-terrain\CMakeFiles\af4bfaca6a98606844ca5959b6fd977e\deployfile_source_AntTweakBar64.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Alain\Desktop\opengl-terrain\source\CMakeFiles\deployfile_source_AntTweakBar64" />
+    <None Include="C:\Users\Alain\Desktop\opengl-terrain\external\AntTweakBar\lib\x64\AntTweakBar64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C2B87ED4-D97D-4425-AFB1-37C430EB2B8B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

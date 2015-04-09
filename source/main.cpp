@@ -101,106 +101,49 @@ void resize_callback(int width, int height) {
 }
 
 void init(){
-    // Sets background color.
-    glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
-    
-    // Enable depth test.
-    glEnable(GL_DEPTH_TEST);
-    
-    // view_matrix = LookAt(vec3(2.0f, 2.0f, 4.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-    view_matrix = Eigen::Affine3f(Eigen::Translation3f(0.0f, 0.0f, -4.0f)).matrix();
+	// Sets background color.
+	glClearColor(/*gray*/ .937, .937, .937, /*solid*/1.0);
 
-    trackball_matrix = mat4::Identity();
+	// Enable depth test.
+	glEnable(GL_DEPTH_TEST);
 
-	// Set height_map as the output of the FrameBuffer
+	// view_matrix = LookAt(vec3(2.0f, 2.0f, 4.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	view_matrix = Eigen::Affine3f(Eigen::Translation3f(0.0f, 0.0f, -4.0f)).matrix();
+
+	trackball_matrix = mat4::Identity();
+
 	height_map = fb.init();
-	// & Put it as texture for the grid
-	grid.init(height_map);
 
+	GLuint color;
+	// Initialize height_map properties
+	glGenTextures(1, &color);
+	glBindTexture(GL_TEXTURE_2D, color);
+	glfwLoadTexture2D("grid/texture1D.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	grid.init(height_map, color);
 
 	// Create fullScreenQuad on which we'll draw the noise
 	fullScreenQuad.init();
 
-    // Dummy variables that will be deleted and replaced by the ones used
-    // in our program
-    int a = 0;
-    bool vs = true;
-    bool gs = true;
-    bool fs = true;
-	float scale = 1.5f;
-    
-#ifdef WITH_ANTTWEAKBAR
-
-	// Noise
-	typedef enum { PERLIN, PERLIN2, PERLIN3, PERLIN4 } Noises;
-	Noises noise = PERLIN;
-	
-	TwEnumVal noisesEV[] = { {PERLIN, "PERLIN"}, {PERLIN2, "PERLIN2"}, {PERLIN3, "PERLIN3"}, {PERLIN4, "PERLIN4"} };
-	TwType noiseType;
-	
-	// Texture
-	typedef enum { TEXTURE, TEXTURE2, TEXTURE3, TEXTURE4 } Textures;
-	Textures texture = TEXTURE;
-	
-	TwEnumVal texturesEV[] = { {TEXTURE, "TEXTURE"}, {TEXTURE2, "TEXTURE2"}, {TEXTURE3, "TEXTURE3"}, {TEXTURE4, "TEXTURE4"} };
-	TwType textureType;
-	
-
-	TwInit(TW_OPENGL_CORE, NULL);
-	TwWindowSize(WIDTH, HEIGHT);
-	bar = TwNewBar("Settings");
-	
-	
-	TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
-	TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
-	TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
-	
-	TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &scale, " min=0 max=100 step=0.5 label='Height scale' ");
-	
-	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
-	TwAddVarRW(bar, "Noise", noiseType, &noise, NULL);
-	
-	textureType = TwDefineEnum("TextureType", texturesEV, 4);
-	TwAddVarRW(bar, "Texture", textureType, &texture, NULL);
-
-	///--- Callbacks
-	///--- https://github.com/davidcox/AntTweakBar/blob/master/examples/TwSimpleGLFW.c
-	glfwSetMouseButtonCallback((GLFWmousebuttonfun)TwEventMouseButtonGLFW);
-	glfwSetMouseButtonCallback((GLFWmousebuttonfun)TwEventMouseButtonGLFW);
-	glfwSetMousePosCallback((GLFWmouseposfun)TwEventMousePosGLFW);
-	glfwSetMouseWheelCallback((GLFWmousewheelfun)TwEventMouseWheelGLFW);
-	// glfwSetKeyCallback((GLFWkeyfun)TwEventKeyGLFW);
-	// glfwSetCharCallback((GLFWcharfun)TwEventCharGLFW);
-#endif
+	check_error_gl();
 }
 
 // Gets called for every frame.
 void display(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	GLuint texture;
-
-	// Initialize height_map properties
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glfwLoadTexture2D("grid/grid_texture.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    // Draw a quad on the ground.
+	// Draw a quad on the ground.
 	mat4 quad_model_matrix = mat4::Identity();
 
 	///--- Render to FB
 	fb.bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		fullScreenQuad.draw();
+	fullScreenQuad.draw();
 	fb.unbind();
-	
+
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
-	
-#ifdef WITH_ANTTWEAKBAR
-	TwDraw();
-#endif
 }
 
 void cleanup(){

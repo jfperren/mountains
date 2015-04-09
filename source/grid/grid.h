@@ -12,7 +12,8 @@ protected:
     GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
-    GLuint _tex;          ///< Texture ID
+    GLuint _heightmap;    ///< HeightMap Texture ID
+	GLuint _color;        ///< Color Texture ID
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
@@ -21,7 +22,7 @@ public:
 		return i + j * grid_dim;
 	}
 
-    void init(GLuint texture){
+    void init(GLuint heightmap, GLuint color){
         // Compile the shaders
         _pid = opengp::load_shaders("grid/grid_vshader.glsl", "grid/grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
@@ -64,21 +65,21 @@ public:
 
             _num_indices = indices.size();
 
-            // position buffer
-            glGenBuffers(1, &_vbo_position);
-            glBindBuffer(GL_ARRAY_BUFFER, _vbo_position);
-            glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+			// position buffer
+			glGenBuffers(1, &_vbo_position);
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo_position);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
 
-            // vertex indices
-            glGenBuffers(1, &_vbo_index);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo_index);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+			// vertex indices
+			glGenBuffers(1, &_vbo_index);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo_index);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
-            // position shader attribute
-            GLuint loc_position = glGetAttribLocation(_pid, "position");
-            glEnableVertexAttribArray(loc_position);
-            glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-        }
+			// position shader attribute
+			GLuint loc_position = glGetAttribLocation(_pid, "position");
+			glEnableVertexAttribArray(loc_position);
+			glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+		}
 
 		///--- Texture coordinates
 		{
@@ -99,15 +100,17 @@ public:
 		}
 
 		// Pass texture to instance
-		this->_tex = texture;
-		// Everything folowing this that says GL_TEXTURE_2D refers to _tex
-		//glBindTexture(GL_TEXTURE_2D, _tex);
+		this->_heightmap = heightmap;
+		// Pass texture to instance
+		this->_color = color;
 
-		GLuint tex_id = glGetUniformLocation(_pid, "tex");
+		GLuint tex_id = glGetUniformLocation(_pid, "heightmap");
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-        
-        // to avoid the current object being polluted
-        glBindVertexArray(0);
+		tex_id = glGetUniformLocation(_pid, "color1D");
+		glUniform1i(tex_id, 1 /*GL_TEXTURE0*/);
+
+		// to avoid the current object being polluted
+		glBindVertexArray(0);
     }
            
     void cleanup(){
@@ -117,18 +120,54 @@ public:
         glDeleteProgram(_pid);
         
     }
+
+	void setHeightMap(GLuint* height_map) {
+		///--- Texture coordinates
+
+		const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
+			/*V2*/ 1.0f, 0.0f,
+			/*V3*/ 0.0f, 1.0f,
+			/*V4*/ 1.0f, 1.0f };
+
+		///--- Buffer
+		glGenBuffers(1, &_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
+
+		///--- Attribute
+		GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
+		glEnableVertexAttribArray(vtexcoord_id);
+		glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+
+		// Pass texture to instance
+		this->_heightmap = *height_map;
+
+		GLuint tex_id = glGetUniformLocation(_pid, "heightmap");
+		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+	}
+
+	void setColor(GLuint* color){
+		// Pass texture to instance
+		this->_color = *color;
+		GLuint tex_id = glGetUniformLocation(_pid, "color1D");
+		glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
+	}
     
     void draw(const mat4& model, const mat4& view, const mat4& projection){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
 		// Texture uniforms
-		GLuint tex_id = glGetUniformLocation(_pid, "tex");
+		GLuint tex_id = glGetUniformLocation(_pid, "heightmap");
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+		tex_id = glGetUniformLocation(_pid, "color1D");
+		glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
 
         // Bind textures
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _tex);
+        glBindTexture(GL_TEXTURE_2D, _heightmap);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, _color);
 
         // Setup MVP
         mat4 MVP = projection*view*model;
