@@ -24,6 +24,8 @@ Trackball trackball;
 
 // Texture for noise
 GLuint height_map;
+// Texture for color
+GLuint color;
 
 const float HEIGHT_MAP_HEIGHT = 300;
 const float HEIGHT_MAP_WIDTH = 300;
@@ -114,7 +116,7 @@ void init(){
 
 	height_map = fb.init();
 
-	GLuint color;
+	//GLuint color;
 	// Initialize height_map properties
 	glGenTextures(1, &color);
 	glBindTexture(GL_TEXTURE_2D, color);
@@ -122,7 +124,7 @@ void init(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	grid.init(height_map, color);
+	grid.init();
 
 	// Create fullScreenQuad on which we'll draw the noise
 	fullScreenQuad.init();
@@ -142,7 +144,10 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	fullScreenQuad.draw();
 	fb.unbind();
+	glViewport(0, 0, WIDTH, HEIGHT);
 
+	grid.setColor(&color);
+	grid.setHeightMap(&height_map);
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
 }
 

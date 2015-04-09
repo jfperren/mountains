@@ -22,7 +22,7 @@ public:
 		return i + j * grid_dim;
 	}
 
-    void init(GLuint heightmap, GLuint color){
+    void init(){
         // Compile the shaders
         _pid = opengp::load_shaders("grid/grid_vshader.glsl", "grid/grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
@@ -80,34 +80,6 @@ public:
 			glEnableVertexAttribArray(loc_position);
 			glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 		}
-
-		///--- Texture coordinates
-		{
-			const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
-				/*V2*/ 1.0f, 0.0f,
-				/*V3*/ 0.0f, 1.0f,
-				/*V4*/ 1.0f, 1.0f };
-
-			///--- Buffer
-			glGenBuffers(1, &_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
-
-			///--- Attribute
-			GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
-			glEnableVertexAttribArray(vtexcoord_id);
-			glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-		}
-
-		// Pass texture to instance
-		this->_heightmap = heightmap;
-		// Pass texture to instance
-		this->_color = color;
-
-		GLuint tex_id = glGetUniformLocation(_pid, "heightmap");
-		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-		tex_id = glGetUniformLocation(_pid, "color1D");
-		glUniform1i(tex_id, 1 /*GL_TEXTURE0*/);
 
 		// to avoid the current object being polluted
 		glBindVertexArray(0);
