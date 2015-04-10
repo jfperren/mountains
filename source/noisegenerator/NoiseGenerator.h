@@ -6,45 +6,31 @@
 
 class NoiseGenerator {
 
+	//typedef void(*NoiseFunction)(int, int, float, float, GLuint*);
+
 public:
 	const static int PIXELS_PER_UNIT = 500;
 protected:
 	
 
 public:
-	static void NoiseGenerator::createRandomNoise(int width, int height, float min_value, float max_value, GLuint* texture) {
+	static void NoiseGenerator::renderNoise(int noise_type, int width, int height, float offset, float amplitude, GLuint* texture) {
 
 		FullScreenQuad fsQuad;
 		fsQuad.init();
 
 		// Create framebuffer with texture as output
-		FrameBuffer fb(width, height);
+		FrameBuffer fb(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
 		fb.initWithTexture(texture);
 
 		///--- Render random noise on fullScreenQuad in the framebuffer
 		fb.bind();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			fsQuad.drawRandomNoise(width, height, min_value, max_value);
+			fsQuad.drawNoise(noise_type, width, height, offset, amplitude, nullptr);
 		fb.unbind();
 	}
 
-	static void NoiseGenerator::createPerlinNoise(int width, int height, float min_value, float max_value, GLuint* texture) {
-
-		FullScreenQuad fsQuad;
-		fsQuad.init();
-
-		// Create framebuffer with texture as output
-		FrameBuffer fb(width * PIXELS_PER_UNIT, height * PIXELS_PER_UNIT);
-		fb.initWithTexture(texture);
-
-		///--- Render random noise on fullScreenQuad in the framebuffer
-		fb.bind();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			fsQuad.drawPerlinNoise(width, height, min_value, max_value);
-		fb.unbind();
-	}
-
-	static void NoiseGenerator::generateFractionalBrownianMotion(GLuint* texture,
+	static void NoiseGenerator::generateFractionalBrownianMotion(GLuint* texture, float amplitude,
 		float H, float lacunarity, int octaves) {
 		
 		FullScreenQuad fsQuad;
@@ -68,7 +54,7 @@ public:
 				glClear(GL_COLOR_BUFFER_BIT);
 
 				// Using texture "1 - currentbuffer"
-				fsQuad.drawPerlinNoise(pow(lacunarity, i), pow(lacunarity, i), -pow(lacunarity, -i * H)/2, pow(lacunarity, -i * H), &(textures[1 - currentbuffer]));
+				fsQuad.drawNoise(FullScreenQuad::PERLIN_NOISE,pow(lacunarity, i), pow(lacunarity, i), 0, amplitude * pow(lacunarity, -i * H), &(textures[1 - currentbuffer]));
 
 				// Unbind
 				framebuffers[currentbuffer].unbind();
@@ -81,7 +67,7 @@ public:
 
 				fb.initWithTexture(texture);
 				fb.bind();
-				fsQuad.drawPerlinNoise(pow(lacunarity, i), pow(lacunarity, i), -pow(lacunarity, -i * H), pow(lacunarity, -i * H), &(textures[1 - currentbuffer]));
+				fsQuad.drawNoise(FullScreenQuad::PERLIN_NOISE, pow(lacunarity, i), pow(lacunarity, i), 0, amplitude * pow(lacunarity, -i * H), &(textures[1 - currentbuffer]));
 				fb.unbind();
 			}
 		}

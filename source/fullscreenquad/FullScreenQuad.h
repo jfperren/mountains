@@ -3,10 +3,11 @@
 
 
 class FullScreenQuad{
+public:
 	// Types of noise
+	const static int NO_NOISE = -1;
 	const static int RANDOM_NOISE = 0;
 	const static int PERLIN_NOISE = 1;
-	const static int PERLIN_NOISE_WITH_TEXTURE = 2;
 
 protected:
     GLuint _vao; ///< vertex array object
@@ -52,7 +53,7 @@ public:
         // TODO cleanup
     }
     
-    void drawRandomNoise(int width, int height, float min_height, float max_height){
+	void drawNoise(int noise_type, int width, int height, float offset, float amplitude, GLuint* texture = nullptr){
 
 		// Bind program & vertex array
         glUseProgram(_pid);
@@ -61,48 +62,26 @@ public:
 		// Pass parameters 
 		glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
 		glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
-		glUniform1f(glGetUniformLocation(_pid, "min_height"), min_height);
-		glUniform1f(glGetUniformLocation(_pid, "max_height"), max_height);
+		glUniform1f(glGetUniformLocation(_pid, "offset"), offset);
+		glUniform1f(glGetUniformLocation(_pid, "amplitude"), amplitude);
+		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_type);
+
+		if (texture != nullptr) {
+			// Tells shader there is a texture as input
+			glUniform1i(glGetUniformLocation(_pid, "is_texture"), 1);
+
+			// Set texture input
+			glUniform1i(glGetUniformLocation(_pid, "tex"), 0 /*GL_TEXTURE0*/);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *texture);
+		}
+
 
 		// Draw
-		glUniform1i(glGetUniformLocation(_pid, "noise_type"), RANDOM_NOISE);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);    
 
 		// Unbind
         glBindVertexArray(0);
         glUseProgram(0);
     }
-
-	void drawPerlinNoise(int width, int height, float min_height, float max_height, GLuint* tex = nullptr){
-
-		// Bind program & vertex array
-		glUseProgram(_pid);
-		glBindVertexArray(_vao);
-
-		// Pass parameters
-		glUniform1f(glGetUniformLocation(_pid, "noise_width"), width);
-		glUniform1f(glGetUniformLocation(_pid, "noise_height"), height);
-		glUniform1f(glGetUniformLocation(_pid, "min_height"), min_height);
-		glUniform1f(glGetUniformLocation(_pid, "max_height"), max_height);
-		
-		if (tex == nullptr) {
-			// Draw
-			glUniform1i(glGetUniformLocation(_pid, "noise_type"), PERLIN_NOISE);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		} else {
-			// Set texture input
-			glUniform1i(glGetUniformLocation(_pid, "tex"), 0 /*GL_TEXTURE0*/);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, *tex);
-
-			// Tell shader & Draw
-			glUniform1i(glGetUniformLocation(_pid, "noise_type"), PERLIN_NOISE_WITH_TEXTURE);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		}
-		
-
-		// Unbind
-		glBindVertexArray(0);
-		glUseProgram(0);
-	}
 };
