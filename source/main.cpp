@@ -129,7 +129,52 @@ void init(){
 	// Create fullScreenQuad on which we'll draw the noise
 	fullScreenQuad.init();
 
-	check_error_gl();
+	// Dummy variables that will be deleted and replaced by the ones used
+	// in our program
+	int a = 0;
+	bool vs = true;
+	bool gs = true;
+	bool fs = true;
+	float scale = 1.5f;
+
+#ifdef WITH_ANTTWEAKBAR
+
+	// Noise
+	typedef enum { PERLIN, PERLIN2, PERLIN3, PERLIN4 } Noises;
+	Noises noise = PERLIN;
+
+	TwEnumVal noisesEV[] = { { PERLIN, "PERLIN" }, { PERLIN2, "PERLIN2" }, { PERLIN3, "PERLIN3" }, { PERLIN4, "PERLIN4" } };
+	TwType noiseType;
+
+	// Texture
+	typedef enum { TEXTURE, TEXTURE2, TEXTURE3, TEXTURE4 } Textures;
+	Textures texture = TEXTURE;
+
+	TwEnumVal texturesEV[] = { { TEXTURE, "TEXTURE" }, { TEXTURE2, "TEXTURE2" }, { TEXTURE3, "TEXTURE3" }, { TEXTURE4, "TEXTURE4" } };
+	TwType textureType;
+
+
+	TwInit(TW_OPENGL_CORE, NULL);
+	TwWindowSize(WIDTH, HEIGHT);
+	bar = TwNewBar("Settings");
+
+
+	TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
+	TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
+	TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
+
+	TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &scale, " min=0 max=100 step=0.5 label='Height scale' ");
+
+	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
+	TwAddVarRW(bar, "Noise", noiseType, &noise, NULL);
+
+	textureType = TwDefineEnum("TextureType", texturesEV, 4);
+	TwAddVarRW(bar, "Texture", textureType, &texture, NULL);
+
+	// Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
+#endif
+
+	//check_error_gl();
 }
 
 // Gets called for every frame.
@@ -149,6 +194,10 @@ void display(){
 	grid.setColor(&color);
 	grid.setHeightMap(&height_map);
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
+
+#ifdef WITH_ANTTWEAKBAR
+	TwDraw();
+#endif
 }
 
 void cleanup(){
@@ -206,13 +255,83 @@ void mouse_pos(int x, int y) {
     }
 }
 
+// Callback function called by GLFW when a mouse button is clicked
+void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
+{
+	if (!TwEventMouseButtonGLFW(glfwButton, glfwAction))   // Send event to AntTweakBar
+	{
+		// Event not handled by AntTweakBar, we handle it ourselves
+		mouse_button(glfwButton, glfwAction);
+	}
+}
+
+
+// Callback function called by GLFW when mouse has moved
+void GLFWCALL OnMousePos(int mouseX, int mouseY)
+{
+	if (!TwEventMousePosGLFW(mouseX, mouseY))  // Send event to AntTweakBar
+	{
+		mouse_pos(mouseX, mouseY);
+	}
+}
+
+
+// Callback function called by GLFW on mouse wheel event
+void GLFWCALL OnMouseWheel(int pos)
+{
+	if (!TwEventMouseWheelGLFW(pos))   // Send event to AntTweakBar
+	{
+		// Nothing for the moment
+	}
+}
+
+
+// Callback function called by GLFW on key event
+void GLFWCALL OnKey(int glfwKey, int glfwAction)
+{
+	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
+	{
+		if (glfwKey == GLFW_KEY_ESC && glfwAction == GLFW_PRESS) // Want to quit?
+			glfwCloseWindow();
+		else
+		{
+			// Nothing for the moment
+		}
+	}
+}
+
+
+// Callback function called by GLFW on char event
+void GLFWCALL OnChar(int glfwChar, int glfwAction)
+{
+	if (!TwEventCharGLFW(glfwChar, glfwAction))    // Send event to AntTweakBar
+	{
+		// Nothing for the moment
+	}
+}
+
+
+// Callback function called by GLFW when window size changes
+void GLFWCALL OnWindowSize(int width, int height)
+{
+	// Send the new window size to AntTweakBar
+	TwWindowSize(width, height);
+
+	resize_callback(width, height);
+}
+
 int main(int, char**){
     glfwInitWindowSize(WIDTH, HEIGHT);
-    glfwCreateWindow("Trackball");
+    glfwCreateWindow("Terrain");
     glfwDisplayFunc(display);
-    glfwSetWindowSizeCallback(&resize_callback);
-    glfwSetMouseButtonCallback(mouse_button);
-    glfwSetMousePosCallback(mouse_pos);
+
+	glfwSetWindowSizeCallback(OnWindowSize);
+	glfwSetMouseButtonCallback(OnMouseButton);
+	glfwSetMousePosCallback(OnMousePos);
+	glfwSetMouseWheelCallback(OnMouseWheel);
+	glfwSetKeyCallback(OnKey);
+	glfwSetCharCallback(OnChar);
+
     init();
     glfwMainLoop();
     cleanup();
