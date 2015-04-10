@@ -66,6 +66,9 @@ public:
 		glUniform1f(glGetUniformLocation(_pid, "amplitude"), amplitude);
 		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_type);
 
+		// Create a seed for randomness
+		glUniform1f(glGetUniformLocation(_pid, "seed"), 0.11);
+
 		if (texture != nullptr) {
 			// Tells shader there is a texture as input
 			glUniform1i(glGetUniformLocation(_pid, "is_texture"), 1);

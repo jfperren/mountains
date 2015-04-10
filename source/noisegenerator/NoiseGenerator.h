@@ -14,7 +14,7 @@ protected:
 	
 
 public:
-	static void NoiseGenerator::renderNoise(int noise_type, int width, int height, float offset, float amplitude, GLuint* texture) {
+	static void NoiseGenerator::renderNoise(int noise_type, int width, int height, float offset, float amplitude, GLuint* texture, GLuint* input = nullptr) {
 
 		FullScreenQuad fsQuad;
 		fsQuad.init();
@@ -26,50 +26,24 @@ public:
 		///--- Render random noise on fullScreenQuad in the framebuffer
 		fb.bind();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			fsQuad.drawNoise(noise_type, width, height, offset, amplitude, nullptr);
+			fsQuad.drawNoise(noise_type, width, height, offset, amplitude, input);
 		fb.unbind();
 	}
 
 	static void NoiseGenerator::generateFractionalBrownianMotion(GLuint* texture, float amplitude,
 		float H, float lacunarity, int octaves) {
 		
-		FullScreenQuad fsQuad;
-		fsQuad.init();
-
 		GLuint textures[2];
 
-		FrameBuffer framebuffers[] = {
-			FrameBuffer(500, 500), 
-			FrameBuffer(500, 500)
-		};
-
-		framebuffers[0].initWithTexture(&textures[0]);
-		framebuffers[1].initWithTexture(&textures[1]);
+		// Render offset in texture[1]
+		renderNoise(FullScreenQuad::NO_NOISE, 1, 1, 1, 0, &textures[1]);
 
 		int currentbuffer = 0;
-		for (int i = 0; i < octaves; i++) {
-			if (i != octaves - 1) {
-				// Render into framebuffer "currentbuffer" (= into texture "currentbuffer")
-				framebuffers[currentbuffer].bind();
-				glClear(GL_COLOR_BUFFER_BIT);
-
-				// Using texture "1 - currentbuffer"
-				fsQuad.drawNoise(FullScreenQuad::PERLIN_NOISE,pow(lacunarity, i), pow(lacunarity, i), 0, amplitude * pow(lacunarity, -i * H), &(textures[1 - currentbuffer]));
-
-				// Unbind
-				framebuffers[currentbuffer].unbind();
-
-				// Alternate buffers
-				currentbuffer = 1 - currentbuffer;
-			} else {
-				// Last iteration should be rendered into the texture given as parameter
-				FrameBuffer fb(500, 500);
-
-				fb.initWithTexture(texture);
-				fb.bind();
-				fsQuad.drawNoise(FullScreenQuad::PERLIN_NOISE, pow(lacunarity, i), pow(lacunarity, i), 0, amplitude * pow(lacunarity, -i * H), &(textures[1 - currentbuffer]));
-				fb.unbind();
-			}
+		for (int i = 0; i < octaves - 1; i++) {
+			renderNoise(FullScreenQuad::PERLIN_NOISE, pow(lacunarity, i), pow(lacunarity, i), 0, amplitude * pow(lacunarity, -i * H), &(textures[1 - currentbuffer]), &(textures[currentbuffer]));
+			currentbuffer = 1 - currentbuffer;
 		}
+
+		renderNoise(FullScreenQuad::PERLIN_NOISE, pow(lacunarity, octaves - 1), pow(lacunarity, octaves - 1), 0, amplitude * pow(lacunarity, -(octaves - 1) * H), texture, &(textures[currentbuffer]));
 	}
 };

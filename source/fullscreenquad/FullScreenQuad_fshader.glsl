@@ -3,6 +3,8 @@
 in vec2 uv;
 out vec3 color;
 
+uniform float seed;
+
 uniform float noise_width;
 uniform float noise_height;
 
@@ -47,7 +49,7 @@ void main() {
 		y = floor(y);
 
 		// Pseudorandom
-		noise = amplitude * random(vec2(x, y), 0);
+		noise = amplitude * random(vec2(x, y), seed);
 
 	} else if (noise_type == PERLIN_NOISE) {
 
@@ -68,10 +70,10 @@ void main() {
 		vec2 top_left = vec2(x_of_cell, y_of_cell + 1);
 		vec2 top_right = vec2(x_of_cell + 1, y_of_cell + 1);
 
-		vec2 g_s = vec2(random(bottom_left, 0.33) - 0.5, random(bottom_left, 0.42) - 0.5);
-		vec2 g_t = vec2(random(bottom_right, 0.33) - 0.5, random(bottom_right, 0.42) - 0.5);
-		vec2 g_u = vec2(random(top_left, 0.33) - 0.5, random(top_left, 0.42) - 0.5);
-		vec2 g_v = vec2(random(top_right, 0.33) - 0.5, random(top_right, 0.42) - 0.5);
+		vec2 g_s = vec2(random(bottom_left, seed) - 0.5, random(bottom_left, 1-seed) - 0.5);
+		vec2 g_t = vec2(random(bottom_right, seed) - 0.5, random(bottom_right, 1-seed) - 0.5);
+		vec2 g_u = vec2(random(top_left, seed) - 0.5, random(top_left, 1-seed) - 0.5);
+		vec2 g_v = vec2(random(top_right, seed) - 0.5, random(top_right, 1-seed) - 0.5);
 
 		vec2 a = vec2(x_in_cell, y_in_cell);
 		vec2 b = vec2(x_in_cell - 1, y_in_cell);
@@ -96,7 +98,7 @@ void main() {
 		noise *= 4;
 	} else {
 		// Unknown, no noise
-		color = vec3(uv[0], uv[0], uv[0]);
+		color = vec3(0.0, 0.0, 0.0);
 	}
 
 	noise = (noise * amplitude) + offset;
