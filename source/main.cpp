@@ -1,9 +1,9 @@
 #include "icg_common.h"
 #include "trackball/trackball.h"
 #include "grid/grid.h"
-#include "framebuffer/FrameBuffer.h"
-#include "fullscreenquad/FullScreenQuad.h"
-#include "noisegenerator/NoiseGenerator.h"
+#include "framebuffer/Framebuffer.h"
+#include "noise/NoiseQuad.h"
+#include "noise/NoiseGenerator.h"
 
 ; using namespace std;
 
@@ -20,14 +20,6 @@ Trackball trackball;
 
 // Texture for noise
 GLuint height_map;
-
-const float HEIGHT_MAP_HEIGHT = 300;
-const float HEIGHT_MAP_WIDTH = 300;
-
-FrameBuffer fb(WIDTH, HEIGHT);
-FullScreenQuad fullScreenQuad;
-
-NoiseGenerator noiseGenerator;
 
 // Constants
 const float kZoomFactor = 2;
@@ -113,9 +105,21 @@ void init(){
 	grid.init();
 
 	// Create random noise on texture height_map
-	//NoiseGenerator::renderNoise(FullScreenQuad::PERLIN_NOISE, 10, 10, 0, 1, &height_map);
+	//NoiseGenerator::renderNoise(FullScreenQuad::PERLIN_NOISE, 2, 2, 0, 1, &height_map);
 	//NoiseGenerator::createPerlinNoise(2, 2, 0, 1.5, &height_map);
-	NoiseGenerator::generateFractionalBrownianMotion(&height_map, 1,  0.8, 2, 8);
+
+	NoiseQuad::NoiseValues noise_values = { NoiseQuad::PERLIN_NOISE, 2, 1, 1, 0 };
+
+	//NoiseGenerator::renderNoise(&height_map, noise_values);
+
+	NoiseGenerator::generateFBM(&height_map, 
+		noise_values,					// Type of noise
+		1,								// Amplitude
+		0.3,							// Offset
+		0.8,							// H
+		2,								// Lacunarity
+		8						// Octaves
+	);
 	//NoiseGenerator::renderNoise(FullScreenQuad::NO_NOISE, 1, 1, 0, 1, &height_map);
 
 	glViewport(0, 0, WIDTH, HEIGHT);

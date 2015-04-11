@@ -8,7 +8,7 @@
     #include "opencv2/imgproc/types_c.h"   ///< CV_BGRA2RGBA
 #endif
 
-class FrameBuffer{
+class Framebuffer{
 
 protected:
     bool _init;
@@ -18,7 +18,7 @@ protected:
     GLuint _texture;
     
 public:
-    FrameBuffer(int image_width, int image_height){
+    Framebuffer(int image_width, int image_height){
         this->_width = image_width;
         this->_height = image_height;        
     }

@@ -1,4 +1,4 @@
-set(CMAKE_CXX_COMPILER "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/x86_amd64/cl.exe")
+set(CMAKE_CXX_COMPILER "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/cl.exe")
 set(CMAKE_CXX_COMPILER_ARG1 "")
 set(CMAKE_CXX_COMPILER_ID "MSVC")
 set(CMAKE_CXX_COMPILER_VERSION "18.0.30501.0")
@@ -10,7 +10,7 @@ set(CMAKE_CXX14_COMPILE_FEATURES "")
 set(CMAKE_CXX_PLATFORM_ID "Windows")
 set(CMAKE_CXX_SIMULATE_ID "")
 set(CMAKE_CXX_SIMULATE_VERSION "")
-set(MSVC_CXX_ARCHITECTURE_ID x64)
+set(MSVC_CXX_ARCHITECTURE_ID X86)
 set(CMAKE_AR "")
 set(CMAKE_RANLIB "")
 set(CMAKE_LINKER "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/x86_amd64/link.exe")
@@ -37,7 +37,7 @@ set(CMAKE_CXX_LINKER_PREFERENCE 30)
 set(CMAKE_CXX_LINKER_PREFERENCE_PROPAGATES 1)
 
 # Save compiler ABI information.
-set(CMAKE_CXX_SIZEOF_DATA_PTR "8")
+set(CMAKE_CXX_SIZEOF_DATA_PTR "4")
 set(CMAKE_CXX_COMPILER_ABI "")
 set(CMAKE_CXX_LIBRARY_ARCHITECTURE "")
 
