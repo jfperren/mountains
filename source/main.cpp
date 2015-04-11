@@ -102,6 +102,68 @@ void resize_callback(int width, int height) {
     projection_matrix = PerspectiveProjection(45.0f, (GLfloat)WIDTH / HEIGHT, 0.1f, 100.0f);
 }
 
+void initAntTwBar() {
+
+	// Dummy variables that will be deleted and replaced by the ones used in our program
+
+	int a = 0;
+	bool vs = true;
+	bool gs = true;
+	bool fs = true;
+	int noise_width = 0;
+	int noise_height = 0;
+	float noise_offset = 0.0f;
+	float noise_amplitude = 0.0f;
+	bool custom_seed = false;
+	float seed = 0.0f;
+
+	bool enable = true;
+	float H = 0.0f;
+	int lacunarity = 0;
+	int octaves = 1;
+	float fractal_offset = 0.0f;
+	float fractal_amplitude = 0.0f;
+
+	TwInit(TW_OPENGL_CORE, NULL);
+	TwWindowSize(WIDTH, HEIGHT);
+	bar = TwNewBar("Settings");
+
+	/* Shaders */
+
+	TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
+	TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
+	TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
+
+	/* Noise */
+
+	typedef enum { NO_NOISE, RANDOM_NOISE, PERLIN_NOISE, PERLIN_NOISE_ABS } Noises;
+	Noises noise = NO_NOISE;
+
+	TwEnumVal noisesEV[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
+	TwType noiseType;
+
+	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
+	TwAddVarRW(bar, "noise_type", noiseType, &noise, " group=Noise ");
+
+	TwAddVarRW(bar, "noise_width", TW_TYPE_INT32, &noise_width, " group=Noise ");
+	TwAddVarRW(bar, "noise_height", TW_TYPE_INT32, &noise_height, " group=Noise ");
+	TwAddVarRW(bar, "noise_offset", TW_TYPE_FLOAT, &noise_offset, " group=Noise ");
+	TwAddVarRW(bar, "noise_amplitude", TW_TYPE_FLOAT, &noise_amplitude, " group=Noise ");
+	TwAddVarRW(bar, "custom_seed", TW_TYPE_BOOLCPP, &custom_seed, " group=Noise ");
+	TwAddVarRW(bar, "seed", TW_TYPE_FLOAT, &seed, " group=Noise ");
+
+	/* Fractal */
+
+	TwAddVarRW(bar, "enable", TW_TYPE_BOOLCPP, &enable, " group=Fractal ");
+	TwAddVarRW(bar, "H", TW_TYPE_FLOAT, &H, " group=Fractal ");
+	TwAddVarRW(bar, "lacunarity", TW_TYPE_INT32, &lacunarity, " group=Fractal ");
+	TwAddVarRW(bar, "octaves", TW_TYPE_INT32, &octaves, " group=Fractal ");
+	TwAddVarRW(bar, "fractal_offset", TW_TYPE_FLOAT, &fractal_offset, " group=Fractal ");
+	TwAddVarRW(bar, "fractal_amplitude", TW_TYPE_FLOAT, &fractal_amplitude, " group=Fractal ");
+
+	// Note: Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
+}
+
 void init(){
 	// Sets background color.
 	glClearColor(/*gray*/ .937, .937, .937, /*solid*/1.0);
@@ -129,49 +191,10 @@ void init(){
 	// Create fullScreenQuad on which we'll draw the noise
 	fullScreenQuad.init();
 
-	// Dummy variables that will be deleted and replaced by the ones used
-	// in our program
-	int a = 0;
-	bool vs = true;
-	bool gs = true;
-	bool fs = true;
-	float scale = 1.5f;
 
 #ifdef WITH_ANTTWEAKBAR
 
-	// Noise
-	typedef enum { PERLIN, PERLIN2, PERLIN3, PERLIN4 } Noises;
-	Noises noise = PERLIN;
-
-	TwEnumVal noisesEV[] = { { PERLIN, "PERLIN" }, { PERLIN2, "PERLIN2" }, { PERLIN3, "PERLIN3" }, { PERLIN4, "PERLIN4" } };
-	TwType noiseType;
-
-	// Texture
-	typedef enum { TEXTURE, TEXTURE2, TEXTURE3, TEXTURE4 } Textures;
-	Textures texture = TEXTURE;
-
-	TwEnumVal texturesEV[] = { { TEXTURE, "TEXTURE" }, { TEXTURE2, "TEXTURE2" }, { TEXTURE3, "TEXTURE3" }, { TEXTURE4, "TEXTURE4" } };
-	TwType textureType;
-
-
-	TwInit(TW_OPENGL_CORE, NULL);
-	TwWindowSize(WIDTH, HEIGHT);
-	bar = TwNewBar("Settings");
-
-
-	TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
-	TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
-	TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
-
-	TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &scale, " min=0 max=100 step=0.5 label='Height scale' ");
-
-	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
-	TwAddVarRW(bar, "Noise", noiseType, &noise, NULL);
-
-	textureType = TwDefineEnum("TextureType", texturesEV, 4);
-	TwAddVarRW(bar, "Texture", textureType, &texture, NULL);
-
-	// Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
+	initAntTwBar();
 #endif
 
 	//check_error_gl();
