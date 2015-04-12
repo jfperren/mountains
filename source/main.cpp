@@ -54,7 +54,7 @@ NoiseQuad::FractalType fractal_type;
 float fractal_amplitude;
 float fractal_offset;
 float fractal_H;
-float fractal_lacunarity;
+int fractal_lacunarity;
 int fractal_octaves;
 bool fractal_enable;
 
@@ -70,7 +70,7 @@ void writeFile(string file_name) {
 
 	if (myfile.is_open()) {
 
-		/* The order is important */
+		/* The order is not important */
 
 		/* Noise */
 		myfile << "noise_type " << noise_values.noise_type << "\n";
@@ -128,9 +128,16 @@ void loadFromFile(string file_name) {
 				else {
 					fractal_enable = false;
 				}
-			}
-			else if (!results[0].compare("fractal_H")) {
+			} else if (!results[0].compare("fractal_H")) {
 				fractal_H = ::atof(results[1].c_str());
+			} else if (!results[0].compare("fractal_lacunarity")) {
+				fractal_lacunarity = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("fractal_octaves")) {
+				fractal_octaves = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("fractal_offset")) {
+				fractal_offset = ::atof(results[1].c_str());
+			} else if (!results[0].compare("fractal_amplitude")) {
+				fractal_amplitude = ::atof(results[1].c_str());
 			}
 		}
 		
@@ -287,6 +294,9 @@ void TW_CALL LoadCB(void * /*clientData*/)
 	} else {
 		loadFromFile(g_file_name_load);
 	}
+
+	// Update scene with the changes
+	compute_height_map();
 }
 
 

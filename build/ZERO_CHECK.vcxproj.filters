@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\jfperren\Git\opengl-terrain\build\CMakeFiles\73c159c982bba81d0e39f0e68ce4c547\generate.stamp.rule">
+    <CustomBuild Include="C:\Users\Robin\Dropbox\EPFL\Computer Graphics\opengl-terrain\build\CMakeFiles\ade6dcf349b2211d6c82c4eac6bf30be\generate.stamp.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{DE915BA0-8414-42E3-91BF-54C8D62F5478}</UniqueIdentifier>
+      <UniqueIdentifier>{B711822E-C637-46B2-872B-3F28673EE9E6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

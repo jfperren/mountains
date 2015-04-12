@@ -1,5 +1,11 @@
-﻿Build started 12.04.2015 10:21:16.
+﻿La génération a démarré 12.04.2015 12:30:29.
+     1>Projet "C:\Users\Robin\Dropbox\EPFL\Computer Graphics\opengl-terrain\build\ZERO_CHECK.vcxproj" sur le nœud 2 (Build cible(s)).
+     1>CustomBuild:
+         Checking Build System
+         CMake does not need to re-run because C:/Users/Robin/Dropbox/EPFL/Computer Graphics/opengl-terrain/build/CMakeFiles/generate.stamp is up-to-date.
+         CMake does not need to re-run because C:/Users/Robin/Dropbox/EPFL/Computer Graphics/opengl-terrain/build/source/CMakeFiles/generate.stamp is up-to-date.
+     1>Génération du projet "C:\Users\Robin\Dropbox\EPFL\Computer Graphics\opengl-terrain\build\ZERO_CHECK.vcxproj" terminée (Build cible(s)).
 
-Build succeeded.
+La génération a réussi.
 
-Time Elapsed 00:00:00.20
+Temps écoulé 00:00:00.28
