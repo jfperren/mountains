@@ -127,7 +127,7 @@ void main() {
 
 	if (is_texture == 1) {
 		if (aggregation_type == FBM) {
-			// Add previous value (if any)
+			// Add previous value
 			noise += texture(in_texture, uv)[0];
 		} else if (aggregation_type == MULTIFRACTAL) {
 			// Multiply with previous value

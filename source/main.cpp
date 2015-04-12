@@ -46,7 +46,7 @@ NoiseQuad::FractalType fractal_type;
 float fractal_amplitude;
 float fractal_offset;
 float fractal_H;
-float fractal_lacunarity;
+int fractal_lacunarity;
 int fractal_octaves;
 bool fractal_enable;
 
@@ -187,8 +187,8 @@ void initAntTwBar() {
 	/* Noise */
 
 	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
+	
 	TwType noiseType;
-
 	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
 	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
@@ -200,10 +200,16 @@ void initAntTwBar() {
 
 	/* Fractal */
 
+	TwEnumVal fractalEV[] = { { NoiseQuad::FBM, "FBM" }, { NoiseQuad::MULTIFRACTAL, "MULTIFRACTAL" } };
+
+	TwType fractalType;
+	fractalType = TwDefineEnum("FractalType", fractalEV, 2);
+	TwAddVarCB(bar, "fractal_type", fractalType, setIntParamCallback, getIntParamCallback, &fractal_type, " group=Fractal ");
+
 	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_enable, " group=Fractal ");
 	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_H, " group=Fractal step=0.1");
-	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_lacunarity, " group=Fractal step=2");
-	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_octaves, " group=Fractal step=1");
+	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_lacunarity, " group=Fractal step=1 min=2");
+	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_octaves, " group=Fractal step=1 min=1");
 	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_offset,  " group=Fractal step=0.1");
 	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_amplitude, " group=Fractal step=0.1");
 
@@ -248,11 +254,10 @@ void init(){
 	fractal_offset = 0.0f;
 	fractal_H = 0.8f;
 	fractal_lacunarity = 2;
-	fractal_octaves = 8;
+	fractal_octaves = 6;
 	fractal_enable = true;
 
 	compute_height_map();
-
 
 #ifdef WITH_ANTTWEAKBAR
 

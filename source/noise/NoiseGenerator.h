@@ -87,6 +87,6 @@ public:
 		}
 
 		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, 1, 1, offset, amplitude }, &(textures[currentbuffer]));
+		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, 1, 1, amplitude, offset }, &(textures[currentbuffer]), NoiseQuad::FBM);
 	}
 };
