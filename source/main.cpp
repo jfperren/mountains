@@ -7,6 +7,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <istream>
+#include <ostream>
+#include <iterator>
+#include <sstream>
+#include <algorithm>
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
@@ -55,6 +60,7 @@ bool fractal_enable;
 
 // --- I/O ---
 string g_file_name = "";
+string g_file_name_load = "";
 
 /* ------------------------- */
 
@@ -67,30 +73,72 @@ void writeFile(string file_name) {
 		/* The order is important */
 
 		/* Noise */
-		myfile << "noise_type: " << noise_values.noise_type << "\n";
-		myfile << "noise_width: " << noise_values.width << "\n";
-		myfile << "noise_height: " << noise_values.height << "\n";
-		myfile << "noise_offset: " << noise_values.offset << "\n";
-		myfile << "noise_amplitude: " << noise_values.amplitude << "\n";
-		myfile << "noise_seed: " << noise_values.seed << "\n";
+		myfile << "noise_type " << noise_values.noise_type << "\n";
+		myfile << "noise_width " << noise_values.width << "\n";
+		myfile << "noise_height " << noise_values.height << "\n";
+		myfile << "noise_offset " << noise_values.offset << "\n";
+		myfile << "noise_amplitude " << noise_values.amplitude << "\n";
+		myfile << "noise_seed " << noise_values.seed << "\n";
 
 		/* Fractal */
 		if (fractal_enable) {
-			myfile << "fractal_enable: " << "true" << "\n";
-			myfile << "fractal_H: " << fractal_H << "\n";
-			myfile << "fractal_lacunarity: " << fractal_lacunarity << "\n";
-			myfile << "fractal_octaves: " << fractal_octaves << "\n";
-			myfile << "fractal_offset: " << fractal_offset << "\n";
-			myfile << "fractal_amplitude: " << fractal_amplitude << "\n";
+			myfile << "fractal_enable " << "true" << "\n";
+			myfile << "fractal_H " << fractal_H << "\n";
+			myfile << "fractal_lacunarity " << fractal_lacunarity << "\n";
+			myfile << "fractal_octaves " << fractal_octaves << "\n";
+			myfile << "fractal_offset " << fractal_offset << "\n";
+			myfile << "fractal_amplitude " << fractal_amplitude << "\n";
 
 		} else {
-			myfile << "fractal_enable: " << "false" << "\n";
+			myfile << "fractal_enable " << "false" << "\n";
 		}
 
 		myfile.close();
-		cout << "Info: Data saved to" << file_name << endl;
+		cout << "Info: Data saved to " << file_name << endl;
 	} else {
-		cout << "Error: Could not save data: the file could not be opened." << endl;
+		cout << "Error: Could not save data: the file " << file_name << " could not be opened." << endl;
+	}
+}
+
+void loadFromFile(string file_name) {
+	string line;
+	ifstream myfile(file_name);
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			string str = line;
+
+			// construct a stream from the string
+			stringstream strstr(str);
+
+			// use stream iterators to copy the stream to the vector as whitespace separated strings
+			istream_iterator<string> it(strstr);
+			istream_iterator<string> end;
+			vector<string> results(it, end);
+
+			// send the vector to stdout.
+			ostream_iterator<string> oit(cout);
+			copy(results.begin(), results.end(), oit);
+
+			if (!results[0].compare("fractal_enable")) {
+				if (!results[1].compare("true")) {
+					fractal_enable = true;
+				}
+				else {
+					fractal_enable = false;
+				}
+			}
+			else if (!results[0].compare("fractal_H")) {
+				fractal_H = ::atof(results[1].c_str());
+			}
+		}
+		
+		myfile.close();
+		cout << "Info: Data loaded from " << file_name << endl;
+	}
+	else {
+		cout << "Error: Could not load data: the file" << file_name << " could not be opened." << endl;
 	}
 }
 
@@ -225,9 +273,20 @@ void TW_CALL SaveCB(void * /*clientData*/)
 		std::stringstream sstm;
 		sstm << "mountain-" << glfwGetTime() << ".terrain";
 		g_file_name = sstm.str();
+		g_file_name_load = g_file_name; // optional
 	}
 
 	writeFile(g_file_name);
+}
+
+void TW_CALL LoadCB(void * /*clientData*/)
+{
+	if (!g_file_name_load.compare("")) {
+		// Empty name
+		cout << "Error: Cannot load from empty name" << endl;
+	} else {
+		loadFromFile(g_file_name_load);
+	}
 }
 
 
@@ -275,8 +334,10 @@ void initAntTwBar() {
 
 	/* I/O */
 
-	TwAddVarRW(bar, "file_name", TW_TYPE_STDSTRING, &g_file_name, " group='I/O' label='file_name (optional)' ");
+	TwAddVarRW(bar, "save_file_name", TW_TYPE_STDSTRING, &g_file_name, " group='I/O' label='file_name (optional)' ");
 	TwAddButton(bar, "Save", SaveCB, NULL, " group='I/O' ");
+	TwAddVarRW(bar, "load_file_name", TW_TYPE_STDSTRING, &g_file_name_load, " group='I/O' ");
+	TwAddButton(bar, "Load", LoadCB, NULL, " group='I/O' ");
 
 	// Note: Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
 }
