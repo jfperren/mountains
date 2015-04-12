@@ -4,7 +4,7 @@
 class Grid{
 
 private:
-	static const int grid_dim_ = 512;
+	static const int grid_dim_ = 2048;
 
 protected:
     GLuint _vao;          ///< vertex array object
@@ -12,7 +12,7 @@ protected:
     GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
-    GLuint _heightmap;    ///< HeightMap Texture ID
+    GLuint _height_map;    ///< HeightMap Texture ID
 	GLuint _color;        ///< Color Texture ID
     GLuint _num_indices;  ///< number of vertices to render
     
@@ -24,7 +24,7 @@ public:
 
     void init(){
         // Compile the shaders
-        _pid = opengp::load_shaders("grid/grid_vshader.glsl", "grid/grid_fshader.glsl");
+        _pid = opengp::load_shaders("Grid/Grid_vshader.glsl", "Grid/Grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
         glUseProgram(_pid);
         
@@ -43,8 +43,8 @@ public:
 			// Put vertex positions
 			for (int i = 0; i < grid_dim; i++) {
 				for (int j = 0; j < grid_dim; j++) {
-					float x = float(i) * (2.0f / (grid_dim - 1)) - 1;
-					float y = float(j) * (2.0f / (grid_dim - 1)) - 1;
+					float x =  float(i) * (2.0f / (grid_dim - 1)) - 1;
+					float y =  float(j) * (2.0f / (grid_dim - 1)) - 1;
 					vertices.push_back(x);
 					vertices.push_back(y);
 				}
@@ -90,12 +90,10 @@ public:
         glDeleteBuffers(1, &_vbo_index);
         glDeleteVertexArrays(1, &_vao);
         glDeleteProgram(_pid);
-        
     }
 
 	void setHeightMap(GLuint* height_map) {
 		///--- Texture coordinates
-
 		const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
 			/*V2*/ 1.0f, 0.0f,
 			/*V3*/ 0.0f, 1.0f,
@@ -112,9 +110,9 @@ public:
 		glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 
 		// Pass texture to instance
-		this->_heightmap = *height_map;
+		this->_height_map = *height_map;
 
-		GLuint tex_id = glGetUniformLocation(_pid, "heightmap");
+		GLuint tex_id = glGetUniformLocation(_pid, "tex");
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
 	}
 
@@ -124,20 +122,18 @@ public:
 		GLuint tex_id = glGetUniformLocation(_pid, "color1D");
 		glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
 	}
-    
+
     void draw(const mat4& model, const mat4& view, const mat4& projection){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
 		// Texture uniforms
-		GLuint tex_id = glGetUniformLocation(_pid, "heightmap");
-		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-		tex_id = glGetUniformLocation(_pid, "color1D");
-		glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
+		glUniform1i(glGetUniformLocation(_pid, "heightmap"), 0 /*GL_TEXTURE0*/);
+		glUniform1i(glGetUniformLocation(_pid, "color1D"), 1 /*GL_TEXTURE1*/);
 
         // Bind textures
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _heightmap);
+        glBindTexture(GL_TEXTURE_2D, _height_map);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, _color);
 

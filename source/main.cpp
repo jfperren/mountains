@@ -1,8 +1,9 @@
 #include "icg_common.h"
 #include "trackball/trackball.h"
 #include "grid/grid.h"
-#include "framebuffer/FrameBuffer.h"
-#include "fullscreenquad/FullScreenQuad.h"
+#include "framebuffer/Framebuffer.h"
+#include "noise/NoiseQuad.h"
+#include "noise/NoiseGenerator.h"
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
@@ -26,12 +27,6 @@ Trackball trackball;
 GLuint height_map;
 // Texture for color
 GLuint color;
-
-const float HEIGHT_MAP_HEIGHT = 300;
-const float HEIGHT_MAP_WIDTH = 300;
-
-FrameBuffer fb(WIDTH, HEIGHT);
-FullScreenQuad fullScreenQuad;
 
 // Constants
 const float kZoomFactor = 2;
@@ -165,31 +160,37 @@ void initAntTwBar() {
 }
 
 void init(){
-	// Sets background color.
-	glClearColor(/*gray*/ .937, .937, .937, /*solid*/1.0);
+    // Sets background color.
+    glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
+    
+    // Enable depth test.
+    glEnable(GL_DEPTH_TEST);
+    
+    view_matrix = Eigen::Affine3f(Eigen::Translation3f(0.0f, 0.0f, -4.0f)).matrix();
 
-	// Enable depth test.
-	glEnable(GL_DEPTH_TEST);
+    trackball_matrix = mat4::Identity();
 
-	// view_matrix = LookAt(vec3(2.0f, 2.0f, 4.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-	view_matrix = Eigen::Affine3f(Eigen::Translation3f(0.0f, 0.0f, -4.0f)).matrix();
-
-	trackball_matrix = mat4::Identity();
-
-	height_map = fb.init();
-
-	//GLuint color;
-	// Initialize height_map properties
 	glGenTextures(1, &color);
 	glBindTexture(GL_TEXTURE_2D, color);
-	glfwLoadTexture2D("grid/texture1D.tga", 0);
+	glfwLoadTexture2D("textures/texture1D.tga", 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	grid.init();
 
-	// Create fullScreenQuad on which we'll draw the noise
-	fullScreenQuad.init();
+	NoiseQuad::NoiseValues noise_values = { NoiseQuad::PERLIN_NOISE, 2, 1, 1, 0 };
+
+	NoiseGenerator::generateFBM(&height_map, 
+		noise_values,					// Type of noise
+		1,								// Amplitude
+		0.3,							// Offset
+		0.8,							// H
+		2,								// Lacunarity
+		8						// Octaves
+	);
+
+	glViewport(0, 0, WIDTH, HEIGHT);
+	grid.setHeightMap(&height_map);
 
 
 #ifdef WITH_ANTTWEAKBAR
@@ -197,25 +198,18 @@ void init(){
 	initAntTwBar();
 #endif
 
-	//check_error_gl();
+	check_error_gl();
 }
 
 // Gets called for every frame.
 void display(){
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Draw a quad on the ground.
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Draw a quad on the ground.
 	mat4 quad_model_matrix = mat4::Identity();
 
-	///--- Render to FB
-	fb.bind();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	fullScreenQuad.draw();
-	fb.unbind();
-	glViewport(0, 0, WIDTH, HEIGHT);
-
 	grid.setColor(&color);
-	grid.setHeightMap(&height_map);
 	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
