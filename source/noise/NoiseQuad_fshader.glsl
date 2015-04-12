@@ -18,11 +18,11 @@ uniform int is_texture;
 
 uniform int aggregation_type;
 
-const int COPY_TEXTURE = -2;
-const int NO_NOISE = -1;
-const int RANDOM_NOISE = 0;
-const int PERLIN_NOISE = 1;
-const int PERLIN_NOISE_ABSOLUTE = 2;
+const int COPY_TEXTURE = 0;
+const int NO_NOISE = 1;
+const int RANDOM_NOISE = 2;
+const int PERLIN_NOISE = 3;
+const int PERLIN_NOISE_ABSOLUTE = 4;
 
 const int FBM = 0;
 const int MULTIFRACTAL = 1;

@@ -47,8 +47,12 @@ public:
 			noise_values.width *= lacunarity;
 			noise_values.amplitude *= pow(lacunarity, -H);
 
+			noise_values.seed = noise_values.seed * 8509473409850.5489;
+			noise_values.seed -= floor(noise_values.seed);
+
 			// Swap input & output textures
 			inputtexture = 1 - inputtexture;
+			
 		}
 
 		// Render created texture in out_texture with offset and amplitude
@@ -75,6 +79,9 @@ public:
 			noise_values.height *= lacunarity;
 			noise_values.width *= lacunarity;
 			noise_values.amplitude *= pow(lacunarity, -H);
+			
+			noise_values.seed = noise_values.seed * 8509473409850.5489;
+			noise_values.seed -= floor(noise_values.seed);
 
 			currentbuffer = 1 - currentbuffer;
 		}

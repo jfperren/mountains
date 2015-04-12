@@ -36,6 +36,20 @@ mat4 old_trackball_matrix;
 mat4 old_view_matrix;
 float zoom_start_y;
 
+// --- Variables for AntTweakBar ---
+
+// --- Noise ---
+NoiseQuad::NoiseValues noise_values;
+
+// --- Fractal ---
+NoiseQuad::FractalType fractal_type;
+float fractal_amplitude;
+float fractal_offset;
+float fractal_H;
+float fractal_lacunarity;
+int fractal_octaves;
+bool fractal_enable;
+
 mat4 OrthographicProjection(float left, float right, float bottom, float top, float near, float far){
     assert(right > left);
     assert(far > near);
@@ -97,27 +111,68 @@ void resize_callback(int width, int height) {
     projection_matrix = PerspectiveProjection(45.0f, (GLfloat)WIDTH / HEIGHT, 0.1f, 100.0f);
 }
 
+void compute_height_map() {
+
+	if (fractal_enable) {
+		if (fractal_type == NoiseQuad::FBM) {
+			NoiseGenerator::generateFBM(&height_map,
+				noise_values,
+				fractal_amplitude,
+				fractal_offset,
+				fractal_H,
+				fractal_lacunarity,
+				fractal_octaves
+				);
+		} else {
+			NoiseGenerator::generateMultiFractal(&height_map,
+				noise_values,
+				fractal_amplitude,
+				fractal_offset,
+				fractal_H,
+				fractal_lacunarity,
+				fractal_octaves
+				);
+		}
+	} else {
+		NoiseGenerator::renderNoise(&height_map, noise_values);
+	}
+
+	grid.setHeightMap(&height_map);
+	glViewport(0, 0, WIDTH, HEIGHT);
+}
+
+void TW_CALL setIntParamCallback(const void* value, void* clientData) {
+	*((int*)clientData) = *((int*)value);
+	compute_height_map();
+}
+
+void TW_CALL setFloatParamCallback(const void* value, void* clientData) {
+	*((float*)clientData) = *((float*)value);
+	compute_height_map();
+}
+
+void TW_CALL setBoolParamCallback(const void* value, void* clientData) {
+	*((bool*)clientData) = *((bool*)value);
+	compute_height_map();
+}
+
+void TW_CALL getIntParamCallback(void* value, void* clientData) {
+	*((int*)value) = *((int*)clientData);
+}
+
+void TW_CALL getFloatParamCallback(void* value, void* clientData) {
+	*((float*)value) = *((float*)clientData);
+}
+
+void TW_CALL getBoolParamCallback(void* value, void* clientData) {
+	*((bool*)value) = *((bool*)clientData);
+}
+
+
 void initAntTwBar() {
 
 	// Dummy variables that will be deleted and replaced by the ones used in our program
 
-	int a = 0;
-	bool vs = true;
-	bool gs = true;
-	bool fs = true;
-	int noise_width = 0;
-	int noise_height = 0;
-	float noise_offset = 0.0f;
-	float noise_amplitude = 0.0f;
-	bool custom_seed = false;
-	float seed = 0.0f;
-
-	bool enable = true;
-	float H = 0.0f;
-	int lacunarity = 0;
-	int octaves = 1;
-	float fractal_offset = 0.0f;
-	float fractal_amplitude = 0.0f;
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	TwWindowSize(WIDTH, HEIGHT);
@@ -125,36 +180,32 @@ void initAntTwBar() {
 
 	/* Shaders */
 
-	TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
-	TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
-	TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
+	//TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
+	//TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
+	//TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
 
 	/* Noise */
 
-	typedef enum { NO_NOISE, RANDOM_NOISE, PERLIN_NOISE, PERLIN_NOISE_ABS } Noises;
-	Noises noise = NO_NOISE;
-
-	TwEnumVal noisesEV[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
+	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
 	TwType noiseType;
 
 	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
-	TwAddVarRW(bar, "noise_type", noiseType, &noise, " group=Noise ");
+	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
-	TwAddVarRW(bar, "noise_width", TW_TYPE_INT32, &noise_width, " group=Noise ");
-	TwAddVarRW(bar, "noise_height", TW_TYPE_INT32, &noise_height, " group=Noise ");
-	TwAddVarRW(bar, "noise_offset", TW_TYPE_FLOAT, &noise_offset, " group=Noise ");
-	TwAddVarRW(bar, "noise_amplitude", TW_TYPE_FLOAT, &noise_amplitude, " group=Noise ");
-	TwAddVarRW(bar, "custom_seed", TW_TYPE_BOOLCPP, &custom_seed, " group=Noise ");
-	TwAddVarRW(bar, "seed", TW_TYPE_FLOAT, &seed, " group=Noise ");
+	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
+	TwAddVarCB(bar, "noise_height", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.height, " group=Noise step=1");
+	TwAddVarCB(bar, "noise_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.offset, " group=Noise step=0.1");
+	TwAddVarCB(bar, "noise_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.amplitude, " group=Noise step=0.1");
+	TwAddVarCB(bar, "seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.seed, " group=Noise step=0.001 min=0 max=1");
 
 	/* Fractal */
 
-	TwAddVarRW(bar, "enable", TW_TYPE_BOOLCPP, &enable, " group=Fractal ");
-	TwAddVarRW(bar, "H", TW_TYPE_FLOAT, &H, " group=Fractal ");
-	TwAddVarRW(bar, "lacunarity", TW_TYPE_INT32, &lacunarity, " group=Fractal ");
-	TwAddVarRW(bar, "octaves", TW_TYPE_INT32, &octaves, " group=Fractal ");
-	TwAddVarRW(bar, "fractal_offset", TW_TYPE_FLOAT, &fractal_offset, " group=Fractal ");
-	TwAddVarRW(bar, "fractal_amplitude", TW_TYPE_FLOAT, &fractal_amplitude, " group=Fractal ");
+	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_enable, " group=Fractal ");
+	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_H, " group=Fractal step=0.1");
+	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_lacunarity, " group=Fractal step=2");
+	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_octaves, " group=Fractal step=1");
+	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_offset,  " group=Fractal step=0.1");
+	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_amplitude, " group=Fractal step=0.1");
 
 	// Note: Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
 }
@@ -178,19 +229,29 @@ void init(){
 
 	grid.init();
 
-	NoiseQuad::NoiseValues noise_values = { NoiseQuad::PERLIN_NOISE, 2, 1, 1, 0 };
-
-	NoiseGenerator::generateFBM(&height_map, 
-		noise_values,					// Type of noise
-		1,								// Amplitude
-		0.3,							// Offset
-		0.8,							// H
-		2,								// Lacunarity
-		8						// Octaves
-	);
-
 	glViewport(0, 0, WIDTH, HEIGHT);
 	grid.setHeightMap(&height_map);
+
+	// Init values
+
+	// --- Noise ---
+	noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
+	noise_values.height = 1;
+	noise_values.width = 1;
+	noise_values.offset = 0.0f;
+	noise_values.amplitude = 1.0f;
+	noise_values.seed = glfwGetTime();
+	noise_values.seed -= floor(noise_values.seed);
+
+	// --- Fractal ---
+	fractal_amplitude = 1.0f;
+	fractal_offset = 0.0f;
+	fractal_H = 0.8f;
+	fractal_lacunarity = 2;
+	fractal_octaves = 8;
+	fractal_enable = true;
+
+	compute_height_map();
 
 
 #ifdef WITH_ANTTWEAKBAR

@@ -4,23 +4,27 @@
 
 class NoiseQuad {
 public:
-	// Types of noise
-	const static int COPY_TEXTURE = -2;
-	const static int NO_NOISE = -1;
-	const static int RANDOM_NOISE = 0;
-	const static int PERLIN_NOISE = 1;
-	const static int PERLIN_NOISE_ABSOLUTE = 2;
 
-	// Types of aggregations
-	const static int FBM = 0;
-	const static int MULTIFRACTAL = 1;
+	typedef enum {
+		COPY_TEXTURE,
+		NO_NOISE,
+		RANDOM_NOISE,
+		PERLIN_NOISE,
+		PERLIN_NOISE_ABS
+	} NoiseType;
+
+	typedef enum {
+		FBM,
+		MULTIFRACTAL
+	} FractalType;
 
 	typedef struct NoiseValues {
-		int noise_type;
+		NoiseType noise_type;
 		int width;
 		int height;
 		float amplitude;
 		float offset;
+		float seed;
 	};
 
 protected:
@@ -80,11 +84,7 @@ public:
 		glUniform1f(glGetUniformLocation(_pid, "amplitude"), noise_values.amplitude);
 		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_values.noise_type);
 		glUniform1i(glGetUniformLocation(_pid, "aggregation_type"), aggregation_type);
-
-		// Create a seed for randomness
-		float seed = glfwGetTime();
-		seed = seed - floor(seed);
-		glUniform1f(glGetUniformLocation(_pid, "seed"), seed);
+		glUniform1f(glGetUniformLocation(_pid, "seed"), noise_values.seed);
 
 		if (in_texture != nullptr) {
 			// Tells shader there is a texture as input
