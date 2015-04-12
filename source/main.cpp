@@ -4,6 +4,9 @@
 #include "framebuffer/Framebuffer.h"
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
@@ -49,6 +52,47 @@ float fractal_H;
 float fractal_lacunarity;
 int fractal_octaves;
 bool fractal_enable;
+
+// --- I/O ---
+string g_file_name = "";
+
+/* ------------------------- */
+
+// Dumps noise and fractal info to file_name
+void writeFile(string file_name) {
+	ofstream myfile(file_name);
+
+	if (myfile.is_open()) {
+
+		/* The order is important */
+
+		/* Noise */
+		myfile << "noise_type: " << noise_values.noise_type << "\n";
+		myfile << "noise_width: " << noise_values.width << "\n";
+		myfile << "noise_height: " << noise_values.height << "\n";
+		myfile << "noise_offset: " << noise_values.offset << "\n";
+		myfile << "noise_amplitude: " << noise_values.amplitude << "\n";
+		myfile << "noise_seed: " << noise_values.seed << "\n";
+
+		/* Fractal */
+		if (fractal_enable) {
+			myfile << "fractal_enable: " << "true" << "\n";
+			myfile << "fractal_H: " << fractal_H << "\n";
+			myfile << "fractal_lacunarity: " << fractal_lacunarity << "\n";
+			myfile << "fractal_octaves: " << fractal_octaves << "\n";
+			myfile << "fractal_offset: " << fractal_offset << "\n";
+			myfile << "fractal_amplitude: " << fractal_amplitude << "\n";
+
+		} else {
+			myfile << "fractal_enable: " << "false" << "\n";
+		}
+
+		myfile.close();
+		cout << "Info: Data saved to" << file_name << endl;
+	} else {
+		cout << "Error: Could not save data: the file could not be opened." << endl;
+	}
+}
 
 mat4 OrthographicProjection(float left, float right, float bottom, float top, float near, float far){
     assert(right > left);
@@ -168,6 +212,26 @@ void TW_CALL getBoolParamCallback(void* value, void* clientData) {
 	*((bool*)value) = *((bool*)clientData);
 }
 
+// Function called by AntTweakBar to copy the content of a std::string handled
+// by the AntTweakBar library to a std::string handled by your application
+void TW_CALL CopyStdStringToClient(std::string& destinationClientString, const std::string& sourceLibraryString)
+{
+	destinationClientString = sourceLibraryString;
+}
+
+void TW_CALL SaveCB(void * /*clientData*/)
+{
+	if (!g_file_name.compare("")) {
+		std::stringstream sstm;
+		sstm << "mountain-" << glfwGetTime() << ".terrain";
+		g_file_name = sstm.str();
+	}
+
+	writeFile(g_file_name);
+}
+
+
+
 
 void initAntTwBar() {
 
@@ -175,6 +239,8 @@ void initAntTwBar() {
 
 
 	TwInit(TW_OPENGL_CORE, NULL);
+	// Needed to work with dynamic strings
+	TwCopyStdStringToClientFunc(CopyStdStringToClient);
 	TwWindowSize(WIDTH, HEIGHT);
 	bar = TwNewBar("Settings");
 
@@ -206,6 +272,11 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_octaves, " group=Fractal step=1");
 	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_offset,  " group=Fractal step=0.1");
 	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_amplitude, " group=Fractal step=0.1");
+
+	/* I/O */
+
+	TwAddVarRW(bar, "file_name", TW_TYPE_STDSTRING, &g_file_name, " group='I/O' label='file_name (optional)' ");
+	TwAddButton(bar, "Save", SaveCB, NULL, " group='I/O' ");
 
 	// Note: Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
 }
