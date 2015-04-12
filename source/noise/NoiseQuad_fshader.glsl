@@ -23,6 +23,7 @@ const int NO_NOISE = 1;
 const int RANDOM_NOISE = 2;
 const int PERLIN_NOISE = 3;
 const int PERLIN_NOISE_ABSOLUTE = 4;
+const int WORLEY_NOISE = 5;
 
 const int FBM = 0;
 const int MULTIFRACTAL = 1;
@@ -110,6 +111,46 @@ void main() {
 				noise *= (-1);
 			}
 		}
+	} else if (noise_type == WORLEY_NOISE) {
+		float x = uv[0] * noise_width;
+		float y = uv[1] * noise_height;
+
+		// Coordinate inside the cell
+		float x_in_cell = fract(x);
+		float y_in_cell = fract(y);
+
+		// Coordinate of the cell (bottom left corner)
+		float x_of_cell = x - x_in_cell;
+		float y_of_cell = y - y_in_cell;
+
+		// Get corner coordinates
+		vec2 bottom_left = vec2(x_of_cell, y_of_cell);
+		vec2 bottom_right = vec2(x_of_cell + 1, y_of_cell);
+		vec2 top_left = vec2(x_of_cell, y_of_cell + 1);
+		vec2 top_right = vec2(x_of_cell + 1, y_of_cell + 1);
+
+		vec2 g_s = vec2(random(bottom_left, seed) - 0.5, random(bottom_left, 1-seed) - 0.5);
+		vec2 g_t = vec2(random(bottom_right, seed) - 0.5, random(bottom_right, 1-seed) - 0.5);
+		vec2 g_u = vec2(random(top_left, seed) - 0.5, random(top_left, 1-seed) - 0.5);
+		vec2 g_v = vec2(random(top_right, seed) - 0.5, random(top_right, 1-seed) - 0.5);
+
+		vec2 a = vec2(x_in_cell, y_in_cell);
+		vec2 b = vec2(x_in_cell - 1, y_in_cell);
+		vec2 c = vec2(x_in_cell, y_in_cell - 1);
+		vec2 d = vec2(x_in_cell - 1, y_in_cell - 1);
+
+		float s = length(g_s - a);
+		float t = length(g_t - b);
+		float u = length(g_u - c);
+		float v = length(g_v - d);
+
+		// Mixing
+		s = min(s, t);
+		u = min(u, v);
+		noise = min(s, u);
+
+		noise = f(noise);
+	
 	} else if (noise_type == COPY_TEXTURE) {
 
 		// Just copy texture and add amplitude/offset

@@ -186,10 +186,10 @@ void initAntTwBar() {
 
 	/* Noise */
 
-	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
+	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" }, { NoiseQuad::WORLEY_NOISE, "WORLEY_NOISE" } };
 	
 	TwType noiseType;
-	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
+	noiseType = TwDefineEnum("NoiseType", noisesEV, 5);
 	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");

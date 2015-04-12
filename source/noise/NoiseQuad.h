@@ -10,12 +10,14 @@ public:
 		NO_NOISE,
 		RANDOM_NOISE,
 		PERLIN_NOISE,
-		PERLIN_NOISE_ABS
+		PERLIN_NOISE_ABS,
+		WORLEY_NOISE
 	} NoiseType;
 
 	typedef enum {
 		FBM,
-		MULTIFRACTAL
+		MULTIFRACTAL,
+		HYBRID // Need to add parameters
 	} FractalType;
 
 	typedef struct NoiseValues {
