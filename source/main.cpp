@@ -121,6 +121,7 @@ void loadFromFile(string file_name) {
 			ostream_iterator<string> oit(cout);
 			copy(results.begin(), results.end(), oit);
 
+			/* Load fractal */
 			if (!results[0].compare("fractal_enable")) {
 				if (!results[1].compare("true")) {
 					fractal_enable = true;
@@ -138,6 +139,35 @@ void loadFromFile(string file_name) {
 				fractal_offset = ::atof(results[1].c_str());
 			} else if (!results[0].compare("fractal_amplitude")) {
 				fractal_amplitude = ::atof(results[1].c_str());
+			}	/* Load noise */
+			else if (!results[0].compare("noise_type")) {
+				int type = ::atoi(results[1].c_str());
+				switch (type) {
+				case 0: noise_values.noise_type = NoiseQuad::COPY_TEXTURE;
+					break;
+				case 1: noise_values.noise_type = NoiseQuad::NO_NOISE;
+					break;
+				case 2: noise_values.noise_type = NoiseQuad::RANDOM_NOISE;
+					break;
+				case 3: noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
+					break;
+				case 4: noise_values.noise_type = NoiseQuad::PERLIN_NOISE_ABS;
+					break;
+				default:
+					cout << "Error: Unkown NoiseType" << endl;
+					break;
+				}
+
+			} else if (!results[0].compare("noise_width")) {
+				noise_values.width = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("noise_height")) {
+				noise_values.height = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("noise_offset")) {
+				noise_values.offset = ::atof(results[1].c_str());
+			} else if (!results[0].compare("noise_amplitude")) {
+				noise_values.amplitude = ::atof(results[1].c_str());
+			} else if (!results[0].compare("noise_seed")) {
+				noise_values.seed = ::atof(results[1].c_str());
 			}
 		}
 		
@@ -321,10 +351,10 @@ void initAntTwBar() {
 
 	/* Noise */
 
-	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
+	TwEnumVal noisesEV[] = { { NoiseQuad::COPY_TEXTURE, "COPY_TEXTURE" }, { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" } };
 	TwType noiseType;
 
-	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
+	noiseType = TwDefineEnum("NoiseType", noisesEV, 5);
 	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
