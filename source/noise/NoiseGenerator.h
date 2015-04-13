@@ -28,66 +28,38 @@ public:
 		fb.unbind();
 	}
 
-	static void NoiseGenerator::generateFBM(GLuint* out_texture, NoiseQuad::NoiseValues noise_values, float amplitude, float offset,
-		float H, float lacunarity, int octaves) {
+	static void NoiseGenerator::renderFractal(GLuint* out_texture, NoiseQuad::NoiseValues noise_values, NoiseQuad::FractalValues fractal_values) {
 		// To avoid strange behaviours, should put noise_values.offset to 0;
 		
-		if (octaves < 1) {
+		if (fractal_values.octaves < 1) {
 			return;
 		}
 
 		GLuint textures[2];
 
+		if (fractal_values.fractal_type == NoiseQuad::MULTIFRACTAL) {
+			// Start with height 1 otherwise it will multiply 0 and render nothing
+			renderNoise(&textures[0], NoiseQuad::NoiseValues{ NoiseQuad::NO_NOISE, NoiseQuad::NO_EFFECT, 1, 1, 0, 1 });
+		}
+
 		int inputtexture = 0;
-		for (int i = 0; i < octaves; i++) {
+		for (int i = 0; i < fractal_values.octaves; i++) {
 
-			renderNoise(&(textures[1 - inputtexture]), noise_values, &(textures[inputtexture]), NoiseQuad::FBM);
+			renderNoise(&(textures[1 - inputtexture]), noise_values, &(textures[inputtexture]), fractal_values.fractal_type);
 
-			noise_values.height *= lacunarity;
-			noise_values.width *= lacunarity;
-			noise_values.amplitude *= pow(lacunarity, -H);
+			noise_values.height *= fractal_values.lacunarity;
+			noise_values.width *= fractal_values.lacunarity;
+			noise_values.amplitude *= pow(fractal_values.lacunarity, -fractal_values.H);
 
-			noise_values.seed = noise_values.seed * 8509473409850.5489;
+			noise_values.seed = noise_values.seed * 19.548978;
 			noise_values.seed -= floor(noise_values.seed);
 
 			// Swap input & output textures
 			inputtexture = 1 - inputtexture;
-			
 		}
 
 		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, NoiseQuad::NONE, 1, 1, amplitude, offset}, &(textures[inputtexture]));
-	}
-
-	static void NoiseGenerator::generateMultiFractal(GLuint* out_texture, NoiseQuad::NoiseValues noise_values, float amplitude, float offset,
-		float H, float lacunarity, int octaves) {
-
-		if (octaves < 1) {
-			return;
-		}
-
-		GLuint textures[2];
-
-		// Start with height 1 otherwise it will multiply 0 and render nothing
-		renderNoise(&textures[0], NoiseQuad::NoiseValues{ NoiseQuad::NO_NOISE, NoiseQuad::NONE, 1, 1, 0, 1});
-
-		int currentbuffer = 0;
-		for (int i = 0; i < octaves; i++) {
-			
-			renderNoise(&(textures[1 - currentbuffer]), noise_values , &(textures[currentbuffer]), NoiseQuad::MULTIFRACTAL);
-
-			noise_values.height *= lacunarity;
-			noise_values.width *= lacunarity;
-			noise_values.amplitude *= pow(lacunarity, -H);
-			
-			noise_values.seed = noise_values.seed * 8509473409850.5489;
-			noise_values.seed -= floor(noise_values.seed);
-
-			currentbuffer = 1 - currentbuffer;
-		}
-
-		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, NoiseQuad::NONE, 1, 1, amplitude, offset }, &(textures[currentbuffer]), NoiseQuad::FBM);
+		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, fractal_values.fractal_effect, 1, 1, fractal_values.amplitude, fractal_values.offset }, &(textures[inputtexture]));
 	}
 
 	static void NoiseGenerator::applyDomainDistortion(){

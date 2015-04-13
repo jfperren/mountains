@@ -17,7 +17,7 @@ uniform int noise_effect;
 uniform sampler2D in_texture;
 uniform int is_texture;
 
-uniform int aggregation_type;
+uniform int fractal_type;
 
 const int COPY_TEXTURE = 0;
 const int NO_NOISE = 1;
@@ -154,9 +154,28 @@ void main() {
 	} else if (noise_type == COPY_TEXTURE) {
 
 		// Just copy texture and add amplitude/offset
-		 float value = texture(in_texture, uv)[0];
-		 value = (amplitude * value) + offset;
-		 color = vec3(value, value, value);
+		 float noise = texture(in_texture, uv)[0];
+		 noise = (amplitude * noise) + offset;
+
+		 if (noise_effect == ABSOLUTE_VALUE) {
+		if (noise < 0) {
+			noise *= (-1);
+		}
+	} else if (noise_effect == CLAMP_EXTREMAS) {
+		// Min/max = 0/1
+		if (noise > 1) {
+			noise = 1;
+		} else if (noise < 0) {
+			noise = 0;
+		}
+	} else if (noise_effect == DISCRETIZE) {
+		// Step = 0.1
+		float step = 0.1;
+		
+		noise = (floor(noise/step) + 0.5) * step;
+	}
+
+		 color = vec3(noise, noise, noise);
 		 return;
 		
 	} else {
@@ -186,12 +205,11 @@ void main() {
 		noise = (floor(noise/step) + 0.5) * step;
 	}
 
-
 	if (is_texture == 1) {
-		if (aggregation_type == FBM) {
+		if (fractal_type == FBM) {
 			// Add previous value
 			noise += texture(in_texture, uv)[0];
-		} else if (aggregation_type == MULTIFRACTAL) {
+		} else if (fractal_type == MULTIFRACTAL) {
 			// Multiply with previous value
 			noise *= texture(in_texture, uv)[0];
 		}

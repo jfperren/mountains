@@ -42,13 +42,8 @@ float zoom_start_y;
 NoiseQuad::NoiseValues noise_values;
 
 // --- Fractal ---
-NoiseQuad::FractalType fractal_type;
-float fractal_amplitude;
-float fractal_offset;
-float fractal_H;
-int fractal_lacunarity;
-int fractal_octaves;
-bool fractal_enable;
+NoiseQuad::FractalValues fractal_values;
+bool fractal_enable; 
 
 mat4 OrthographicProjection(float left, float right, float bottom, float top, float near, float far){
     assert(right > left);
@@ -114,25 +109,10 @@ void resize_callback(int width, int height) {
 void compute_height_map() {
 
 	if (fractal_enable) {
-		if (fractal_type == NoiseQuad::FBM) {
-			NoiseGenerator::generateFBM(&height_map,
-				noise_values,
-				fractal_amplitude,
-				fractal_offset,
-				fractal_H,
-				fractal_lacunarity,
-				fractal_octaves
-				);
-		} else {
-			NoiseGenerator::generateMultiFractal(&height_map,
-				noise_values,
-				fractal_amplitude,
-				fractal_offset,
-				fractal_H,
-				fractal_lacunarity,
-				fractal_octaves
-				);
-		}
+		NoiseGenerator::renderFractal(&height_map,
+			noise_values,
+			fractal_values
+		);
 	} else {
 		NoiseGenerator::renderNoise(&height_map, noise_values);
 	}
@@ -180,9 +160,9 @@ void initAntTwBar() {
 
 	/* Noise */
 
-	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" }, { NoiseQuad::WORLEY_NOISE, "WORLEY_NOISE" } };
-	TwType noiseType = TwDefineEnum("NoiseType", noisesEV, 5);
-	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
+	TwEnumVal noise_type_array[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" }, { NoiseQuad::WORLEY_NOISE, "WORLEY_NOISE" } };
+	TwType noise_type_type = TwDefineEnum("NoiseType", noise_type_array, 5);
+	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
 	TwAddVarCB(bar, "noise_height", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.height, " group=Noise step=1");
@@ -190,11 +170,9 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "noise_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.amplitude, " group=Noise step=0.1");
 	TwAddVarCB(bar, "seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.seed, " group=Noise step=0.001 min=0 max=1");
 
-	/* Effect */
-
-	TwEnumVal effectsEV[] = { { NoiseQuad::NONE, "NONE" }, { NoiseQuad::ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { NoiseQuad::CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { NoiseQuad::DISCRETIZE, "DISCRETIZE" } };
-	TwType effectType = TwDefineEnum("NoiseEffect", effectsEV, 4);
-	TwAddVarCB(bar, "noise_effect", effectType, setIntParamCallback, getIntParamCallback, &noise_values.noise_effect, " group=Effect ");
+	TwEnumVal noise_effect_array[] = { { NoiseQuad::NO_EFFECT, "NO_EFFECT" }, { NoiseQuad::ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { NoiseQuad::CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { NoiseQuad::DISCRETIZE, "DISCRETIZE" } };
+	TwType noise_effect_type = TwDefineEnum("NoiseEffect", noise_effect_array, 4);
+	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_effect, " group=Noise ");
 
 	/* Fractal */
 
@@ -202,14 +180,18 @@ void initAntTwBar() {
 
 	TwType fractalType;
 	fractalType = TwDefineEnum("FractalType", fractalEV, 2);
-	TwAddVarCB(bar, "fractal_type", fractalType, setIntParamCallback, getIntParamCallback, &fractal_type, " group=Fractal ");
+	TwAddVarCB(bar, "fractal_type", fractalType, setIntParamCallback, getIntParamCallback, &fractal_values.fractal_type, " group=Fractal ");
 
 	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_enable, " group=Fractal ");
-	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_H, " group=Fractal step=0.1");
-	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_lacunarity, " group=Fractal step=1 min=2");
-	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_octaves, " group=Fractal step=1 min=1");
-	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_offset,  " group=Fractal step=0.1");
-	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_amplitude, " group=Fractal step=0.1");
+	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.H, " group=Fractal step=0.1");
+	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_values.lacunarity, " group=Fractal step=1 min=2");
+	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_values.octaves, " group=Fractal step=1 min=1");
+	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.offset, " group=Fractal step=0.1");
+	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.amplitude, " group=Fractal step=0.1");
+
+	TwEnumVal fractal_effect_array[] = { { NoiseQuad::NO_EFFECT, "NO_EFFECT" }, { NoiseQuad::ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { NoiseQuad::CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { NoiseQuad::DISCRETIZE, "DISCRETIZE" } };
+	TwType fractal_effect_type = TwDefineEnum("FractalEffect", fractal_effect_array, 4);
+	TwAddVarCB(bar, "fractal_effect", fractal_effect_type, setIntParamCallback, getIntParamCallback, &fractal_values.fractal_effect, " group=Fractal ");
 
 	// Note: Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
 }
@@ -240,6 +222,7 @@ void init(){
 
 	// --- Noise ---
 	noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
+	noise_values.noise_effect = NoiseQuad::NO_EFFECT;
 	noise_values.height = 1;
 	noise_values.width = 1;
 	noise_values.offset = 0.0f;
@@ -248,11 +231,13 @@ void init(){
 	noise_values.seed -= floor(noise_values.seed);
 
 	// --- Fractal ---
-	fractal_amplitude = 1.0f;
-	fractal_offset = 0.0f;
-	fractal_H = 0.8f;
-	fractal_lacunarity = 2;
-	fractal_octaves = 6;
+	fractal_values.fractal_type = NoiseQuad::FBM;
+	fractal_values.fractal_effect = NoiseQuad::NO_EFFECT;
+	fractal_values.amplitude = 1.0f;
+	fractal_values.offset = 0.0f;
+	fractal_values.H = 0.8f;
+	fractal_values.lacunarity = 2;
+	fractal_values.octaves = 6;
 	fractal_enable = true;
 
 	compute_height_map();
