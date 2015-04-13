@@ -10,21 +10,42 @@ public:
 		NO_NOISE,
 		RANDOM_NOISE,
 		PERLIN_NOISE,
-		PERLIN_NOISE_ABS
+		PERLIN_NOISE_ABS,
+		WORLEY_NOISE
 	} NoiseType;
 
 	typedef enum {
 		FBM,
-		MULTIFRACTAL
+		MULTIFRACTAL,
+		HYBRID // Need to add parameters
 	} FractalType;
+
+	typedef enum {
+		NO_EFFECT,
+		ABSOLUTE_VALUE,
+		CLAMP_EXTREMAS, // Max/Min = 0/1
+		DISCRETIZE // Step = 0.2
+	} Effect;
+
 
 	typedef struct NoiseValues {
 		NoiseType noise_type;
+		Effect noise_effect;
 		int width;
 		int height;
 		float amplitude;
 		float offset;
 		float seed;
+	};
+
+	typedef struct FractalValues {
+		FractalType fractal_type;
+		Effect fractal_effect;
+		float H;
+		int lacunarity;
+		int octaves;
+		float amplitude;
+		float offset;
 	};
 
 protected:
@@ -71,7 +92,7 @@ public:
         // TODO cleanup
     }
     
-	void drawNoise(NoiseValues noise_values, GLuint* in_texture = nullptr, int aggregation_type = FBM){
+	void drawNoise(NoiseValues noise_values, GLuint* in_texture = nullptr, int fractal_type = FBM){
 
 		// Bind program & vertex array
         glUseProgram(_pid);
@@ -83,8 +104,9 @@ public:
 		glUniform1f(glGetUniformLocation(_pid, "offset"), noise_values.offset);
 		glUniform1f(glGetUniformLocation(_pid, "amplitude"), noise_values.amplitude);
 		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_values.noise_type);
-		glUniform1i(glGetUniformLocation(_pid, "aggregation_type"), aggregation_type);
+		glUniform1i(glGetUniformLocation(_pid, "aggregation_type"), fractal_type);
 		glUniform1f(glGetUniformLocation(_pid, "seed"), noise_values.seed);
+		glUniform1i(glGetUniformLocation(_pid, "noise_effect"), noise_values.noise_effect);
 
 		if (in_texture != nullptr) {
 			// Tells shader there is a texture as input

@@ -12,17 +12,24 @@ uniform float amplitude;
 uniform float offset;
 
 uniform int noise_type;
+uniform int noise_effect;
 
 uniform sampler2D in_texture;
 uniform int is_texture;
 
-uniform int aggregation_type;
+uniform int fractal_type;
 
 const int COPY_TEXTURE = 0;
 const int NO_NOISE = 1;
 const int RANDOM_NOISE = 2;
 const int PERLIN_NOISE = 3;
 const int PERLIN_NOISE_ABSOLUTE = 4;
+const int WORLEY_NOISE = 5;
+
+const int NONE = 0;
+const int ABSOLUTE_VALUE = 1;
+const int CLAMP_EXTREMAS = 2;
+const int DISCRETIZE = 3;
 
 const int FBM = 0;
 const int MULTIFRACTAL = 1;
@@ -41,6 +48,8 @@ float clampToInterval(float value, float current_min, float current_max, float e
 
 void main() {
 	
+	/* --- Compute Noise -- */
+
 	float noise = 0;
 
 	if (noise_type == NO_NOISE) {
@@ -104,18 +113,69 @@ void main() {
 		// Trying to put it to ~1 of height
 		noise *= 4;
 
-		if (noise_type == PERLIN_NOISE_ABSOLUTE) {
-			// Compute absolute value
-			if (noise < 0) {
-				noise *= (-1);
-			}
-		}
+	} else if (noise_type == WORLEY_NOISE) {
+		float x = uv[0] * noise_width;
+		float y = uv[1] * noise_height;
+
+		// Coordinate inside the cell
+		float x_in_cell = fract(x);
+		float y_in_cell = fract(y);
+
+		// Coordinate of the cell (bottom left corner)
+		float x_of_cell = x - x_in_cell;
+		float y_of_cell = y - y_in_cell;
+
+		// Get corner coordinates
+		vec2 bottom_left = vec2(x_of_cell, y_of_cell);
+		vec2 bottom_right = vec2(x_of_cell + 1, y_of_cell);
+		vec2 top_left = vec2(x_of_cell, y_of_cell + 1);
+		vec2 top_right = vec2(x_of_cell + 1, y_of_cell + 1);
+
+		vec2 g_s = vec2(random(bottom_left, seed) - 0.5, random(bottom_left, 1-seed) - 0.5);
+		vec2 g_t = vec2(random(bottom_right, seed) - 0.5, random(bottom_right, 1-seed) - 0.5);
+		vec2 g_u = vec2(random(top_left, seed) - 0.5, random(top_left, 1-seed) - 0.5);
+		vec2 g_v = vec2(random(top_right, seed) - 0.5, random(top_right, 1-seed) - 0.5);
+
+		vec2 a = vec2(x_in_cell, y_in_cell);
+		vec2 b = vec2(x_in_cell - 1, y_in_cell);
+		vec2 c = vec2(x_in_cell, y_in_cell - 1);
+		vec2 d = vec2(x_in_cell - 1, y_in_cell - 1);
+
+		float s = length(g_s - a);
+		float t = length(g_t - b);
+		float u = length(g_u - c);
+		float v = length(g_v - d);
+
+		// Mixing
+		s = min(s, t);
+		u = min(u, v);
+		noise = min(s, u);
+	
 	} else if (noise_type == COPY_TEXTURE) {
 
 		// Just copy texture and add amplitude/offset
-		 float value = texture(in_texture, uv)[0];
-		 value = (amplitude * value) + offset;
-		 color = vec3(value, value, value);
+		 float noise = texture(in_texture, uv)[0];
+		 noise = (amplitude * noise) + offset;
+
+		 if (noise_effect == ABSOLUTE_VALUE) {
+		if (noise < 0) {
+			noise *= (-1);
+		}
+	} else if (noise_effect == CLAMP_EXTREMAS) {
+		// Min/max = 0/1
+		if (noise > 1) {
+			noise = 1;
+		} else if (noise < 0) {
+			noise = 0;
+		}
+	} else if (noise_effect == DISCRETIZE) {
+		// Step = 0.1
+		float step = 0.1;
+		
+		noise = (floor(noise/step) + 0.5) * step;
+	}
+
+		 color = vec3(noise, noise, noise);
 		 return;
 		
 	} else {
@@ -125,11 +185,31 @@ void main() {
 
 	noise = (noise * amplitude) + offset;
 
+	/* --- Compute efect --- */
+
+	if (noise_effect == ABSOLUTE_VALUE) {
+		if (noise < 0) {
+			noise *= (-1);
+		}
+	} else if (noise_effect == CLAMP_EXTREMAS) {
+		// Min/max = 0/1
+		if (noise > 1) {
+			noise = 1;
+		} else if (noise < 0) {
+			noise = 0;
+		}
+	} else if (noise_effect == DISCRETIZE) {
+		// Step = 0.1
+		float step = 0.1;
+		
+		noise = (floor(noise/step) + 0.5) * step;
+	}
+
 	if (is_texture == 1) {
-		if (aggregation_type == FBM) {
+		if (fractal_type == FBM) {
 			// Add previous value
 			noise += texture(in_texture, uv)[0];
-		} else if (aggregation_type == MULTIFRACTAL) {
+		} else if (fractal_type == MULTIFRACTAL) {
 			// Multiply with previous value
 			noise *= texture(in_texture, uv)[0];
 		}

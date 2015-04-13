@@ -15,6 +15,7 @@ in vec2 uv;
 
 
 void main() {
+
 	float height_to_texture;
 	vec3 derivative_x = vec3(1, 0, 1000*texture(heightmap, uv + vec2(pixel_unit,0))[0] - 1000*texture(heightmap, uv - vec2(pixel_unit,0))[0]);
 	vec3 derivative_y = vec3(0, 1, 1000*texture(heightmap, uv + vec2(0, pixel_unit))[0] - 1000*texture(heightmap, uv - vec2(0, pixel_unit))[0]);
