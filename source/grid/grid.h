@@ -2,11 +2,10 @@
 #include "icg_common.h"
 
 struct Light{
-	vec3 Ia = vec3(1.0f, 1.0f, 1.0f);
-	vec3 Id = vec3(1.0f, 1.0f, 1.0f);
-	vec3 Is = vec3(1.0f, 1.0f, 1.0f);
+	vec3 Ia = vec3(0.7f, 0.7f, 0.7f);
+	vec3 Id = vec3(0.3f, 0.3f, 0.3f);
 
-	vec3 light_pos = vec3(0.0f, 0.0f, 0.01f);
+	vec3 light_pos = vec3(2.0f, 2.0f, 2.0f);
 
 	///--- Pass light properties to the shader
 	void setup(GLuint _pid){
@@ -14,39 +13,13 @@ struct Light{
 		GLuint light_pos_id = glGetUniformLocation(_pid, "light_pos"); //Given in camera space
 		GLuint Ia_id = glGetUniformLocation(_pid, "Ia");
 		GLuint Id_id = glGetUniformLocation(_pid, "Id");
-		GLuint Is_id = glGetUniformLocation(_pid, "Is");
 		glUniform3fv(light_pos_id, ONE, light_pos.data());
 		glUniform3fv(Ia_id, ONE, Ia.data());
 		glUniform3fv(Id_id, ONE, Id.data());
-		glUniform3fv(Is_id, ONE, Is.data());
-	}
-
-	vec3 get_spot_direction(float time) {
-		return light_pos;
 	}
 };
 
-struct Material{
-	vec3 ka = vec3(0.18f, 0.1f, 0.1f);
-	vec3 kd = vec3(0.5f, 0.5f, 0.5f);
-	vec3 ks = vec3(0.8f, 0.8f, 0.8f);
-	float p = 60.0f;
-
-	///--- Pass material properties to the shaders
-	void setup(GLuint _pid){
-		glUseProgram(_pid);
-		GLuint ka_id = glGetUniformLocation(_pid, "ka");
-		GLuint kd_id = glGetUniformLocation(_pid, "kd");
-		GLuint ks_id = glGetUniformLocation(_pid, "ks");
-		GLuint p_id = glGetUniformLocation(_pid, "p");
-		glUniform3fv(ka_id, ONE, ka.data());
-		glUniform3fv(kd_id, ONE, kd.data());
-		glUniform3fv(ks_id, ONE, ks.data());
-		glUniform1f(p_id, p);
-	}
-};
-
-class Grid : public Material, public Light{
+class Grid : public Light{
 
 private:
 	static const int grid_dim_ = 2048;
@@ -172,15 +145,7 @@ public:
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
-		Material::setup(_pid);
 		Light::setup(_pid);
-
-		// set up spot light if needed
-		GLint spot_dir_id = glGetUniformLocation(_pid, "spot_dir");
-		if (spot_dir_id >= 0) {
-			vec3 spot_dir = Light::get_spot_direction(glfwGetTime());
-			glUniform3fv(spot_dir_id, ONE, spot_dir.data());
-		}
 
 		// Texture uniforms
 		glUniform1i(glGetUniformLocation(_pid, "heightmap"), 0 /*GL_TEXTURE0*/);
