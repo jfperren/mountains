@@ -4,6 +4,14 @@
 #include "framebuffer/Framebuffer.h"
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <istream>
+#include <ostream>
+#include <iterator>
+#include <sstream>
+#include <algorithm>
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
@@ -30,6 +38,7 @@ GLuint color;
 
 // Constants
 const float kZoomFactor = 2;
+const string kHeaderString = "HEADER: terrain data";
 
 // Used to store old values in computation
 mat4 old_trackball_matrix;
@@ -49,6 +58,142 @@ float fractal_H;
 int fractal_lacunarity;
 int fractal_octaves;
 bool fractal_enable;
+
+// --- I/O ---
+string g_file_name = "";
+string g_file_name_load = "";
+
+/* ------------------------- */
+
+// Dumps noise and fractal info to file_name
+void writeFile(string file_name) {
+	ofstream myfile(file_name);
+
+	if (myfile.is_open()) {
+
+		/* Write header */
+		myfile << kHeaderString << endl;
+
+		/* The order is not important */
+
+		/* Noise */
+		myfile << "noise_type " << noise_values.noise_type << endl;
+		myfile << "noise_width " << noise_values.width << endl;
+		myfile << "noise_height " << noise_values.height << endl;
+		myfile << "noise_offset " << noise_values.offset << endl;
+		myfile << "noise_amplitude " << noise_values.amplitude << endl;
+		myfile << "noise_seed " << noise_values.seed << endl;
+
+		/* Fractal */
+		if (fractal_enable) {
+			myfile << "fractal_enable " << "true" << endl;
+			myfile << "fractal_H " << fractal_H << endl;
+			myfile << "fractal_lacunarity " << fractal_lacunarity << endl;
+			myfile << "fractal_octaves " << fractal_octaves << endl;
+			myfile << "fractal_offset " << fractal_offset << endl;
+			myfile << "fractal_amplitude " << fractal_amplitude << endl;
+
+		} else {
+			myfile << "fractal_enable " << "false" << endl;
+		}
+
+		myfile.close();
+		cout << "Info: Data saved to " << file_name << endl;
+	} else {
+		cout << "Error: Could not save data: the file " << file_name << " could not be opened." << endl;
+	}
+}
+
+void loadFromFile(string file_name) {
+	string line;
+	ifstream myfile(file_name);
+	if (myfile.is_open())
+	{
+
+		int line_no = 0;
+
+		while (getline(myfile, line))
+		{
+			line_no++;
+
+			if (line_no == 1) {
+				if (line.compare(kHeaderString)) {
+					// the first line doesn't match the header -> illegal format
+					cout << "Error: Illegal header. Aborting load." << endl;
+					return;
+				}
+			}
+			string str = line;
+
+			// construct a stream from the string
+			stringstream strstr(str);
+
+			// use stream iterators to copy the stream to the vector as whitespace separated strings
+			istream_iterator<string> it(strstr);
+			istream_iterator<string> end;
+			vector<string> results(it, end);
+
+			// send the vector to stdout.
+			ostream_iterator<string> oit(cout);
+			copy(results.begin(), results.end(), oit);
+
+			/* Load fractal */
+			if (!results[0].compare("fractal_enable")) {
+				if (!results[1].compare("true")) {
+					fractal_enable = true;
+				}
+				else {
+					fractal_enable = false;
+				}
+			} else if (!results[0].compare("fractal_H")) {
+				fractal_H = ::atof(results[1].c_str());
+			} else if (!results[0].compare("fractal_lacunarity")) {
+				fractal_lacunarity = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("fractal_octaves")) {
+				fractal_octaves = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("fractal_offset")) {
+				fractal_offset = ::atof(results[1].c_str());
+			} else if (!results[0].compare("fractal_amplitude")) {
+				fractal_amplitude = ::atof(results[1].c_str());
+			}	/* Load noise */
+			else if (!results[0].compare("noise_type")) {
+				int type = ::atoi(results[1].c_str());
+				switch (type) {
+				case 0: noise_values.noise_type = NoiseQuad::COPY_TEXTURE;
+					break;
+				case 1: noise_values.noise_type = NoiseQuad::NO_NOISE;
+					break;
+				case 2: noise_values.noise_type = NoiseQuad::RANDOM_NOISE;
+					break;
+				case 3: noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
+					break;
+				case 4: noise_values.noise_type = NoiseQuad::PERLIN_NOISE_ABS;
+					break;
+				default:
+					cout << "Error: Unkown NoiseType" << endl;
+					break;
+				}
+
+			} else if (!results[0].compare("noise_width")) {
+				noise_values.width = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("noise_height")) {
+				noise_values.height = ::atoi(results[1].c_str());
+			} else if (!results[0].compare("noise_offset")) {
+				noise_values.offset = ::atof(results[1].c_str());
+			} else if (!results[0].compare("noise_amplitude")) {
+				noise_values.amplitude = ::atof(results[1].c_str());
+			} else if (!results[0].compare("noise_seed")) {
+				noise_values.seed = ::atof(results[1].c_str());
+			}
+		}
+		
+		myfile.close();
+		cout << "Info: Data loaded from " << file_name << endl;
+	}
+	else {
+		cout << "Error: Could not load data: the file" << file_name << " could not be opened." << endl;
+	}
+}
 
 mat4 OrthographicProjection(float left, float right, float bottom, float top, float near, float far){
     assert(right > left);
@@ -168,6 +313,40 @@ void TW_CALL getBoolParamCallback(void* value, void* clientData) {
 	*((bool*)value) = *((bool*)clientData);
 }
 
+// Function called by AntTweakBar to copy the content of a std::string handled
+// by the AntTweakBar library to a std::string handled by your application
+void TW_CALL CopyStdStringToClient(std::string& destinationClientString, const std::string& sourceLibraryString)
+{
+	destinationClientString = sourceLibraryString;
+}
+
+void TW_CALL SaveCB(void * /*clientData*/)
+{
+	if (!g_file_name.compare("")) {
+		std::stringstream sstm;
+		sstm << "mountain-" << glfwGetTime() << ".terrain";
+		g_file_name = sstm.str();
+		g_file_name_load = g_file_name; // optional
+	}
+
+	writeFile(g_file_name);
+}
+
+void TW_CALL LoadCB(void * /*clientData*/)
+{
+	if (!g_file_name_load.compare("")) {
+		// Empty name
+		cout << "Error: Cannot load from empty name" << endl;
+	} else {
+		loadFromFile(g_file_name_load);
+	}
+
+	// Update scene with the changes
+	compute_height_map();
+}
+
+
+
 
 void initAntTwBar() {
 
@@ -175,14 +354,10 @@ void initAntTwBar() {
 
 
 	TwInit(TW_OPENGL_CORE, NULL);
+	// Needed to work with dynamic strings
+	TwCopyStdStringToClientFunc(CopyStdStringToClient);
 	TwWindowSize(WIDTH, HEIGHT);
 	bar = TwNewBar("Settings");
-
-	/* Shaders */
-
-	//TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
-	//TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
-	//TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
 
 	/* Noise */
 
@@ -190,6 +365,7 @@ void initAntTwBar() {
 	
 	TwType noiseType;
 	noiseType = TwDefineEnum("NoiseType", noisesEV, 4);
+
 	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
@@ -213,6 +389,13 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_offset,  " group=Fractal step=0.1");
 	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_amplitude, " group=Fractal step=0.1");
 
+	/* I/O */
+
+	TwAddVarRW(bar, "save_file_name", TW_TYPE_STDSTRING, &g_file_name, " group='I/O' label='file_name (optional)' ");
+	TwAddButton(bar, "Save", SaveCB, NULL, " group='I/O' ");
+	TwAddVarRW(bar, "load_file_name", TW_TYPE_STDSTRING, &g_file_name_load, " group='I/O' ");
+	TwAddButton(bar, "Load", LoadCB, NULL, " group='I/O' ");
+
 	// Note: Callbacks are handled by the functions OnMousePos, OnMouseButton, etc...
 }
 
@@ -230,8 +413,8 @@ void init(){
 	glGenTextures(1, &color);
 	glBindTexture(GL_TEXTURE_2D, color);
 	glfwLoadTexture2D("textures/texture1D.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	grid.init();
 

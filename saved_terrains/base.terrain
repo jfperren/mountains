@@ -1,0 +1,13 @@
+HEADER: terrain data
+noise_type 3
+noise_width 1
+noise_height 1
+noise_offset 0
+noise_amplitude 1
+noise_seed 0.538007
+fractal_enable true
+fractal_H 0.8
+fractal_lacunarity 2
+fractal_octaves 8
+fractal_offset 0
+fractal_amplitude 1
