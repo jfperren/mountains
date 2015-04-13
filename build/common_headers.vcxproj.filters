@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\Robin\Dropbox\EPFL\Computer Graphics\opengl-terrain\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\Alain\Desktop\opengl-terrain\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="C:\Users\Robin\Dropbox\EPFL\Computer Graphics\opengl-terrain\common\check_error_gl.h">
+    <None Include="C:\Users\Alain\Desktop\opengl-terrain\common\check_error_gl.h">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="C:\Users\Robin\Dropbox\EPFL\Computer Graphics\opengl-terrain\common\icg_common.h">
+    <None Include="C:\Users\Alain\Desktop\opengl-terrain\common\icg_common.h">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{C48EA6B2-1272-473E-BD33-F887D69D7A3F}</UniqueIdentifier>
+      <UniqueIdentifier>{BAD9E28F-35A4-478B-A1F1-A72CFD4A8AA1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,16 +1,14 @@
 #version 330 core
-
 uniform mat4 mvp;
-
 uniform sampler2D heightmap;
 
 in vec2 position;
-out float height;
 
-float PI = 3.14;
+out float height;
+out vec2 uv;
 
 void main() {
-    vec2 uv = (position + vec2(1.0, 1.0)) * 0.5;
+    uv = (position + vec2(1.0, 1.0)) * 0.5;
 
 	height = texture(heightmap, uv).rgb[0];
 
