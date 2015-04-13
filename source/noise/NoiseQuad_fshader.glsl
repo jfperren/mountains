@@ -12,6 +12,7 @@ uniform float amplitude;
 uniform float offset;
 
 uniform int noise_type;
+uniform int noise_effect;
 
 uniform sampler2D in_texture;
 uniform int is_texture;
@@ -24,6 +25,11 @@ const int RANDOM_NOISE = 2;
 const int PERLIN_NOISE = 3;
 const int PERLIN_NOISE_ABSOLUTE = 4;
 const int WORLEY_NOISE = 5;
+
+const int NONE = 0;
+const int ABSOLUTE_VALUE = 1;
+const int CLAMP_EXTREMAS = 2;
+const int DISCRETIZE = 3;
 
 const int FBM = 0;
 const int MULTIFRACTAL = 1;
@@ -42,6 +48,8 @@ float clampToInterval(float value, float current_min, float current_max, float e
 
 void main() {
 	
+	/* --- Compute Noise -- */
+
 	float noise = 0;
 
 	if (noise_type == NO_NOISE) {
@@ -105,12 +113,6 @@ void main() {
 		// Trying to put it to ~1 of height
 		noise *= 4;
 
-		if (noise_type == PERLIN_NOISE_ABSOLUTE) {
-			// Compute absolute value
-			if (noise < 0) {
-				noise *= (-1);
-			}
-		}
 	} else if (noise_type == WORLEY_NOISE) {
 		float x = uv[0] * noise_width;
 		float y = uv[1] * noise_height;
@@ -148,8 +150,6 @@ void main() {
 		s = min(s, t);
 		u = min(u, v);
 		noise = min(s, u);
-
-		noise = f(noise);
 	
 	} else if (noise_type == COPY_TEXTURE) {
 
@@ -165,6 +165,27 @@ void main() {
 	}
 
 	noise = (noise * amplitude) + offset;
+
+	/* --- Compute efect --- */
+
+	if (noise_effect == ABSOLUTE_VALUE) {
+		if (noise < 0) {
+			noise *= (-1);
+		}
+	} else if (noise_effect == CLAMP_EXTREMAS) {
+		// Min/max = 0/1
+		if (noise > 1) {
+			noise = 1;
+		} else if (noise < 0) {
+			noise = 0;
+		}
+	} else if (noise_effect == DISCRETIZE) {
+		// Step = 0.1
+		float step = 0.1;
+		
+		noise = (floor(noise/step) + 0.5) * step;
+	}
+
 
 	if (is_texture == 1) {
 		if (aggregation_type == FBM) {

@@ -4,5 +4,6 @@ in float height;
 uniform sampler2D color1D;
 
 void main() {
-	color = texture(color1D, vec2(height, 1.0)).rgb;
+	//color = texture(color1D, vec2(height, 1.0)).rgb;
+	color = vec3(height, 0, 0);
 }

@@ -178,18 +178,10 @@ void initAntTwBar() {
 	TwWindowSize(WIDTH, HEIGHT);
 	bar = TwNewBar("Settings");
 
-	/* Shaders */
-
-	//TwAddVarRW(bar, "vs", TW_TYPE_BOOLCPP, &vs, " group='Shaders' label='vertex' key=v help='Toggle vertex shader.' ");
-	//TwAddVarRW(bar, "gs", TW_TYPE_BOOLCPP, &gs, " group='Shaders' label='geometry' key=g help='Toggle geometry shader.' ");
-	//TwAddVarRW(bar, "fs", TW_TYPE_BOOLCPP, &fs, " group='Shaders' label='fragment' key=f help='Toggle fragment shader.' ");
-
 	/* Noise */
 
 	TwEnumVal noisesEV[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::PERLIN_NOISE_ABS, "PERLIN_NOISE_ABS" }, { NoiseQuad::WORLEY_NOISE, "WORLEY_NOISE" } };
-	
-	TwType noiseType;
-	noiseType = TwDefineEnum("NoiseType", noisesEV, 5);
+	TwType noiseType = TwDefineEnum("NoiseType", noisesEV, 5);
 	TwAddVarCB(bar, "noise_type", noiseType, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
@@ -197,6 +189,12 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "noise_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.offset, " group=Noise step=0.1");
 	TwAddVarCB(bar, "noise_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.amplitude, " group=Noise step=0.1");
 	TwAddVarCB(bar, "seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.seed, " group=Noise step=0.001 min=0 max=1");
+
+	/* Effect */
+
+	TwEnumVal effectsEV[] = { { NoiseQuad::NONE, "NONE" }, { NoiseQuad::ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { NoiseQuad::CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { NoiseQuad::DISCRETIZE, "DISCRETIZE" } };
+	TwType effectType = TwDefineEnum("NoiseEffect", effectsEV, 4);
+	TwAddVarCB(bar, "noise_effect", effectType, setIntParamCallback, getIntParamCallback, &noise_values.noise_effect, " group=Effect ");
 
 	/* Fractal */
 

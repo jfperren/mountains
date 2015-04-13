@@ -56,7 +56,7 @@ public:
 		}
 
 		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, 1, 1, amplitude, offset}, &(textures[inputtexture]));
+		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, NoiseQuad::NONE, 1, 1, amplitude, offset}, &(textures[inputtexture]));
 	}
 
 	static void NoiseGenerator::generateMultiFractal(GLuint* out_texture, NoiseQuad::NoiseValues noise_values, float amplitude, float offset,
@@ -69,7 +69,7 @@ public:
 		GLuint textures[2];
 
 		// Start with height 1 otherwise it will multiply 0 and render nothing
-		renderNoise(&textures[0], NoiseQuad::NoiseValues{ NoiseQuad::NO_NOISE, 1, 1, 0, 1});
+		renderNoise(&textures[0], NoiseQuad::NoiseValues{ NoiseQuad::NO_NOISE, NoiseQuad::NONE, 1, 1, 0, 1});
 
 		int currentbuffer = 0;
 		for (int i = 0; i < octaves; i++) {
@@ -87,7 +87,7 @@ public:
 		}
 
 		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, 1, 1, amplitude, offset }, &(textures[currentbuffer]), NoiseQuad::FBM);
+		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, NoiseQuad::NONE, 1, 1, amplitude, offset }, &(textures[currentbuffer]), NoiseQuad::FBM);
 	}
 
 	static void NoiseGenerator::applyDomainDistortion(){

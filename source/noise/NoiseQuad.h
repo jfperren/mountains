@@ -15,13 +15,28 @@ public:
 	} NoiseType;
 
 	typedef enum {
+		NONE,
+		ABSOLUTE_VALUE,
+		CLAMP_EXTREMAS, // Max/Min = 0/1
+		DISCRETIZE // Step = 0.2
+	} NoiseEffect;
+
+	typedef enum {
 		FBM,
 		MULTIFRACTAL,
 		HYBRID // Need to add parameters
 	} FractalType;
 
+	typedef enum {
+		NONE,
+		ABSOLUTE_VALUE,
+		CLAMP_EXTREMAS, // Max/Min = 0/1
+		DISCRETIZE // Step = 0.2
+	} FractalEffect;
+
 	typedef struct NoiseValues {
 		NoiseType noise_type;
+		NoiseEffect noise_effect;
 		int width;
 		int height;
 		float amplitude;
@@ -87,6 +102,7 @@ public:
 		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_values.noise_type);
 		glUniform1i(glGetUniformLocation(_pid, "aggregation_type"), aggregation_type);
 		glUniform1f(glGetUniformLocation(_pid, "seed"), noise_values.seed);
+		glUniform1i(glGetUniformLocation(_pid, "noise_effect"), noise_values.noise_effect);
 
 		if (in_texture != nullptr) {
 			// Tells shader there is a texture as input
