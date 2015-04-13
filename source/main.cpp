@@ -38,6 +38,7 @@ GLuint color;
 
 // Constants
 const float kZoomFactor = 2;
+const string kHeaderString = "HEADER: terrain data";
 
 // Used to store old values in computation
 mat4 old_trackball_matrix;
@@ -70,27 +71,30 @@ void writeFile(string file_name) {
 
 	if (myfile.is_open()) {
 
+		/* Write header */
+		myfile << kHeaderString << endl;
+
 		/* The order is not important */
 
 		/* Noise */
-		myfile << "noise_type " << noise_values.noise_type << "\n";
-		myfile << "noise_width " << noise_values.width << "\n";
-		myfile << "noise_height " << noise_values.height << "\n";
-		myfile << "noise_offset " << noise_values.offset << "\n";
-		myfile << "noise_amplitude " << noise_values.amplitude << "\n";
-		myfile << "noise_seed " << noise_values.seed << "\n";
+		myfile << "noise_type " << noise_values.noise_type << endl;
+		myfile << "noise_width " << noise_values.width << endl;
+		myfile << "noise_height " << noise_values.height << endl;
+		myfile << "noise_offset " << noise_values.offset << endl;
+		myfile << "noise_amplitude " << noise_values.amplitude << endl;
+		myfile << "noise_seed " << noise_values.seed << endl;
 
 		/* Fractal */
 		if (fractal_enable) {
-			myfile << "fractal_enable " << "true" << "\n";
-			myfile << "fractal_H " << fractal_H << "\n";
-			myfile << "fractal_lacunarity " << fractal_lacunarity << "\n";
-			myfile << "fractal_octaves " << fractal_octaves << "\n";
-			myfile << "fractal_offset " << fractal_offset << "\n";
-			myfile << "fractal_amplitude " << fractal_amplitude << "\n";
+			myfile << "fractal_enable " << "true" << endl;
+			myfile << "fractal_H " << fractal_H << endl;
+			myfile << "fractal_lacunarity " << fractal_lacunarity << endl;
+			myfile << "fractal_octaves " << fractal_octaves << endl;
+			myfile << "fractal_offset " << fractal_offset << endl;
+			myfile << "fractal_amplitude " << fractal_amplitude << endl;
 
 		} else {
-			myfile << "fractal_enable " << "false" << "\n";
+			myfile << "fractal_enable " << "false" << endl;
 		}
 
 		myfile.close();
@@ -105,8 +109,20 @@ void loadFromFile(string file_name) {
 	ifstream myfile(file_name);
 	if (myfile.is_open())
 	{
+
+		int line_no = 0;
+
 		while (getline(myfile, line))
 		{
+			line_no++;
+
+			if (line_no == 1) {
+				if (line.compare(kHeaderString)) {
+					// the first line doesn't match the header -> illegal format
+					cout << "Error: Illegal header. Aborting load." << endl;
+					return;
+				}
+			}
 			string str = line;
 
 			// construct a stream from the string
