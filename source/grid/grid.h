@@ -42,7 +42,7 @@ public:
 
     void init(){
         // Compile the shaders
-        _pid = opengp::load_shaders("Grid/Grid_vshader.glsl", "Grid/Grid_fshader.glsl");
+        _pid = opengp::load_shaders("grid/Grid_vshader.glsl", "grid/Grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
         glUseProgram(_pid);
         

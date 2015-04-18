@@ -4,6 +4,7 @@
 #include "framebuffer/Framebuffer.h"
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
+#include "water/Water.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -21,6 +22,7 @@ TwBar *bar;
 using namespace std;
 
 Grid grid;
+Water water;
 
 int WIDTH = 800;
 int HEIGHT = 600;
@@ -402,6 +404,7 @@ void init(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	grid.init();
+	water.init();
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	grid.setHeightMap(&height_map);
@@ -443,11 +446,9 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Draw a quad on the ground.
-	mat4 quad_model_matrix = mat4::Identity();
-
 	grid.setColor(&color);
-	grid.draw(trackball_matrix * quad_model_matrix, view_matrix, projection_matrix);
+	grid.draw(trackball_matrix, view_matrix, projection_matrix);
+	water.draw(trackball_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
