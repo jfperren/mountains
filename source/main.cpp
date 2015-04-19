@@ -2,6 +2,7 @@
 #include "trackball/Trackball.h"
 #include "grid/Grid.h"
 #include "framebuffer/Framebuffer.h"
+#include "framebuffer/FramebufferWater.h"
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
 #include "water/Water.h"
@@ -32,6 +33,8 @@ mat4 view_matrix;
 mat4 trackball_matrix;
 
 Trackball trackball;
+
+FramebufferWater fbw(WIDTH, HEIGHT);
 
 // Texture for noise
 GLuint height_map;
@@ -404,7 +407,10 @@ void init(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	grid.init();
-	water.init();
+	
+
+	GLuint water_reflect_texture = fbw.init();
+	water.init(water_reflect_texture);
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	grid.setHeightMap(&height_map);
@@ -446,7 +452,32 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	float ratio = WIDTH / (float)HEIGHT;
+	static mat4 projection = Eigen::perspective(45.0f, ratio, 0.1f, 10.0f);
+	vec3 cam_pos(2.0f, 2.0f, 2.0f);
+	vec3 cam_look(0.0f, 0.0f, 0.0f);
+	vec3 cam_up(0.0f, 0.0f, 1.0f);
+	mat4 view = Eigen::lookAt(cam_pos, cam_look, cam_up);
+	mat4 VP = projection * view;
+
+	// Mirror camera position
+	vec3 cam_pos_mirrored(cam_pos[0], cam_pos[1], -cam_pos[2]);
+	vec3 cam_look_mirrored = cam_look;
+	vec3 cam_up_mirrored = cam_up;
+
+	// Create new VP for mirrored camera
+	mat4 view_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_look_mirrored, cam_up_mirrored);
+	mat4 VP_mirrored = projection * view_mirrored;
+
+	// Render the cube using the mirrored camera in the frame buffer
 	grid.setColor(&color);
+	grid.draw(trackball_matrix, view_matrix, projection_matrix);
+
+	//fbw.bind();
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//grid.draw(trackball_matrix, view_mirrored, projection_matrix);
+	//fbw.unbind();
+
 	grid.draw(trackball_matrix, view_matrix, projection_matrix);
 	water.draw(trackball_matrix, view_matrix, projection_matrix);
 
