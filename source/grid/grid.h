@@ -141,7 +141,7 @@ public:
 		glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
 	}
 
-    void draw(const mat4& model, const mat4& view, const mat4& projection){
+    void draw(const mat4& model, const mat4& view, const mat4& projection, bool only_reflect=false){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
@@ -150,6 +150,10 @@ public:
 		// Texture uniforms
 		glUniform1i(glGetUniformLocation(_pid, "heightmap"), 0 /*GL_TEXTURE0*/);
 		glUniform1i(glGetUniformLocation(_pid, "color1D"), 1 /*GL_TEXTURE1*/);
+
+		if (only_reflect){
+			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
+		}
 
         // Bind textures
         glActiveTexture(GL_TEXTURE0);

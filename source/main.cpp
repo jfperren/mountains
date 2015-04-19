@@ -451,16 +451,19 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	vec3 cam_pos_mirrored = vec3(cam_pos[0], -cam_pos[1], cam_pos[2]);
+	mat4 view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_dir, cam_up);
+
 	// Render the cube using the mirrored camera in the frame buffer
 	grid.setColor(&color);
 
-	//fbw.bind();
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//grid.draw(grid_model_matrix, view_matrix, projection_matrix);
-	//fbw.unbind();
+	fbw.bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	grid.draw(grid_model_matrix, view_matrix_mirrored, projection_matrix, true);
+	fbw.unbind();
 
-	grid.draw(grid_model_matrix, view_matrix, projection_matrix);
-	water.draw(water_model_matrix, view_matrix, projection_matrix);
+	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
+	//water.draw(water_model_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();

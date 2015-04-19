@@ -7,6 +7,8 @@ uniform vec3 Ia, Id;
 
 const float pixel_unit = 1.0/2048.0;
 
+uniform int only_reflect;
+
 out vec3 color;
 
 in float height;
@@ -32,5 +34,9 @@ void main() {
    	vec3 ambient = Ia * texture(color1D, vec2((height_to_texture + 1)/2.0, 0.0)).rgb;
   	vec3 diffuse = Id * dot(normal, normalize(light_pos));
 
-	color = ambient + diffuse;
+	if (only_reflect == 1 && texture(heightmap, uv)[0] < 0) {
+		color = vec3(1.0, 1.0, 1.0);
+	} else {
+		color = ambient + diffuse;
+	}
 }
