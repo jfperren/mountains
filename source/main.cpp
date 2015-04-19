@@ -232,23 +232,6 @@ mat4 PerspectiveProjection(float fovy, float aspect, float near, float far){
     return projection;
 }
 
-mat4 LookAt(vec3 eye, vec3 center, vec3 up) {
-    vec3 z_cam = (eye - center).normalized();
-    vec3 x_cam = up.cross(z_cam).normalized();
-    vec3 y_cam = z_cam.cross(x_cam);
-
-    mat3 R;
-    R.col(0) = x_cam;
-    R.col(1) = y_cam;
-    R.col(2) = z_cam;
-
-    mat4 look_at = mat4::Zero();
-    look_at.block(0, 0, 3, 3) = R.transpose();
-    look_at(3, 3) = 1.0f;
-    look_at.block(0, 3, 3, 1) = -R.transpose() * (eye);
-    return look_at;
-}
-
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
     WIDTH = width;
@@ -337,9 +320,6 @@ void TW_CALL LoadCB(void * /*clientData*/)
 	compute_height_map();
 }
 
-
-
-
 void initAntTwBar() {
 
 	// Dummy variables that will be deleted and replaced by the ones used in our program
@@ -411,7 +391,7 @@ void init(){
 	grid_model_matrix = mat4::Identity();
 	water_model_matrix = mat4::Identity();
 
-	cam_pos = vec3(0.0f, 1.0f, 2.0f);
+	cam_pos = vec3(0.0f, 2.0f, 2.0f);
 	cam_dir = vec3(0.0f, 0.0f, 0.0f);
 	cam_up = vec3(0.0f, 1.0f, 0.0f);
 
