@@ -35,7 +35,7 @@ void main() {
   	vec3 diffuse = Id * dot(normal, normalize(light_pos));
 
 	if (only_reflect == 1 && height < 0) {
-		color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		discard;
 	} else {
 		color = vec4(ambient + diffuse, 1.0f);
 	}

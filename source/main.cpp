@@ -39,6 +39,8 @@ vec3 cam_up;
 vec3 cam_pos;
 vec3 cam_dir;
 
+vec3 old_cam_pos;
+
 Trackball trackball;
 
 FramebufferWater fbw(WIDTH, HEIGHT);
@@ -391,7 +393,7 @@ void init(){
 	grid_model_matrix = mat4::Identity();
 	water_model_matrix = mat4::Identity();
 
-	cam_pos = vec3(0.0f, 0.5f, 2.0f);
+	cam_pos = vec3(0.0f, 2.0f, 4.0f);
 	cam_dir = vec3(0.0f, 0.0f, 0.0f);
 	cam_up = vec3(0.0f, 1.0f, 0.0f);
 
@@ -502,7 +504,7 @@ void mouse_button(int button, int action) {
 
 		// Store y value & current state of the view matrix
 		zoom_start_y = p[1];
-		old_view_matrix = view_matrix;
+		old_cam_pos = cam_pos;
 	}
 }
 
@@ -519,9 +521,12 @@ void mouse_pos(int x, int y) {
 		// Get position on screen
 		vec2 p = transform_screen_coords(x, y);
 		// Zoom proportional to the distance
-		float zoom = p[1] - zoom_start_y;
+		float zoom = (p[1] - zoom_start_y);
 		// Apply it to translate the view matrix along the z-axis
-		view_matrix = old_view_matrix * Eigen::Affine3f(Eigen::Translation3f(vec3(0.0f, 0.0f, zoom))).matrix();
+		vec4 cam_pos4 = Eigen::Affine3f(Eigen::Translation3f(zoom * old_cam_pos)).matrix() * vec4(old_cam_pos[0], old_cam_pos[1], old_cam_pos[2], 1.0f);
+		cam_pos = vec3(cam_pos4[0], cam_pos4[1], cam_pos4[2]);
+
+		view_matrix = lookAt(cam_pos, cam_dir, cam_up);
     }
 }
 
