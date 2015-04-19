@@ -34,7 +34,7 @@ void main() {
    	vec3 ambient = Ia * texture(color1D, vec2((height_to_texture + 1)/2.0, 0.0)).rgb;
   	vec3 diffuse = Id * dot(normal, normalize(light_pos));
 
-	if (only_reflect == 1 && texture(heightmap, uv)[0] < 0) {
+	if (only_reflect == 1 && height < 0) {
 		color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	} else {
 		color = vec4(ambient + diffuse, 1.0f);

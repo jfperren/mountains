@@ -391,7 +391,7 @@ void init(){
 	grid_model_matrix = mat4::Identity();
 	water_model_matrix = mat4::Identity();
 
-	cam_pos = vec3(0.0f, 2.0f, 2.0f);
+	cam_pos = vec3(0.0f, 0.5f, 2.0f);
 	cam_dir = vec3(0.0f, 0.0f, 0.0f);
 	cam_up = vec3(0.0f, 1.0f, 0.0f);
 

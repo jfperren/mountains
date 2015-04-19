@@ -153,6 +153,8 @@ public:
 
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
+		} else {
+			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 0);
 		}
 
         // Bind textures
