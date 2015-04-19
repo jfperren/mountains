@@ -9,7 +9,7 @@ const float pixel_unit = 1.0/2048.0;
 
 uniform int only_reflect;
 
-out vec3 color;
+out vec4 color;
 
 in float height;
 
@@ -35,8 +35,8 @@ void main() {
   	vec3 diffuse = Id * dot(normal, normalize(light_pos));
 
 	if (only_reflect == 1 && texture(heightmap, uv)[0] < 0) {
-		color = vec3(1.0, 1.0, 1.0);
+		color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	} else {
-		color = ambient + diffuse;
+		color = vec4(ambient + diffuse, 1.0f);
 	}
 }

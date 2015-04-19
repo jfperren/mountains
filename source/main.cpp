@@ -463,7 +463,7 @@ void display(){
 	fbw.unbind();
 
 	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
-	//water.draw(water_model_matrix, view_matrix, projection_matrix);
+	water.draw(water_model_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();

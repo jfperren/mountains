@@ -82,6 +82,10 @@ public:
 		GLuint tex_mirror_id = glGetUniformLocation(_pid, "tex_mirror");
 		glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
 
+		// Enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		///--- to avoid the current object being polluted
 		glBindVertexArray(0);
 		glUseProgram(0);
