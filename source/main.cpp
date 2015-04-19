@@ -32,6 +32,13 @@ mat4 projection_matrix;
 mat4 view_matrix;
 mat4 trackball_matrix;
 
+mat4 grid_model_matrix;
+mat4 water_model_matrix;
+
+vec3 cam_up;
+vec3 cam_pos;
+vec3 cam_dir;
+
 Trackball trackball;
 
 FramebufferWater fbw(WIDTH, HEIGHT);
@@ -396,7 +403,19 @@ void init(){
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
     
-    view_matrix = Eigen::Affine3f(Eigen::Translation3f(0.0f, 0.0f, -4.0f)).matrix();
+
+
+	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 10.0f);
+	trackball_matrix = mat4::Identity();
+
+	grid_model_matrix = mat4::Identity();
+	water_model_matrix = mat4::Identity();
+
+	cam_pos = vec3(0.0f, 1.0f, 2.0f);
+	cam_dir = vec3(0.0f, 0.0f, 0.0f);
+	cam_up = vec3(0.0f, 1.0f, 0.0f);
+
+	view_matrix = lookAt(cam_pos, cam_dir, cam_up);
 
     trackball_matrix = mat4::Identity();
 
@@ -452,34 +471,16 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	float ratio = WIDTH / (float)HEIGHT;
-	static mat4 projection = Eigen::perspective(45.0f, ratio, 0.1f, 10.0f);
-	vec3 cam_pos(2.0f, 2.0f, 2.0f);
-	vec3 cam_look(0.0f, 0.0f, 0.0f);
-	vec3 cam_up(0.0f, 0.0f, 1.0f);
-	mat4 view = Eigen::lookAt(cam_pos, cam_look, cam_up);
-	mat4 VP = projection * view;
-
-	// Mirror camera position
-	vec3 cam_pos_mirrored(cam_pos[0], cam_pos[1], -cam_pos[2]);
-	vec3 cam_look_mirrored = cam_look;
-	vec3 cam_up_mirrored = cam_up;
-
-	// Create new VP for mirrored camera
-	mat4 view_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_look_mirrored, cam_up_mirrored);
-	mat4 VP_mirrored = projection * view_mirrored;
-
 	// Render the cube using the mirrored camera in the frame buffer
 	grid.setColor(&color);
-	grid.draw(trackball_matrix, view_matrix, projection_matrix);
 
 	//fbw.bind();
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//grid.draw(trackball_matrix, view_mirrored, projection_matrix);
+	//grid.draw(grid_model_matrix, view_matrix, projection_matrix);
 	//fbw.unbind();
 
-	grid.draw(trackball_matrix, view_matrix, projection_matrix);
-	water.draw(trackball_matrix, view_matrix, projection_matrix);
+	grid.draw(grid_model_matrix, view_matrix, projection_matrix);
+	water.draw(water_model_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();

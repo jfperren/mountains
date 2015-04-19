@@ -3,6 +3,8 @@
 
 class Water {
 
+private:
+
 protected:
 	GLuint _vao;          ///< vertex array object
 	GLuint _vbo_position; ///< memory buffer for positions
@@ -30,10 +32,10 @@ public:
 		///--- Vertex coordinates
 		{
 			const GLfloat vpoint[] = {	
-				/*V1*/ -1.0f, -1.0f,
-				/*V2*/ +1.0f, -1.0f, 
-				/*V3*/ -1.0f, +1.0f,
-				/*V4*/ +1.0f, +1.0f
+				/*V1*/ -100.0f, -100.0f,
+				/*V2*/ +100.0f, -100.0f, 
+				/*V3*/ -100.0f, +100.0f,
+				/*V4*/ +100.0f, +100.0f
 			};
 
 			///--- Buffer
