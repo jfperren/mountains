@@ -12,6 +12,7 @@ protected:
 	GLuint _vbo;
 	GLuint _tex;
 	GLuint _tex_mirror;
+	GLuint _tex_height;
 	GLuint _pid;          ///< GLSL shader program ID
 	GLuint _num_indices;  ///< number of vertices to render
 
@@ -81,6 +82,8 @@ public:
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
 		GLuint tex_mirror_id = glGetUniformLocation(_pid, "tex_mirror");
 		glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
+		GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
+		glUniform1i(tex_height_id, 2 /*GL_TEXTURE1*/);
 
 		// Enable blending
 		glEnable(GL_BLEND);
@@ -112,6 +115,8 @@ public:
 		glBindTexture(GL_TEXTURE_2D, _tex);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, _tex_mirror);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, _tex_height);
 
 		// Setup MVP
 		mat4 MVP = projection*view*model;

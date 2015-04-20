@@ -99,6 +99,25 @@ public:
 			glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 		}
 
+		{
+			///--- Texture coordinates
+			const GLfloat vtexcoord[] = {
+				/*V1*/ 0.0f, 0.0f,
+				/*V2*/ 1.0f, 0.0f,
+				/*V3*/ 0.0f, 1.0f,
+				/*V4*/ 1.0f, 1.0f };
+
+			///--- Buffer
+			glGenBuffers(1, &_vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
+
+			///--- Attribute
+			GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
+			glEnableVertexAttribArray(vtexcoord_id);
+			glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+		}
+
 		// to avoid the current object being polluted
 		glBindVertexArray(0);
     }
@@ -111,22 +130,6 @@ public:
     }
 
 	void setHeightMap(GLuint* height_map) {
-		///--- Texture coordinates
-		const GLfloat vtexcoord[] = { /*V1*/ 0.0f, 0.0f,
-			/*V2*/ 1.0f, 0.0f,
-			/*V3*/ 0.0f, 1.0f,
-			/*V4*/ 1.0f, 1.0f };
-
-		///--- Buffer
-		glGenBuffers(1, &_vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
-
-		///--- Attribute
-		GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
-		glEnableVertexAttribArray(vtexcoord_id);
-		glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-
 		// Pass texture to instance
 		this->_height_map = *height_map;
 
