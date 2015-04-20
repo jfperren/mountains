@@ -263,7 +263,6 @@ void compute_height_map() {
 
 	grid.setHeightTexture(tex_height);
 	water.setMirrorTexture(tex_mirror);
-	glViewport(0, 0, WIDTH, HEIGHT);
 }
 
 void TW_CALL setIntParamCallback(const void* value, void* clientData) {
@@ -411,17 +410,9 @@ void init(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	grid.init();
-	
-
+	grid.setMainTexture(color);
 	tex_mirror = fbw.init();
 	water.init();
-	water.setMirrorTexture(tex_mirror);
-
-	glViewport(0, 0, WIDTH, HEIGHT);
-	grid.setHeightTexture(tex_height);
-
-
-	// Init values
 
 	// --- Noise ---
 	noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
@@ -461,16 +452,14 @@ void display(){
 	vec3 cam_pos_mirrored = vec3(cam_pos[0], -cam_pos[1], cam_pos[2]);
 	mat4 view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_dir, cam_up);
 
-	// Render the cube using the mirrored camera in the frame buffer
-	grid.setMainTexture(color);
-
+	// Render the water reflect
 	fbw.bind();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	grid.draw(grid_model_matrix, view_matrix_mirrored, projection_matrix, true);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		grid.draw(grid_model_matrix, view_matrix_mirrored, projection_matrix, true);
 	fbw.unbind();
 
-	water.setMirrorTexture(tex_mirror);
-
+	glViewport(0, 0, WIDTH, HEIGHT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
 	water.draw(water_model_matrix, view_matrix, projection_matrix);
 
