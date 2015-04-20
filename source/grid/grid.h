@@ -129,9 +129,9 @@ public:
         glDeleteProgram(_pid);
     }
 
-	void setHeightMap(GLuint* height_map) {
+	void setHeightMap(GLuint height_map) {
 		// Pass texture to instance
-		this->_height_map = *height_map;
+		this->_height_map = height_map;
 
 		GLuint tex_id = glGetUniformLocation(_pid, "tex");
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);

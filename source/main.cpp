@@ -259,7 +259,7 @@ void compute_height_map() {
 		NoiseGenerator::renderNoise(&height_map, noise_values);
 	}
 
-	grid.setHeightMap(&height_map);
+	grid.setHeightMap(height_map);
 	glViewport(0, 0, WIDTH, HEIGHT);
 }
 
@@ -414,7 +414,7 @@ void init(){
 	water.init(water_reflect_texture);
 
 	glViewport(0, 0, WIDTH, HEIGHT);
-	grid.setHeightMap(&height_map);
+	grid.setHeightMap(height_map);
 
 	// Init values
 
