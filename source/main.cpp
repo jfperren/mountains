@@ -206,36 +206,6 @@ void loadFromFile(string file_name) {
 	}
 }
 
-mat4 OrthographicProjection(float left, float right, float bottom, float top, float near, float far){
-    assert(right > left);
-    assert(far > near);
-    assert(top > bottom);
-    mat4 ortho = mat4::Zero();
-    ortho(0, 0) = 2.0f / (right - left);
-    ortho(1, 1) = 2.0f / (top - bottom);
-    ortho(2, 2) = -2.0f / (far - near);
-    ortho(3, 3) = 1.0f;
-    ortho(1, 3) = -(right + left) / (right - left);
-    ortho(2, 3) = -(top + bottom) / (top - bottom);
-    ortho(2, 3) = -(far + near) / (far - near);
-    return ortho;
-}
-
-mat4 PerspectiveProjection(float fovy, float aspect, float near, float far){
-    mat4 projection = mat4::Identity();
-
-	float top = near * tan(1.0f / 2.0f * fovy);
-	float right = aspect * top;
-
-	projection <<
-		near / right, 0.0f, 0.0f, 0.0f,
-		0.0f, near / top, 0.0f, 0.0f,
-		0.0f, 0.0f, (far + near) / (near - far), 2 * far*near / (near - far),
-		0.0f, 0.0f, -1.0f, 0.0f;
-
-    return projection;
-}
-
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
     WIDTH = width;
@@ -246,8 +216,8 @@ void resize_callback(int width, int height) {
 
     GLfloat top = 1.0f;
     GLfloat right = (GLfloat)WIDTH / HEIGHT * top;
-    //projection_matrix = OrthographicProjection(-right, right, -top, top, -10.0, 10.0f);
-    projection_matrix = PerspectiveProjection(45.0f, (GLfloat)WIDTH / HEIGHT, 0.1f, 100.0f);
+
+    projection_matrix = Eigen::perspective(45.0f, (GLfloat)WIDTH / HEIGHT, 0.1f, 100.0f);
 }
 
 void compute_height_map() {
