@@ -1,8 +1,9 @@
 #version 330 core
 out vec4 color;
 in vec2 uv;
-uniform sampler2D tex;
+uniform sampler2D tex_main;
 uniform sampler2D tex_mirror;
+uniform sampler2D tex_height;
 
 void main() {
     

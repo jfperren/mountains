@@ -46,7 +46,9 @@ Trackball trackball;
 FramebufferWater fbw(WIDTH, HEIGHT);
 
 // Texture for noise
-GLuint height_map;
+GLuint tex_height;
+GLuint tex_mirror;
+
 // Texture for color
 GLuint color;
 
@@ -251,15 +253,16 @@ void resize_callback(int width, int height) {
 void compute_height_map() {
 
 	if (fractal_enable) {
-		NoiseGenerator::renderFractal(&height_map,
+		NoiseGenerator::renderFractal(&tex_height,
 			noise_values,
 			fractal_values
 		);
 	} else {
-		NoiseGenerator::renderNoise(&height_map, noise_values);
+		NoiseGenerator::renderNoise(&tex_height, noise_values);
 	}
 
-	grid.setHeightMap(height_map);
+	grid.setHeightTexture(tex_height);
+	water.setMirrorTexture(tex_mirror);
 	glViewport(0, 0, WIDTH, HEIGHT);
 }
 
@@ -410,11 +413,13 @@ void init(){
 	grid.init();
 	
 
-	GLuint water_reflect_texture = fbw.init();
-	water.init(water_reflect_texture);
+	tex_mirror = fbw.init();
+	water.init();
+	water.setMirrorTexture(tex_mirror);
 
 	glViewport(0, 0, WIDTH, HEIGHT);
-	grid.setHeightMap(height_map);
+	grid.setHeightTexture(tex_height);
+
 
 	// Init values
 
@@ -457,12 +462,14 @@ void display(){
 	mat4 view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_dir, cam_up);
 
 	// Render the cube using the mirrored camera in the frame buffer
-	grid.setColor(&color);
+	grid.setMainTexture(color);
 
 	fbw.bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	grid.draw(grid_model_matrix, view_matrix_mirrored, projection_matrix, true);
 	fbw.unbind();
+
+	water.setMirrorTexture(tex_mirror);
 
 	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
 	water.draw(water_model_matrix, view_matrix, projection_matrix);

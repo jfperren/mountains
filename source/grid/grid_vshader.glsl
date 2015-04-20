@@ -1,6 +1,7 @@
 #version 330 core
 uniform mat4 mvp;
-uniform sampler2D heightmap;
+
+uniform sampler2D tex_height;
 
 in vec2 position;
 
@@ -10,7 +11,7 @@ out vec2 uv;
 void main() {
     uv = (position + vec2(1.0, 1.0)) * 0.5;
 
-	height = texture(heightmap, uv).rgb[0];
+	height = texture(tex_height, uv).rgb[0];
 
     vec3 pos_3d = vec3(position.x, height, -position.y);
 

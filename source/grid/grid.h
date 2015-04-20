@@ -30,8 +30,8 @@ protected:
     GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
-    GLuint _height_map;    ///< HeightMap Texture ID
-	GLuint _color;        ///< Color Texture ID
+    GLuint _tex_height;    ///< HeightMap Texture ID
+	GLuint _tex_main;        ///< Color Texture ID
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
@@ -129,19 +129,14 @@ public:
         glDeleteProgram(_pid);
     }
 
-	void setHeightMap(GLuint height_map) {
+	void setHeightTexture(GLuint tex_height) {
 		// Pass texture to instance
-		this->_height_map = height_map;
-
-		GLuint tex_id = glGetUniformLocation(_pid, "tex");
-		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+		_tex_height = tex_height;
 	}
 
-	void setColor(GLuint* color){
+	void setMainTexture(GLuint tex_main){
 		// Pass texture to instance
-		this->_color = *color;
-		GLuint tex_id = glGetUniformLocation(_pid, "color1D");
-		glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
+		_tex_main = tex_main;
 	}
 
     void draw(const mat4& model, const mat4& view, const mat4& projection, bool only_reflect=false){
@@ -151,8 +146,8 @@ public:
 		Light::setup(_pid);
 
 		// Texture uniforms
-		glUniform1i(glGetUniformLocation(_pid, "heightmap"), 0 /*GL_TEXTURE0*/);
-		glUniform1i(glGetUniformLocation(_pid, "color1D"), 1 /*GL_TEXTURE1*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_main"), 0 /*GL_TEXTURE1*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 1 /*GL_TEXTURE0*/);
 
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
@@ -161,10 +156,11 @@ public:
 		}
 
         // Bind textures
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _height_map);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, _color);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _tex_main);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, _tex_height);
+
 
         // Setup MVP
         mat4 MVP = projection*view*model;

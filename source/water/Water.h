@@ -10,7 +10,7 @@ protected:
 	GLuint _vbo_position; ///< memory buffer for positions
 	GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
-	GLuint _tex;
+	GLuint _tex_main;
 	GLuint _tex_mirror;
 	GLuint _tex_height;
 	GLuint _pid;          ///< GLSL shader program ID
@@ -20,7 +20,7 @@ public:
 	float height = 0;
 	float alpha = 0.5;
 
-	void init(GLuint tex_mirror = -1){
+	void init(){
 		///--- Compile the shaders
 		_pid = opengp::load_shaders("water/Water_vshader.glsl", "water/Water_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
@@ -70,20 +70,11 @@ public:
 		}
 
 		///--- Load texture
-		glGenTextures(1, &_tex);
-		glBindTexture(GL_TEXTURE_2D, _tex);
+		glGenTextures(1, &_tex_main);
+		glBindTexture(GL_TEXTURE_2D, _tex_main);
 		glfwLoadTexture2D("_floor/Floor_texture.tga", 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		_tex_mirror = (tex_mirror == -1) ? _tex : tex_mirror;
-
-		///--- Texture uniforms
-		GLuint tex_id = glGetUniformLocation(_pid, "tex");
-		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-		GLuint tex_mirror_id = glGetUniformLocation(_pid, "tex_mirror");
-		glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
-		GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
-		glUniform1i(tex_height_id, 2 /*GL_TEXTURE1*/);
 
 		// Enable blending
 		glEnable(GL_BLEND);
@@ -101,6 +92,23 @@ public:
 		glDeleteProgram(_pid);
 	}
 
+	void setMainTexture(GLuint tex_main){
+		// Pass texture to instance
+		_tex_main = tex_main;
+	}
+
+	void setMirrorTexture(GLuint tex_mirror){
+		// Pass texture to instance
+		_tex_mirror = tex_mirror;
+	}
+
+	void setHeightTexture(GLuint tex_height) {
+		// Pass texture to instance
+		_tex_height = tex_height;
+	}
+
+	
+
 
 	void draw(const mat4& model, const mat4& view, const mat4& projection){
 		glUseProgram(_pid);
@@ -110,9 +118,17 @@ public:
 		glUniform1f(glGetUniformLocation(_pid, "height"), height);
 		glUniform1f(glGetUniformLocation(_pid, "alpha"), alpha);
 
+		///--- Texture uniforms
+		GLuint tex_id = glGetUniformLocation(_pid, "tex_main");
+		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+		GLuint tex_mirror_id = glGetUniformLocation(_pid, "tex_mirror");
+		glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
+		GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
+		glUniform1i(tex_height_id, 2 /*GL_TEXTURE1*/);
+
 		///--- Bind textures
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _tex);
+		glBindTexture(GL_TEXTURE_2D, _tex_main);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, _tex_mirror);
 		glActiveTexture(GL_TEXTURE2);
