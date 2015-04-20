@@ -1,12 +1,12 @@
 #version 330 core
 
-uniform mat4 mvp;
-uniform float height;
-
 in vec3 vertex_pos;
 in vec2 vertex_tex_coord;
 
 out vec2 uv;
+
+uniform mat4 mvp;
+uniform float height;
 
 void main() {
     vec3 pos_3d = vec3(vertex_pos.x, height, -vertex_pos.y);

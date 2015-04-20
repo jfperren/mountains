@@ -1,14 +1,26 @@
 #version 330 core
-out vec4 color;
+
 in vec2 uv;
+
+out vec4 color;
+
 uniform sampler2D tex_main;
 uniform sampler2D tex_mirror;
 uniform sampler2D tex_height;
 
+uniform vec3 water_color;
+uniform	float water_height;
+uniform	float water_transparency;
+uniform	float water_depth_alpha_factor;
+uniform float water_depth_color_factor;
+uniform float water_reflection_factor;
+
 void main() {
     
+	float depth = water_height - texture(tex_height, uv)[0];
+
 	// Check if we need to take it into account
-	if (texture(tex_height, uv)[0] > 0) {
+	if (depth <= 0) {
 		discard;
 	}
 
@@ -20,9 +32,13 @@ void main() {
     float _v = 1-gl_FragCoord[1] / texture_size[1];
     
     // Get texture color w/ usual uv, mirror with computed _u/_v
-    vec3 texture_color = vec3(0.1, 0.5, 0.9);
+    vec3 texture_color = water_color;
+
+	texture_color = texture_color/(water_depth_color_factor * depth + 1);
+	float alpha = water_transparency/(water_depth_alpha_factor * depth + 1);
+
     vec3 mirror_color = texture(tex_mirror, vec2(_u, _v)).rgb;
     
     // Mix the two together
-    color = vec4(mix(texture_color, mirror_color, vec3(.25)), 0.9);
+    color = vec4(mix(texture_color, mirror_color, vec3(water_reflection_factor)), alpha);
 }
