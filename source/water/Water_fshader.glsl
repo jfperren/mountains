@@ -7,6 +7,11 @@ uniform sampler2D tex_height;
 
 void main() {
     
+	// Check if we need to take it into account
+	if (texture(tex_height, uv)[0] > 0) {
+		discard;
+	}
+
     // Get the size of the screen (same as size of tex_mirror)
     ivec2 texture_size = textureSize(tex_mirror, 0);
     
