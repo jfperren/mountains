@@ -89,8 +89,10 @@ public:
 	}
 
 	void resize(float width, float height) {
+		cleanup();
 		_width = width;
 		_height = height;
+		init();
 	}
 
 public:
