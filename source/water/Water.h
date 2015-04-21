@@ -36,11 +36,11 @@ public:
 		glUseProgram(_pid);
 
 		water.height = 0;
-		water.transparency = 0.5;
+		water.transparency = 0.3;
 		water.color[3];
-		water.depth_alpha_factor = 0.5;
-		water.depth_color_factor = 1;
-		water.reflection_factor = 0.5;
+		water.depth_alpha_factor = 3;
+		water.depth_color_factor = 2;
+		water.reflection_factor = 0.25;
 
 		water.color[0] = 0.1f;
 		water.color[1] = 0.3f;
@@ -136,8 +136,8 @@ public:
 		glUniform1f(glGetUniformLocation(_pid, "water_height"), water.height);
 		glUniform1f(glGetUniformLocation(_pid, "water_transparency"), water.transparency);
 		glUniform3f(glGetUniformLocation(_pid, "water_color"), water.color[0], water.color[1], water.color[2]);
-		glUniform1f(glGetUniformLocation(_pid, "water_alpha_factor"), water.depth_alpha_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_factor"), water.depth_color_factor);
+		glUniform1f(glGetUniformLocation(_pid, "water_depth_alpha_factor"), water.depth_alpha_factor);
+		glUniform1f(glGetUniformLocation(_pid, "water_depth_color_factor"), water.depth_color_factor);
 		glUniform1f(glGetUniformLocation(_pid, "water_reflection_factor"), water.reflection_factor);
 
 		///--- Texture uniforms

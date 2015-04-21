@@ -217,6 +217,8 @@ void resize_callback(int width, int height) {
     GLfloat top = 1.0f;
     GLfloat right = (GLfloat)WIDTH / HEIGHT * top;
 
+	fbw.resize(width, height);
+
     projection_matrix = Eigen::perspective(45.0f, (GLfloat)WIDTH / HEIGHT, 0.1f, 100.0f);
 }
 

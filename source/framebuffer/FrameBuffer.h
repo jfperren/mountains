@@ -106,6 +106,11 @@ public:
 		}
 	}
 
+	void resize(float width, float height) {
+		_width = width;
+		_height = height;
+	}
+
     void cleanup() {
         glDeleteTextures(1, &_texture);
         glBindFramebuffer(GL_FRAMEBUFFER, 0 /*UNBIND*/);

@@ -88,6 +88,11 @@ public:
 		glDeleteFramebuffers(1, &_fbo);
 	}
 
+	void resize(float width, float height) {
+		_width = width;
+		_height = height;
+	}
+
 public:
 	void display_color_attachment(const char* title) {
 #ifdef WITH_OPENCV 

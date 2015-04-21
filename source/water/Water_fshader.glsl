@@ -35,7 +35,7 @@ void main() {
     vec3 texture_color = water_color;
 
 	texture_color = texture_color/(water_depth_color_factor * depth + 1);
-	float alpha = water_transparency/(water_depth_alpha_factor * depth + 1);
+	float alpha = water_transparency + (1 - water_transparency) * (water_depth_alpha_factor * depth);
 
     vec3 mirror_color = texture(tex_mirror, vec2(_u, _v)).rgb;
     
