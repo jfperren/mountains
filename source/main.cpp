@@ -461,7 +461,7 @@ void mouse_button(int button, int action) {
         vec2 p = transform_screen_coords(x_i, y_i);
         trackball.begin_drag(p.x(), p.y());
 		// Store the current state of the model matrix.
-        old_trackball_matrix = trackball_matrix;  
+		old_cam_pos = cam_pos;
     }
 
 	// Zoom
@@ -482,7 +482,14 @@ void mouse_pos(int x, int y) {
     if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
         vec2 p = transform_screen_coords(x, y);
 		// Compute the new trackball_matrix
-		trackball_matrix = trackball.drag(p[0], p[1]) * old_trackball_matrix;
+
+		vec4 cam_pos4 = vec4(old_cam_pos[0], old_cam_pos[1], old_cam_pos[2], 0);
+
+		cam_pos4 = trackball.drag(p[0], p[1]).inverse() * cam_pos4;
+
+		cam_pos = vec3(cam_pos4[0], cam_pos4[1], cam_pos4[2]);
+
+		view_matrix = lookAt(cam_pos, cam_dir, cam_up);
     }
 
     // Zoom
