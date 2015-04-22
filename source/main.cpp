@@ -328,6 +328,18 @@ void initAntTwBar() {
 	TwType fractal_effect_type = TwDefineEnum("FractalEffect", fractal_effect_array, 4);
 	TwAddVarCB(bar, "fractal_effect", fractal_effect_type, setIntParamCallback, getIntParamCallback, &fractal_values.fractal_effect, " group=Fractal ");
 
+	/* Water */
+
+	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, nullptr, " group=Water ");
+	TwAddVarCB(bar, "height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.height, " group=Water step=0.1");
+	TwAddVarCB(bar, "alpha", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.transparency, " group=Water step=0.1 min=0, max=1");
+	TwAddVarCB(bar, "depth_alpha_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.depth_alpha_factor, " group=Water step=0.1 min=0");
+	TwAddVarCB(bar, "depth_color_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.depth_color_factor, " group=Water step=0.1 min=0");
+	TwAddVarCB(bar, "reflection_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.reflection_factor, " group=Water step=0.1 min=0 max=1");
+	TwAddVarCB(bar, "red", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[0], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "green", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[1], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "blue", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[2], " group=Water step=0.05 min=0 max=1");
+
 	/* I/O */
 
 	TwAddVarRW(bar, "save_file_name", TW_TYPE_STDSTRING, &g_file_name, " group='I/O' label='file_name (optional)' ");

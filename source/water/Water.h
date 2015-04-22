@@ -18,16 +18,12 @@ protected:
 
 public:
 
-	typedef struct {
-		float height;
-		float transparency;
-		float color[3];
-		float depth_alpha_factor;
-		float depth_color_factor;
-		float reflection_factor;
-	} WaterData;
-
-	WaterData water;
+	float height;
+	float transparency;
+	float color[3];
+	float depth_alpha_factor;
+	float depth_color_factor;
+	float reflection_factor;
 
 	void init(){
 		///--- Compile the shaders
@@ -35,17 +31,15 @@ public:
 		if (!_pid) exit(EXIT_FAILURE);
 		glUseProgram(_pid);
 
-		water.height = 0;
-		water.transparency = 0.3;
-		water.color[3];
-		water.depth_alpha_factor = 3;
-		water.depth_color_factor = 2;
-		water.reflection_factor = 0.25;
+		height = 0;
+		transparency = 0.9;
+		depth_alpha_factor = 0;
+		depth_color_factor = 0;
+		reflection_factor = 0.25;
 
-		water.color[0] = 0.1f;
-		water.color[1] = 0.3f;
-		water.color[2] = 0.6f;
-	
+		color[0] = 0.1f;
+		color[1] = 0.3f;
+		color[2] = 0.6f;
 
 		///--- Vertex one vertex Array
 		glGenVertexArrays(1, &_vao);
@@ -133,12 +127,12 @@ public:
 		glBindVertexArray(_vao);
 
 		// Send Uniforms
-		glUniform1f(glGetUniformLocation(_pid, "water_height"), water.height);
-		glUniform1f(glGetUniformLocation(_pid, "water_transparency"), water.transparency);
-		glUniform3f(glGetUniformLocation(_pid, "water_color"), water.color[0], water.color[1], water.color[2]);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_alpha_factor"), water.depth_alpha_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_color_factor"), water.depth_color_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_reflection_factor"), water.reflection_factor);
+		glUniform1f(glGetUniformLocation(_pid, "water_height"), height);
+		glUniform1f(glGetUniformLocation(_pid, "water_transparency"), transparency);
+		glUniform3f(glGetUniformLocation(_pid, "water_color"), color[0], color[1], color[2]);
+		glUniform1f(glGetUniformLocation(_pid, "water_depth_alpha_factor"), depth_alpha_factor);
+		glUniform1f(glGetUniformLocation(_pid, "water_depth_color_factor"), depth_color_factor);
+		glUniform1f(glGetUniformLocation(_pid, "water_reflection_factor"), reflection_factor);
 
 		///--- Texture uniforms
 		GLuint tex_id = glGetUniformLocation(_pid, "tex_main");
