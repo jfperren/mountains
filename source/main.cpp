@@ -1,5 +1,7 @@
 #include "main.h"
 
+#include "box/BoxGrid.h"
+
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
 TwBar *bar;
@@ -23,6 +25,8 @@ mat4 water_model_matrix;
 vec3 cam_up;
 vec3 cam_pos;
 vec3 cam_dir;
+
+BoxGrid box;
 
 vec3 old_cam_pos;
 
@@ -218,6 +222,7 @@ void compute_height_map() {
 		NoiseGenerator::renderNoise(&tex_height, noise_values);
 	}
 
+	box.setHeightTexture(tex_height);
 	grid.setHeightTexture(tex_height);
 	water.setHeightTexture(tex_height);
 	water.setMirrorTexture(tex_mirror);
@@ -379,6 +384,7 @@ void init(){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	box.init();
 	grid.init();
 	grid.setMainTexture(color);
 	tex_mirror = fbw.init();
@@ -432,6 +438,7 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
 	water.draw(water_model_matrix, view_matrix, projection_matrix);
+	box.draw(grid_model_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();

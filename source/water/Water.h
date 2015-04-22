@@ -49,10 +49,10 @@ public:
 		///--- Vertex coordinates
 		{
 			const GLfloat vpoint[] = {	
-				/*V1*/ -1.0f, 0.0f, -1.0f,
-				/*V2*/ +1.0f, 0.0f, -1.0f,
-				/*V3*/ -1.0f, 0.0f, +1.0f,
-				/*V4*/ +1.0f, 0.0f, +1.0f
+				/*V1*/ -1.0f, -1.0f,
+				/*V2*/ +1.0f, -1.0f,
+				/*V3*/ -1.0f, +1.0f,
+				/*V4*/ +1.0f, +1.0f
 			};
 
 			///--- Buffer
@@ -63,7 +63,7 @@ public:
 			///--- Attribute
 			GLuint vertex_pos_id = glGetAttribLocation(_pid, "vertex_pos");
 			glEnableVertexAttribArray(vertex_pos_id);
-			glVertexAttribPointer(vertex_pos_id, 3, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+			glVertexAttribPointer(vertex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 		}
 
 		///--- Texture coordinates

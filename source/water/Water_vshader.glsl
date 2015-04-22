@@ -9,8 +9,8 @@ uniform mat4 mvp;
 uniform float water_height;
 
 void main() {
-    //vec3 pos_3d = vec3(vertex_pos.x, water_height, -vertex_pos.y);
-	vec3 pos_3d = vertex_pos;
+    vec3 pos_3d = vec3(vertex_pos.x, water_height, -vertex_pos.y);
+
     gl_Position = mvp * vec4(pos_3d, 1.0);
 
 	uv = vertex_tex_coord;
