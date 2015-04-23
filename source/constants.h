@@ -22,6 +22,7 @@ typedef enum {
 	DISCRETIZE // Step = 0.2
 } Effect;
 
+const static int PIXELS_PER_UNIT = 2048;
 
 typedef struct NoiseValues {
 	NoiseType noise_type;

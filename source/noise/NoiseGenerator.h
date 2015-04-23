@@ -5,31 +5,23 @@
 #include "../noise/NoiseQuad.h"
 #include "../constants.h"
 
-class NoiseGenerator {
+void renderNoise(GLuint* out_texture, NoiseValues noise_values, GLuint* in_texture = nullptr, int aggregation_type = FBM) {
 
-public:
-	const static int PIXELS_PER_UNIT = 2048;
-protected:
-	
+	NoiseQuad quad;
+	quad.init();
 
-public:
-	static void NoiseGenerator::renderNoise(GLuint* out_texture, NoiseValues noise_values, GLuint* in_texture = nullptr, int aggregation_type = FBM) {
+	// Create framebuffer with texture as output
+	Framebuffer fb(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
+	fb.initWithTexture(out_texture);
 
-		NoiseQuad quad;
-		quad.init();
+	///--- Render random noise on quad in the framebuffer
+	fb.bind();
+	glClear(GL_COLOR_BUFFER_BIT);
+	quad.drawNoise(noise_values, in_texture, aggregation_type);
+	fb.unbind();
+}
 
-		// Create framebuffer with texture as output
-		Framebuffer fb(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
-		fb.initWithTexture(out_texture);
-
-		///--- Render random noise on quad in the framebuffer
-		fb.bind();
-			glClear(GL_COLOR_BUFFER_BIT);
-			quad.drawNoise(noise_values, in_texture, aggregation_type);
-		fb.unbind();
-	}
-
-	static void NoiseGenerator::renderFractal(GLuint* out_texture, NoiseValues noise_values, FractalValues fractal_values) {
+void renderFractal(GLuint* out_texture, NoiseValues noise_values, FractalValues fractal_values) {
 		// To avoid strange behaviours, should put noise_values.offset to 0;
 		
 		if (fractal_values.octaves < 1) {
@@ -61,9 +53,4 @@ public:
 
 		// Render created texture in out_texture with offset and amplitude
 		renderNoise(out_texture, NoiseValues{ COPY_TEXTURE, fractal_values.fractal_effect, 1, 1, fractal_values.amplitude, fractal_values.offset }, &(textures[inputtexture]));
-	}
-
-	static void NoiseGenerator::applyDomainDistortion(){
-
-	}
-};
+}

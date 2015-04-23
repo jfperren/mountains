@@ -32,7 +32,6 @@ int HEIGHT = 600;
 
 mat4 projection_matrix;
 mat4 view_matrix;
-mat4 trackball_matrix;
 
 mat4 grid_model_matrix;
 mat4 water_model_matrix;

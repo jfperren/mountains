@@ -149,12 +149,12 @@ void resize_callback(int width, int height) {
 void compute_height_map() {
 
 	if (fractal_enable) {
-		NoiseGenerator::renderFractal(&tex_height,
+		renderFractal(&tex_height,
 			noise_values,
 			fractal_values
 		);
 	} else {
-		NoiseGenerator::renderNoise(&tex_height, noise_values);
+		renderNoise(&tex_height, noise_values);
 	}
 
 	box.setHeightTexture(tex_height);
