@@ -8,8 +8,6 @@ protected:
 	GLuint _vbo_position; ///< memory buffer for positions
 	GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
-	GLuint _tex_main;
-	GLuint _tex_mirror;
 	GLuint _tex_height;
 	GLuint _pid;          ///< GLSL shader program ID
 	GLuint _num_indices;  ///< number of vertices to render

@@ -1,5 +1,7 @@
 #pragma once
 
+const string kHeaderString = "HEADER: terrain data";
+
 typedef enum {
 	COPY_TEXTURE,
 	NO_NOISE,
@@ -24,7 +26,11 @@ typedef enum {
 
 const static int PIXELS_PER_UNIT = 2048;
 
-typedef struct NoiseValues {
+typedef struct GridParams {
+	int grid_size;
+};
+
+typedef struct NoiseParams {
 	NoiseType noise_type;
 	Effect noise_effect;
 	int width;
@@ -34,7 +40,7 @@ typedef struct NoiseValues {
 	float seed;
 };
 
-typedef struct FractalValues {
+typedef struct FractalParams {
 	FractalType fractal_type;
 	Effect fractal_effect;
 	float H;
@@ -42,4 +48,14 @@ typedef struct FractalValues {
 	int octaves;
 	float amplitude;
 	float offset;
+	bool enable;
+};
+
+typedef struct WaterParams {
+	float height;
+	float transparency;
+	float depth_alpha_factor;
+	float depth_color_factor;
+	float reflection_factor;
+	vec3 color;
 };

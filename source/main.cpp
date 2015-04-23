@@ -20,7 +20,7 @@ void writeFile(string file_name) {
 		myfile << "noise_seed " << noise_values.seed << endl;
 
 		/* Fractal */
-		if (fractal_enable) {
+		if (fractal_values.enable) {
 			myfile << "fractal_enable " << "true" << endl;
 			myfile << "fractal_H " << fractal_values.H << endl;
 			myfile << "fractal_lacunarity " << fractal_values.lacunarity << endl;
@@ -75,10 +75,9 @@ void loadFromFile(string file_name) {
 			/* Load fractal */
 			if (!results[0].compare("fractal_enable")) {
 				if (!results[1].compare("true")) {
-					fractal_enable = true;
+					fractal_values.enable = true;
 				}
 				else {
-					fractal_enable = false;
 				}
 			} else if (!results[0].compare("fractal_H")) {
 				fractal_values.H = ::atof(results[1].c_str());
@@ -148,7 +147,7 @@ void resize_callback(int width, int height) {
 
 void compute_height_map() {
 
-	if (fractal_enable) {
+	if (fractal_values.enable) {
 		renderFractal(&tex_height,
 			noise_values,
 			fractal_values
@@ -257,7 +256,7 @@ void initAntTwBar() {
 	fractalType = TwDefineEnum("FractalType", fractalEV, 2);
 	TwAddVarCB(bar, "fractal_type", fractalType, setIntParamCallback, getIntParamCallback, &fractal_values.fractal_type, " group=Fractal ");
 
-	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_enable, " group=Fractal ");
+	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_values.enable, " group=Fractal ");
 	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.H, " group=Fractal step=0.1");
 	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_values.lacunarity, " group=Fractal step=1 min=2");
 	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_values.octaves, " group=Fractal step=1 min=1");
@@ -271,14 +270,14 @@ void initAntTwBar() {
 	/* Water */
 
 	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, nullptr, " group=Water ");
-	TwAddVarCB(bar, "height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.height, " group=Water step=0.1");
-	TwAddVarCB(bar, "alpha", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.transparency, " group=Water step=0.1 min=0, max=1");
-	TwAddVarCB(bar, "depth_alpha_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.depth_alpha_factor, " group=Water step=0.1 min=0");
-	TwAddVarCB(bar, "depth_color_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.depth_color_factor, " group=Water step=0.1 min=0");
-	TwAddVarCB(bar, "reflection_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.reflection_factor, " group=Water step=0.1 min=0 max=1");
-	TwAddVarCB(bar, "red", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[0], " group=Water step=0.05 min=0 max=1");
-	TwAddVarCB(bar, "green", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[1], " group=Water step=0.05 min=0 max=1");
-	TwAddVarCB(bar, "blue", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[2], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.height, " group=Water step=0.1");
+	TwAddVarCB(bar, "alpha", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.transparency, " group=Water step=0.1 min=0, max=1");
+	TwAddVarCB(bar, "depth_alpha_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.depth_alpha_factor, " group=Water step=0.1 min=0");
+	TwAddVarCB(bar, "depth_color_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.depth_color_factor, " group=Water step=0.1 min=0");
+	TwAddVarCB(bar, "reflection_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.reflection_factor, " group=Water step=0.1 min=0 max=1");
+	TwAddVarCB(bar, "red", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[0], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "green", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[1], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "blue", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[2], " group=Water step=0.05 min=0 max=1");
 
 	/* I/O */
 
@@ -297,53 +296,11 @@ void init(){
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
     
-
-
-	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 10.0f);
-	trackball_matrix = mat4::Identity();
-
-	grid_model_matrix = mat4::Identity();
-	water_model_matrix = mat4::Identity();
-
-	cam_pos = vec3(0.0f, 2.0f, 4.0f);
-	cam_dir = vec3(0.0f, 0.0f, 0.0f);
-	cam_up = vec3(0.0f, 1.0f, 0.0f);
-
-	view_matrix = lookAt(cam_pos, cam_dir, cam_up);
-
-    trackball_matrix = mat4::Identity();
-
-	glGenTextures(1, &color);
-	glBindTexture(GL_TEXTURE_2D, color);
-	glfwLoadTexture2D("textures/texture1D.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	box.init();
-	grid.init();
-	grid.setMainTexture(color);
-	tex_mirror = fbw.init();
-	water.init();
-
-	// --- Noise ---
-	noise_values.noise_type = PERLIN_NOISE;
-	noise_values.noise_effect = NO_EFFECT;
-	noise_values.height = 1;
-	noise_values.width = 1;
-	noise_values.offset = 0.0f;
-	noise_values.amplitude = 1.0f;
-	noise_values.seed = glfwGetTime();
-	noise_values.seed -= floor(noise_values.seed);
-
-	// --- Fractal ---
-	fractal_values.fractal_type = FBM;
-	fractal_values.fractal_effect = NO_EFFECT;
-	fractal_values.amplitude = 1.0f;
-	fractal_values.offset = 0.0f;
-	fractal_values.H = 0.8f;
-	fractal_values.lacunarity = 2;
-	fractal_values.octaves = 6;
-	fractal_enable = true;
+	// All in main.h
+	initParams();
+	initTextures();
+	initViewMatrices();
+	initSceneObjects();
 
 	compute_height_map();
 

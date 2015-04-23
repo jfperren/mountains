@@ -48,21 +48,21 @@ public:
         // TODO cleanup
     }
     
-	void drawNoise(NoiseValues noise_values, GLuint* in_texture = nullptr, int fractal_type = FBM){
+	void drawNoise(NoiseParams noise_params, GLuint* in_texture = nullptr, int fractal_type = FBM){
 
 		// Bind program & vertex array
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
 		// Pass parameters to the shaders
-		glUniform1f(glGetUniformLocation(_pid, "noise_width"), noise_values.width);
-		glUniform1f(glGetUniformLocation(_pid, "noise_height"), noise_values.height);
-		glUniform1f(glGetUniformLocation(_pid, "offset"), noise_values.offset);
-		glUniform1f(glGetUniformLocation(_pid, "amplitude"), noise_values.amplitude);
-		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_values.noise_type);
+		glUniform1f(glGetUniformLocation(_pid, "noise_width"), noise_params.width);
+		glUniform1f(glGetUniformLocation(_pid, "noise_height"), noise_params.height);
+		glUniform1f(glGetUniformLocation(_pid, "offset"), noise_params.offset);
+		glUniform1f(glGetUniformLocation(_pid, "amplitude"), noise_params.amplitude);
+		glUniform1i(glGetUniformLocation(_pid, "noise_type"), noise_params.noise_type);
 		glUniform1i(glGetUniformLocation(_pid, "aggregation_type"), fractal_type);
-		glUniform1f(glGetUniformLocation(_pid, "seed"), noise_values.seed);
-		glUniform1i(glGetUniformLocation(_pid, "noise_effect"), noise_values.noise_effect);
+		glUniform1f(glGetUniformLocation(_pid, "seed"), noise_params.seed);
+		glUniform1i(glGetUniformLocation(_pid, "noise_effect"), noise_params.noise_effect);
 
 		if (in_texture != nullptr) {
 			// Tells shader there is a texture as input
