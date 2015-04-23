@@ -31,7 +31,11 @@ protected:
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
     GLuint _tex_height;    ///< HeightMap Texture ID
-	GLuint _tex_main;        ///< Color Texture ID
+	GLuint _tex_main;
+	GLuint _tex_texture1;        ///< Grass Texture ID
+	GLuint _tex_texture2;        ///< Rock Texture ID
+	GLuint _tex_texture3;        ///< Sand Texture ID
+	GLuint _tex_texture4;        ///< Snow Texture ID
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
@@ -134,9 +138,24 @@ public:
 		_tex_height = tex_height;
 	}
 
-	void setMainTexture(GLuint tex_main){
+	void setMainTexture(GLuint t1, GLuint t2, GLuint t3, GLuint t4){
 		// Pass texture to instance
-		_tex_main = tex_main;
+		
+		this->_tex_texture1 = t1;
+		GLuint tex_grass_id = glGetUniformLocation(_pid, "texture1");
+		glUniform1i(tex_grass_id, 1 /*GL_TEXTURE1*/);
+
+		this->_tex_texture2 = t2;
+		GLuint tex_rock_id = glGetUniformLocation(_pid, "texture2");
+		glUniform1i(tex_rock_id, 2 /*GL_TEXTURE2*/);
+
+		this->_tex_texture3 = t3;
+		GLuint tex_sand_id = glGetUniformLocation(_pid, "texture3");
+		glUniform1i(tex_sand_id, 3 /*GL_TEXTURE3*/);
+
+		this->_tex_texture4 = t4;
+		GLuint tex_snow_id = glGetUniformLocation(_pid, "texture4");
+		glUniform1i(tex_snow_id, 4 /*GL_TEXTURE4*/);
 	}
 
     void draw(const mat4& model, const mat4& view, const mat4& projection, bool only_reflect=false){
@@ -148,6 +167,10 @@ public:
 		// Texture uniforms
 		glUniform1i(glGetUniformLocation(_pid, "tex_main"), 0 /*GL_TEXTURE1*/);
 		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 1 /*GL_TEXTURE0*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture1"), 2 /*GL_TEXTURE2*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture2"), 3 /*GL_TEXTURE3*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture3"), 4 /*GL_TEXTURE4*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture4"), 5 /*GL_TEXTURE5*/);
 
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
@@ -160,6 +183,15 @@ public:
 		glBindTexture(GL_TEXTURE_2D, _tex_main);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, _tex_height);
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, _tex_texture1);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, _tex_texture2);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, _tex_texture3);
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, _tex_texture4);
 
 
         // Setup MVP
