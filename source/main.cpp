@@ -323,7 +323,7 @@ void init(){
 
 	glGenTextures(1, &tex_texture2);
 	glBindTexture(GL_TEXTURE_2D, tex_texture2);
-	glfwLoadTexture2D("textures/tex_rocks_2.tga" /* aka tex_rock.tga */, 0);
+	glfwLoadTexture2D("textures/tex_deep_fire.tga" /* aka tex_rock.tga */, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

@@ -34,47 +34,67 @@ const float snow_threshold = 0.7;
 /* range from 0 to 1 in the reals.
    1: more rock
    2: more grass*/
-const float scale_factor = 0.8;
+const float scale_factor_rock_grass = 0.8;
 
+/* range from 0 to 1 in the reals.
+   1: more rock
+   2: more sand*/
+const float scale_factor_rock_sand = 0.6;
 
-void main() {
+/** Computes the coefficient used as the 3rd arg of mix(3).
+	The output ranges from 0 to 1 in the reals.
+*/
+float compute_linear_interpolation(float height1, float height2, float x) {
+	float beta = (0 - 1) / (height1 - height2) * x + (height1 * 1 - height2 * 0) / (height1 - height2);
+	if (beta > 0.99) {
+		beta = 1;
+	}
+	if (beta < 0) {
+		beta = 0;
+	}
 
-	float height_to_texture;
-	vec3 derivative_x = vec3(1, 0, 1000*texture(tex_height, uv + vec2(pixel_unit,0))[0] - 1000*texture(tex_height, uv - vec2(pixel_unit,0))[0]);
-	vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, pixel_unit))[0] - 1000*texture(tex_height, uv - vec2(0, pixel_unit))[0]);
-	vec3 normal = normalize(cross(derivative_x, derivative_y));
+	return beta;
+}
 
+float clamp_height(float height) {
+	float height_to_texture = height; 
 	if (height >= 0.99){
 		height_to_texture = 0.99;
 	}
 	else if (height <= -0.99) {
 		height_to_texture = -0.99;
 	}
-	else {
-		height_to_texture = height; 
-	}
+
+	return height_to_texture;
+}
+
+void main() {
+
+	float height_to_texture = clamp_height(height);
+	vec3 derivative_x = vec3(1, 0, 1000*texture(tex_height, uv + vec2(pixel_unit,0))[0] - 1000*texture(tex_height, uv - vec2(pixel_unit,0))[0]);
+	vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, pixel_unit))[0] - 1000*texture(tex_height, uv - vec2(0, pixel_unit))[0]);
+	vec3 normal = normalize(cross(derivative_x, derivative_y));
+
+
 
 	float alpha = 1 - dot(normal, vec3(0, 0, 1));
 
+	// Default (for debug) texture is gray
 	vec3 texture_tot = vec3(0.5, 0.5, 0.5);
 
 	if (height_to_texture <= see_level + sand_offset) {
 		// Mix sand and rock
-		texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * 0.7);
+		texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_sand);
 	} else if (height_to_texture <= vegetation_threshold) {
 		// Mix grass and rock
-		texture_tot = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor);
+		texture_tot = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_grass);
 		//texture_tot = vec3(0.5, 0.5, 0.5);
 	} else {
 		// height > snow_threshold
 		// Mix grass+rock and snow
-		float beta = (0 - 1) / (vegetation_threshold - snow_threshold) * height_to_texture + (vegetation_threshold * 1 - snow_threshold * 0) / (vegetation_threshold - snow_threshold);
-		if (beta > 0.99) {
-			beta = 1;
-		}
 
-		vec3 temp = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor);
-		texture_tot = mix(temp, texture(tex_texture4, 30 * uv).xyz, beta);
+		vec3 temp = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_grass);
+		texture_tot = mix(temp, texture(tex_texture4, 30 * uv).xyz, compute_linear_interpolation(vegetation_threshold, snow_threshold, height_to_texture));
 	}
 
 	//texture_tot = mix(texture(grass, 10 * uv).xyz, texture(rock, 10 * uv).xyz, alpha*scale_factor);
