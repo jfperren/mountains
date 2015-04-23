@@ -15,6 +15,7 @@
 #include <sstream>
 #include <algorithm>
 #include "box/BoxGrid.h"
+#include "constants.h"
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
@@ -67,10 +68,10 @@ float zoom_start_y;
 // --- Variables for AntTweakBar ---
 
 // --- Noise ---
-NoiseQuad::NoiseValues noise_values;
+NoiseValues noise_values;
 
 // --- Fractal ---
-NoiseQuad::FractalValues fractal_values;
+FractalValues fractal_values;
 bool fractal_enable;
 
 // --- I/O ---

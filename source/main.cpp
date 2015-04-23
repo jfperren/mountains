@@ -94,15 +94,15 @@ void loadFromFile(string file_name) {
 			else if (!results[0].compare("noise_type")) {
 				int type = ::atoi(results[1].c_str());
 				switch (type) {
-				case 0: noise_values.noise_type = NoiseQuad::COPY_TEXTURE;
+				case 0: noise_values.noise_type = COPY_TEXTURE;
 					break;
-				case 1: noise_values.noise_type = NoiseQuad::NO_NOISE;
+				case 1: noise_values.noise_type = NO_NOISE;
 					break;
-				case 2: noise_values.noise_type = NoiseQuad::RANDOM_NOISE;
+				case 2: noise_values.noise_type = RANDOM_NOISE;
 					break;
-				case 3: noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
+				case 3: noise_values.noise_type = PERLIN_NOISE;
 					break;
-				case 4: noise_values.noise_type = NoiseQuad::PERLIN_NOISE_ABS;
+				case 4: noise_values.noise_type = PERLIN_NOISE_ABS;
 					break;
 				default:
 					cout << "Error: Unkown NoiseType" << endl;
@@ -235,7 +235,7 @@ void initAntTwBar() {
 
 	/* Noise */
 
-	TwEnumVal noise_type_array[] = { { NoiseQuad::NO_NOISE, "NO_NOISE" }, { NoiseQuad::RANDOM_NOISE, "RANDOM_NOISE" }, { NoiseQuad::PERLIN_NOISE, "PERLIN_NOISE" }, { NoiseQuad::WORLEY_NOISE, "WORLEY_NOISE" } };
+	TwEnumVal noise_type_array[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { WORLEY_NOISE, "WORLEY_NOISE" } };
 	TwType noise_type_type = TwDefineEnum("NoiseType", noise_type_array, 4);
 	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
 
@@ -245,13 +245,13 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "noise_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.amplitude, " group=Noise step=0.1");
 	TwAddVarCB(bar, "seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_values.seed, " group=Noise step=0.001 min=0 max=1");
 
-	TwEnumVal noise_effect_array[] = { { NoiseQuad::NO_EFFECT, "NO_EFFECT" }, { NoiseQuad::ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { NoiseQuad::CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { NoiseQuad::DISCRETIZE, "DISCRETIZE" } };
+	TwEnumVal noise_effect_array[] = { { NO_EFFECT, "NO_EFFECT" }, { ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { DISCRETIZE, "DISCRETIZE" } };
 	TwType noise_effect_type = TwDefineEnum("NoiseEffect", noise_effect_array, 4);
 	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_effect, " group=Noise ");
 
 	/* Fractal */
 
-	TwEnumVal fractalEV[] = { { NoiseQuad::FBM, "FBM" }, { NoiseQuad::MULTIFRACTAL, "MULTIFRACTAL" } };
+	TwEnumVal fractalEV[] = { { FBM, "FBM" }, { MULTIFRACTAL, "MULTIFRACTAL" } };
 
 	TwType fractalType;
 	fractalType = TwDefineEnum("FractalType", fractalEV, 2);
@@ -264,7 +264,7 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.offset, " group=Fractal step=0.1");
 	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.amplitude, " group=Fractal step=0.1");
 
-	TwEnumVal fractal_effect_array[] = { { NoiseQuad::NO_EFFECT, "NO_EFFECT" }, { NoiseQuad::ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { NoiseQuad::CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { NoiseQuad::DISCRETIZE, "DISCRETIZE" } };
+	TwEnumVal fractal_effect_array[] = { { NO_EFFECT, "NO_EFFECT" }, { ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { DISCRETIZE, "DISCRETIZE" } };
 	TwType fractal_effect_type = TwDefineEnum("FractalEffect", fractal_effect_array, 4);
 	TwAddVarCB(bar, "fractal_effect", fractal_effect_type, setIntParamCallback, getIntParamCallback, &fractal_values.fractal_effect, " group=Fractal ");
 
@@ -326,8 +326,8 @@ void init(){
 	water.init();
 
 	// --- Noise ---
-	noise_values.noise_type = NoiseQuad::PERLIN_NOISE;
-	noise_values.noise_effect = NoiseQuad::NO_EFFECT;
+	noise_values.noise_type = PERLIN_NOISE;
+	noise_values.noise_effect = NO_EFFECT;
 	noise_values.height = 1;
 	noise_values.width = 1;
 	noise_values.offset = 0.0f;
@@ -336,8 +336,8 @@ void init(){
 	noise_values.seed -= floor(noise_values.seed);
 
 	// --- Fractal ---
-	fractal_values.fractal_type = NoiseQuad::FBM;
-	fractal_values.fractal_effect = NoiseQuad::NO_EFFECT;
+	fractal_values.fractal_type = FBM;
+	fractal_values.fractal_effect = NO_EFFECT;
 	fractal_values.amplitude = 1.0f;
 	fractal_values.offset = 0.0f;
 	fractal_values.H = 0.8f;

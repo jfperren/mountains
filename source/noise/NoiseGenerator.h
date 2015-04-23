@@ -3,6 +3,7 @@
 #include "icg_common.h"
 #include "../framebuffer/Framebuffer.h"
 #include "../noise/NoiseQuad.h"
+#include "../constants.h"
 
 class NoiseGenerator {
 
@@ -12,7 +13,7 @@ protected:
 	
 
 public:
-	static void NoiseGenerator::renderNoise(GLuint* out_texture, NoiseQuad::NoiseValues noise_values, GLuint* in_texture = nullptr, int aggregation_type = NoiseQuad::FBM) {
+	static void NoiseGenerator::renderNoise(GLuint* out_texture, NoiseValues noise_values, GLuint* in_texture = nullptr, int aggregation_type = FBM) {
 
 		NoiseQuad quad;
 		quad.init();
@@ -28,7 +29,7 @@ public:
 		fb.unbind();
 	}
 
-	static void NoiseGenerator::renderFractal(GLuint* out_texture, NoiseQuad::NoiseValues noise_values, NoiseQuad::FractalValues fractal_values) {
+	static void NoiseGenerator::renderFractal(GLuint* out_texture, NoiseValues noise_values, FractalValues fractal_values) {
 		// To avoid strange behaviours, should put noise_values.offset to 0;
 		
 		if (fractal_values.octaves < 1) {
@@ -37,9 +38,9 @@ public:
 
 		GLuint textures[2];
 
-		if (fractal_values.fractal_type == NoiseQuad::MULTIFRACTAL) {
+		if (fractal_values.fractal_type == MULTIFRACTAL) {
 			// Start with height 1 otherwise it will multiply 0 and render nothing
-			renderNoise(&textures[0], NoiseQuad::NoiseValues{ NoiseQuad::NO_NOISE, NoiseQuad::NO_EFFECT, 1, 1, 0, 1 });
+			renderNoise(&textures[0], NoiseValues{ NO_NOISE, NO_EFFECT, 1, 1, 0, 1 });
 		}
 
 		int inputtexture = 0;
@@ -59,7 +60,7 @@ public:
 		}
 
 		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseQuad::NoiseValues{ NoiseQuad::COPY_TEXTURE, fractal_values.fractal_effect, 1, 1, fractal_values.amplitude, fractal_values.offset }, &(textures[inputtexture]));
+		renderNoise(out_texture, NoiseValues{ COPY_TEXTURE, fractal_values.fractal_effect, 1, 1, fractal_values.amplitude, fractal_values.offset }, &(textures[inputtexture]));
 	}
 
 	static void NoiseGenerator::applyDomainDistortion(){
