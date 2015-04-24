@@ -313,15 +313,41 @@ void init(){
 
     trackball_matrix = mat4::Identity();
 
-	glGenTextures(1, &color);
-	glBindTexture(GL_TEXTURE_2D, color);
-	glfwLoadTexture2D("textures/texture1D.tga", 0);
+	glGenTextures(1, &tex_texture1);
+	glBindTexture(GL_TEXTURE_2D, tex_texture1);
+	glfwLoadTexture2D("textures/tex_grass.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenTextures(1, &tex_texture2);
+	glBindTexture(GL_TEXTURE_2D, tex_texture2);
+	glfwLoadTexture2D("textures/tex_deep_fire.tga" /* aka tex_rock.tga */, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenTextures(1, &tex_texture3);
+	glBindTexture(GL_TEXTURE_2D, tex_texture3);
+	glfwLoadTexture2D("textures/tex_sahara.tga" /* aka tex_sand.tga */, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenTextures(1, &tex_texture4);
+	glBindTexture(GL_TEXTURE_2D, tex_texture4);
+	glfwLoadTexture2D("textures/tex_snow.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	box.init();
 	grid.init();
-	grid.setMainTexture(color);
+	grid.setMainTexture(tex_texture1, tex_texture2, tex_texture3, tex_texture4);
 	tex_mirror = fbw.init();
 	water.init();
 

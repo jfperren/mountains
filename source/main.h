@@ -52,8 +52,21 @@ FramebufferWater fbw(WIDTH, HEIGHT);
 GLuint tex_height;
 GLuint tex_mirror;
 
-// Texture for color
-GLuint color;
+/* TODO:
+At this time, there are 4 harded textures. We might want to refactor the code and
+work with a single array of textures in the future.
+*/
+// Texture for grass
+GLuint tex_texture1;
+
+// Texture for rock
+GLuint tex_texture2;
+
+// Texture for sand
+GLuint tex_texture3;
+
+// Texture for snow
+GLuint tex_texture4;
 
 // Constants
 const float kZoomFactor = 2;
