@@ -12,7 +12,7 @@ void writeFile(string file_name) {
 		/* The order is not important */
 
 		/* Noise */
-		myfile << "noise_type " << noise_values.noise_type << endl;
+		myfile << "noise_type " << noise_values.type << endl;
 		myfile << "noise_width " << noise_values.width << endl;
 		myfile << "noise_height " << noise_values.height << endl;
 		myfile << "noise_offset " << noise_values.offset << endl;
@@ -93,15 +93,15 @@ void loadFromFile(string file_name) {
 			else if (!results[0].compare("noise_type")) {
 				int type = ::atoi(results[1].c_str());
 				switch (type) {
-				case 0: noise_values.noise_type = COPY_TEXTURE;
+				case 0: noise_values.type = COPY_TEXTURE;
 					break;
-				case 1: noise_values.noise_type = NO_NOISE;
+				case 1: noise_values.type = NO_NOISE;
 					break;
-				case 2: noise_values.noise_type = RANDOM_NOISE;
+				case 2: noise_values.type = RANDOM_NOISE;
 					break;
-				case 3: noise_values.noise_type = PERLIN_NOISE;
+				case 3: noise_values.type = PERLIN_NOISE;
 					break;
-				case 4: noise_values.noise_type = PERLIN_NOISE_ABS;
+				case 4: noise_values.type = PERLIN_NOISE_ABS;
 					break;
 				default:
 					cout << "Error: Unkown NoiseType" << endl;
@@ -149,11 +149,11 @@ void compute_height_map() {
 
 	if (fractal_values.enable) {
 		renderFractal(&tex_height,
-			noise_values,
-			fractal_values
+			&noise_values,
+			&fractal_values
 		);
 	} else {
-		renderNoise(&tex_height, noise_values);
+		renderNoise(&tex_height, &noise_values);
 	}
 
 	box.setHeightTexture(tex_height);
@@ -236,7 +236,7 @@ void initAntTwBar() {
 
 	TwEnumVal noise_type_array[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { WORLEY_NOISE, "WORLEY_NOISE" } };
 	TwType noise_type_type = TwDefineEnum("NoiseType", noise_type_array, 4);
-	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
+	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_values.type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
 	TwAddVarCB(bar, "noise_height", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.height, " group=Noise step=1");
@@ -246,7 +246,7 @@ void initAntTwBar() {
 
 	TwEnumVal noise_effect_array[] = { { NO_EFFECT, "NO_EFFECT" }, { ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { DISCRETIZE, "DISCRETIZE" } };
 	TwType noise_effect_type = TwDefineEnum("NoiseEffect", noise_effect_array, 4);
-	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_effect, " group=Noise ");
+	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_values.effect, " group=Noise ");
 
 	/* Fractal */
 

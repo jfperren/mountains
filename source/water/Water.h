@@ -114,13 +114,7 @@ public:
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 
-		// Send Uniforms
-		glUniform1f(glGetUniformLocation(_pid, "water_height"), water_params->height);
-		glUniform1f(glGetUniformLocation(_pid, "water_transparency"), water_params->transparency);
-		glUniform3f(glGetUniformLocation(_pid, "water_color"), water_params->color[0], water_params->color[1], water_params->color[2]);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_alpha_factor"), water_params->depth_alpha_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_color_factor"), water_params->depth_color_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_reflection_factor"), water_params->reflection_factor);
+		water_params->setup(_pid);
 
 		///--- Texture uniforms
 		GLuint tex_id = glGetUniformLocation(_pid, "tex_main");

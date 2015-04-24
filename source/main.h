@@ -1,3 +1,5 @@
+#pragma once
+
 #include "icg_common.h"
 #include "trackball/Trackball.h"
 #include "grid/Grid.h"
@@ -64,6 +66,7 @@ GLuint color;
 NoiseParams noise_values;
 FractalParams fractal_values;
 WaterParams water_params;
+LightParams light_params;
 
 // --- I/O ---
 
@@ -73,8 +76,8 @@ string g_file_name_load = "";
 void initParams() {
 	
 	// --- Noise ---
-	noise_values.noise_type = PERLIN_NOISE;
-	noise_values.noise_effect = NO_EFFECT;
+	noise_values.type = PERLIN_NOISE;
+	noise_values.effect = NO_EFFECT;
 	noise_values.height = 1;
 	noise_values.width = 1;
 	noise_values.offset = 0.0f;
@@ -92,18 +95,23 @@ void initParams() {
 	fractal_values.octaves = 6;
 	fractal_values.enable = true;
 
-	// --- Water
+	// --- Water ---
 	water_params.height = 0;
-	water_params.color = vec3(0.1f, 0.5f, 0.9f);
+	water_params.color = vec3(0.9f, 0.5f, 0.9f);
 	water_params.depth_alpha_factor = 0.0f;
 	water_params.depth_color_factor = 0.0f;
 	water_params.transparency = 0.9f;
 	water_params.reflection_factor = 0.25f;
+
+	// --- Light ---
+	light_params.Ia = vec3(0.7f, 0.7f, 0.7f);
+	light_params.Id = vec3(0.3f, 0.3f, 0.3f);
+	light_params.position = vec3(2.0f, 2.0f, 2.0f);
 }
 
 void initSceneObjects() {
-	box.init();
-	grid.init();
+	box.init(&water_params);
+	grid.init(&light_params);
 	grid.setMainTexture(color);
 	tex_mirror = fbw.init();
 	water.init(&water_params);

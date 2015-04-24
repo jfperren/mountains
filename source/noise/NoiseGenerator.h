@@ -5,7 +5,7 @@
 #include "../noise/NoiseQuad.h"
 #include "../constants.h"
 
-void renderNoise(GLuint* out_texture, NoiseParams noise_params, GLuint* in_texture = nullptr, int aggregation_type = FBM) {
+void renderNoise(GLuint* out_texture, NoiseParams* noise_params, GLuint* in_texture = nullptr, int aggregation_type = FBM) {
 
 	NoiseQuad quad;
 	quad.init();
@@ -21,36 +21,40 @@ void renderNoise(GLuint* out_texture, NoiseParams noise_params, GLuint* in_textu
 	fb.unbind();
 }
 
-void renderFractal(GLuint* out_texture, NoiseParams noise_params, FractalParams fractal_params) {
+void renderFractal(GLuint* out_texture, NoiseParams* noise_params, FractalParams* fractal_params) {
 		// To avoid strange behaviours, should put noise_params.offset to 0;
 		
-		if (fractal_params.octaves < 1) {
+		NoiseParams noise_params_2 = *noise_params;
+
+		if (fractal_params->octaves < 1) {
 			return;
 		}
 
 		GLuint textures[2];
 
-		if (fractal_params.fractal_type == MULTIFRACTAL) {
+		if (fractal_params->fractal_type == MULTIFRACTAL) {
+			NoiseParams flat_noise = NoiseParams{ NO_NOISE, NO_EFFECT, 1, 1, 0, 1 };
 			// Start with height 1 otherwise it will multiply 0 and render nothing
-			renderNoise(&textures[0], NoiseParams { NO_NOISE, NO_EFFECT, 1, 1, 0, 1 });
+			renderNoise(&textures[0], &flat_noise);
 		}
 
 		int inputtexture = 0;
-		for (int i = 0; i < fractal_params.octaves; i++) {
+		for (int i = 0; i < fractal_params->octaves; i++) {
 
-			renderNoise(&(textures[1 - inputtexture]), noise_params, &(textures[inputtexture]), fractal_params.fractal_type);
+			renderNoise(&(textures[1 - inputtexture]), &noise_params_2, &(textures[inputtexture]), fractal_params->fractal_type);
 
-			noise_params.height *= fractal_params.lacunarity;
-			noise_params.width *= fractal_params.lacunarity;
-			noise_params.amplitude *= pow(fractal_params.lacunarity, -fractal_params.H);
+			noise_params_2.height *= fractal_params->lacunarity;
+			noise_params_2.width *= fractal_params->lacunarity;
+			noise_params_2.amplitude *= pow(fractal_params->lacunarity, -fractal_params->H);
 
-			noise_params.seed = noise_params.seed * 19.548978;
-			noise_params.seed -= floor(noise_params.seed);
+			//noise_params->seed = noise_params->seed * 19.548978;
+			//noise_params->seed -= floor(noise_params->seed);
 
 			// Swap input & output textures
 			inputtexture = 1 - inputtexture;
 		}
 
 		// Render created texture in out_texture with offset and amplitude
-		renderNoise(out_texture, NoiseParams{ COPY_TEXTURE, fractal_params.fractal_effect, 1, 1, fractal_params.amplitude, fractal_params.offset }, &(textures[inputtexture]));
+		NoiseParams fractal_noise = NoiseParams{ COPY_TEXTURE, fractal_params->fractal_effect, 1, 1, fractal_params->amplitude, fractal_params->offset };
+		renderNoise(out_texture, &fractal_noise, &(textures[inputtexture]));
 }
