@@ -299,7 +299,7 @@ void init(){
     
 
 
-	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 10.0f);
+	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 	trackball_matrix = mat4::Identity();
 
 	grid_model_matrix = mat4::Identity();
@@ -350,6 +350,7 @@ void init(){
 	grid.setMainTexture(tex_texture1, tex_texture2, tex_texture3, tex_texture4);
 	tex_mirror = fbw.init();
 	water.init();
+	sky.init();
 
 	// --- Noise ---
 	noise_values.noise_type = PERLIN_NOISE;
@@ -400,6 +401,7 @@ void display(){
 	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
 	water.draw(water_model_matrix, view_matrix, projection_matrix);
 	box.draw(grid_model_matrix, view_matrix, projection_matrix);
+	sky.draw(grid_model_matrix, view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
