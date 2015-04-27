@@ -39,8 +39,6 @@ vec3 cam_dir;
 vec3 old_cam_pos;
 mat4 projection_matrix;
 mat4 view_matrix;
-mat4 grid_model_matrix;
-mat4 water_model_matrix;
 
 Trackball trackball;
 float zoom_start_y;
@@ -119,9 +117,6 @@ void initSceneObjects() {
 
 void initViewMatrices() {
 	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 10.0f);
-
-	grid_model_matrix = mat4::Identity();
-	water_model_matrix = mat4::Identity();
 
 	cam_pos = vec3(0.0f, 2.0f, 4.0f);
 	cam_dir = vec3(0.0f, 0.0f, 0.0f);

@@ -5,6 +5,7 @@ class Water {
 
 private:
 	int grid_size = 2048;
+	mat4 model = mat4::Identity();
 
 protected:
 	GLuint _vao;          ///< vertex array object
@@ -110,7 +111,7 @@ public:
 		_tex_height = tex_height;
 	}
 
-	void draw(const mat4& model, const mat4& view, const mat4& projection){
+	void draw(const mat4& view, const mat4& projection){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 

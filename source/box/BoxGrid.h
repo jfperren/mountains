@@ -3,6 +3,10 @@
 
 class BoxGrid {
 
+private:
+	mat4 model = mat4::Identity();
+	WaterParams* water_params;
+
 protected:
 	GLuint _vao;          ///< vertex array object
 	GLuint _vbo_position; ///< memory buffer for positions
@@ -13,9 +17,6 @@ protected:
 	GLuint _num_indices;  ///< number of vertices to render
 
 public:
-
-	WaterParams* water_params;
-
 	void init(WaterParams* water_params){
 		///--- Compile the shaders
 		_pid = opengp::load_shaders("box/Box_vshader.glsl", "box/Box_fshader.glsl");
@@ -118,7 +119,7 @@ public:
 		_tex_height = tex_height;
 	}
 
-	void draw(const mat4& model, const mat4& view, const mat4& projection){
+	void draw(const mat4& view, const mat4& projection){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 

@@ -323,14 +323,14 @@ void display(){
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(grid_model_matrix, view_matrix_mirrored, projection_matrix, true);
+		grid.draw(view_matrix_mirrored, projection_matrix, true);
 	fbw.unbind();
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
-	water.draw(water_model_matrix, view_matrix, projection_matrix);
-	box.draw(grid_model_matrix, view_matrix, projection_matrix);
+	grid.draw(view_matrix, projection_matrix, false);
+	water.draw(view_matrix, projection_matrix);
+	box.draw(view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();

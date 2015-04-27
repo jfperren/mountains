@@ -7,6 +7,7 @@ class Grid {
 private:
 	static const int grid_dim_ = 2048;
 	LightParams* light_params;
+	mat4 model = mat4::Identity();
 
 protected:
     GLuint _vao;          ///< vertex array object
@@ -126,7 +127,7 @@ public:
 		_tex_main = tex_main;
 	}
 
-    void draw(const mat4& model, const mat4& view, const mat4& projection, bool only_reflect=false){
+    void draw(const mat4& view, const mat4& projection, bool only_reflect=false){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
