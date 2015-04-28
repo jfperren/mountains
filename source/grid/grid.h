@@ -17,6 +17,7 @@ protected:
     GLuint _pid;          ///< GLSL shader program ID
     GLuint _tex_height;    ///< HeightMap Texture ID
 	GLuint _tex_main;
+	GLuint _tex_texture0;
 	GLuint _tex_texture1;        ///< Grass Texture ID
 	GLuint _tex_texture2;        ///< Rock Texture ID
 	GLuint _tex_texture3;        ///< Sand Texture ID
@@ -126,9 +127,13 @@ public:
 		_tex_height = tex_height;
 	}
 
-	void setMainTexture(GLuint t1, GLuint t2, GLuint t3, GLuint t4){
+	void setMainTexture(GLuint t0, GLuint t1, GLuint t2, GLuint t3, GLuint t4){
 		// Pass texture to instance
 		
+		this->_tex_texture0 = t0;
+		GLuint tex_texture0_id = glGetUniformLocation(_pid, "texture1");
+		glUniform1i(tex_texture0_id, 10 /*GL_TEXTURE11*/);
+
 		this->_tex_texture1 = t1;
 		GLuint tex_grass_id = glGetUniformLocation(_pid, "texture1");
 		glUniform1i(tex_grass_id, 11 /*GL_TEXTURE11*/);

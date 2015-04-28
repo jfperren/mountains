@@ -2,6 +2,7 @@
 
 uniform sampler2D tex_height;
 
+uniform sampler2D tex_texture0;
 uniform sampler2D tex_texture1;
 uniform sampler2D tex_texture2;
 uniform sampler2D tex_texture3;
@@ -83,9 +84,9 @@ void main() {
 	// Default (for debug) texture is gray
 	vec3 texture_tot = vec3(0.5, 0.5, 0.5);
 
-	if (height_to_texture <= see_level + sand_offset) {
+	if (height_to_texture <= see_level) {
 		// Mix sand and rock
-		texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_sand);
+		texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture0, 10 * uv).xyz, alpha * scale_factor_rock_sand);
 	} else if (height_to_texture <= vegetation_start) {
 		// Mix sand_rock and rock_grass
 
@@ -93,7 +94,6 @@ void main() {
 		vec3 rock_grass = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_grass);
 
 		texture_tot = mix(sand_rock, rock_grass, compute_linear_interpolation(see_level, vegetation_start, height_to_texture));
-		//texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_sand);
 	} else {
 		// height > snow_threshold
 		// Mix grass+rock and snow

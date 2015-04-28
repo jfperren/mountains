@@ -65,6 +65,10 @@ GLuint tex_mirror;
 At this time, there are 4 harded textures. We might want to refactor the code and
 work with a single array of textures in the future.
 */
+
+// Texture for underwater rock
+GLuint tex_texture0;
+
 // Texture for grass
 GLuint tex_texture1;
 
@@ -128,7 +132,7 @@ void initParams() {
 void initSceneObjects() {
 	box.init(&water_params);
 	grid.init(&light_params);
-	grid.setMainTexture(tex_texture1, tex_texture2, tex_texture3, tex_texture4);
+	grid.setMainTexture(tex_texture0, tex_texture1, tex_texture2, tex_texture3, tex_texture4);
 	tex_mirror = fbw.init();
 	water.init(&water_params);
 	sky.init();
@@ -145,6 +149,15 @@ void initViewMatrices() {
 }
 
 void initTextures() {
+
+	glGenTextures(1, &tex_texture0);
+	glBindTexture(GL_TEXTURE_2D, tex_texture0);
+	glfwLoadTexture2D("textures/terrains/tex_rock_underwater.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glGenTextures(1, &tex_texture1);
 	glBindTexture(GL_TEXTURE_2D, tex_texture1);
 	glfwLoadTexture2D("textures/terrains/tex_grass.tga", 0);
