@@ -6,6 +6,7 @@
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
 #include "water/Water.h"
+#include "sky/sky.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -26,6 +27,7 @@ using namespace std;
 
 Grid grid;
 Water water;
+Sky sky;
 
 int WIDTH = 800;
 int HEIGHT = 600;
