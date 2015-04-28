@@ -12,4 +12,4 @@ target_link_libraries(${EXERCISENAME} ${COMMON_LIBS})
 
 target_deploy_file(${EXERCISENAME} ../external/AntTweakBar/lib/x64/AntTweakBar64.dll)
 
-target_deploy_file(${EXERCISENAME} ${TEXTURES})
+#target_deploy_file(${EXERCISENAME} ${TEXTURES})

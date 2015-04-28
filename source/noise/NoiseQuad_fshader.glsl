@@ -3,13 +3,13 @@
 in vec2 uv;
 out vec3 color;
 
-uniform float seed;
+uniform float noise_seed;
 
 uniform float noise_width;
 uniform float noise_height;
 
-uniform float amplitude;
-uniform float offset;
+uniform float noise_amplitude;
+uniform float noise_offset;
 
 uniform int noise_type;
 uniform int noise_effect;
@@ -65,7 +65,7 @@ void main() {
 		y = floor(y);
 
 		// Pseudorandom
-		noise = amplitude * random(vec2(x, y), seed);
+		noise = 2 * random(vec2(x, y), noise_seed) - 1;
 
 	} else if (noise_type == PERLIN_NOISE || noise_type == PERLIN_NOISE_ABSOLUTE) {
 
@@ -86,10 +86,10 @@ void main() {
 		vec2 top_left = vec2(x_of_cell, y_of_cell + 1);
 		vec2 top_right = vec2(x_of_cell + 1, y_of_cell + 1);
 
-		vec2 g_s = vec2(random(bottom_left, seed) - 0.5, random(bottom_left, 1-seed) - 0.5);
-		vec2 g_t = vec2(random(bottom_right, seed) - 0.5, random(bottom_right, 1-seed) - 0.5);
-		vec2 g_u = vec2(random(top_left, seed) - 0.5, random(top_left, 1-seed) - 0.5);
-		vec2 g_v = vec2(random(top_right, seed) - 0.5, random(top_right, 1-seed) - 0.5);
+		vec2 g_s = vec2(random(bottom_left, noise_seed) - 0.5, random(bottom_left, 1-noise_seed) - 0.5);
+		vec2 g_t = vec2(random(bottom_right, noise_seed) - 0.5, random(bottom_right, 1-noise_seed) - 0.5);
+		vec2 g_u = vec2(random(top_left, noise_seed) - 0.5, random(top_left, 1-noise_seed) - 0.5);
+		vec2 g_v = vec2(random(top_right, noise_seed) - 0.5, random(top_right, 1-noise_seed) - 0.5);
 
 		vec2 a = vec2(x_in_cell, y_in_cell);
 		vec2 b = vec2(x_in_cell - 1, y_in_cell);
@@ -131,10 +131,10 @@ void main() {
 		vec2 top_left = vec2(x_of_cell, y_of_cell + 1);
 		vec2 top_right = vec2(x_of_cell + 1, y_of_cell + 1);
 
-		vec2 g_s = vec2(random(bottom_left, seed) - 0.5, random(bottom_left, 1-seed) - 0.5);
-		vec2 g_t = vec2(random(bottom_right, seed) - 0.5, random(bottom_right, 1-seed) - 0.5);
-		vec2 g_u = vec2(random(top_left, seed) - 0.5, random(top_left, 1-seed) - 0.5);
-		vec2 g_v = vec2(random(top_right, seed) - 0.5, random(top_right, 1-seed) - 0.5);
+		vec2 g_s = vec2(random(bottom_left, noise_seed) - 0.5, random(bottom_left, 1-noise_seed) - 0.5);
+		vec2 g_t = vec2(random(bottom_right, noise_seed) - 0.5, random(bottom_right, 1-noise_seed) - 0.5);
+		vec2 g_u = vec2(random(top_left, noise_seed) - 0.5, random(top_left, 1-noise_seed) - 0.5);
+		vec2 g_v = vec2(random(top_right, noise_seed) - 0.5, random(top_right, 1-noise_seed) - 0.5);
 
 		vec2 a = vec2(x_in_cell, y_in_cell);
 		vec2 b = vec2(x_in_cell - 1, y_in_cell);
@@ -155,7 +155,7 @@ void main() {
 
 		// Just copy texture and add amplitude/offset
 		 float noise = texture(in_texture, uv)[0];
-		 noise = (amplitude * noise) + offset;
+		 noise = (noise_amplitude * noise) + noise_offset;
 
 		 if (noise_effect == ABSOLUTE_VALUE) {
 		if (noise < 0) {
@@ -183,7 +183,7 @@ void main() {
 		noise = 0;
 	}
 
-	noise = (noise * amplitude) + offset;
+	noise = (noise * noise_amplitude) + noise_offset;
 
 	/* --- Compute efect --- */
 

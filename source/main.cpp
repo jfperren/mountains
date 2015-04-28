@@ -12,7 +12,7 @@ void writeFile(string file_name) {
 		/* The order is not important */
 
 		/* Noise */
-		myfile << "noise_type " << noise_values.noise_type << endl;
+		myfile << "noise_type " << noise_values.type << endl;
 		myfile << "noise_width " << noise_values.width << endl;
 		myfile << "noise_height " << noise_values.height << endl;
 		myfile << "noise_offset " << noise_values.offset << endl;
@@ -20,7 +20,7 @@ void writeFile(string file_name) {
 		myfile << "noise_seed " << noise_values.seed << endl;
 
 		/* Fractal */
-		if (fractal_enable) {
+		if (fractal_values.enable) {
 			myfile << "fractal_enable " << "true" << endl;
 			myfile << "fractal_H " << fractal_values.H << endl;
 			myfile << "fractal_lacunarity " << fractal_values.lacunarity << endl;
@@ -75,10 +75,9 @@ void loadFromFile(string file_name) {
 			/* Load fractal */
 			if (!results[0].compare("fractal_enable")) {
 				if (!results[1].compare("true")) {
-					fractal_enable = true;
+					fractal_values.enable = true;
 				}
 				else {
-					fractal_enable = false;
 				}
 			} else if (!results[0].compare("fractal_H")) {
 				fractal_values.H = ::atof(results[1].c_str());
@@ -94,15 +93,15 @@ void loadFromFile(string file_name) {
 			else if (!results[0].compare("noise_type")) {
 				int type = ::atoi(results[1].c_str());
 				switch (type) {
-				case 0: noise_values.noise_type = COPY_TEXTURE;
+				case 0: noise_values.type = COPY_TEXTURE;
 					break;
-				case 1: noise_values.noise_type = NO_NOISE;
+				case 1: noise_values.type = NO_NOISE;
 					break;
-				case 2: noise_values.noise_type = RANDOM_NOISE;
+				case 2: noise_values.type = RANDOM_NOISE;
 					break;
-				case 3: noise_values.noise_type = PERLIN_NOISE;
+				case 3: noise_values.type = PERLIN_NOISE;
 					break;
-				case 4: noise_values.noise_type = PERLIN_NOISE_ABS;
+				case 4: noise_values.type = PERLIN_NOISE_ABS;
 					break;
 				default:
 					cout << "Error: Unkown NoiseType" << endl;
@@ -148,13 +147,13 @@ void resize_callback(int width, int height) {
 
 void compute_height_map() {
 
-	if (fractal_enable) {
+	if (fractal_values.enable) {
 		renderFractal(&tex_height,
-			noise_values,
-			fractal_values
+			&noise_values,
+			&fractal_values
 		);
 	} else {
-		renderNoise(&tex_height, noise_values);
+		renderNoise(&tex_height, &noise_values);
 	}
 
 	box.setHeightTexture(tex_height);
@@ -237,7 +236,7 @@ void initAntTwBar() {
 
 	TwEnumVal noise_type_array[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { WORLEY_NOISE, "WORLEY_NOISE" } };
 	TwType noise_type_type = TwDefineEnum("NoiseType", noise_type_array, 4);
-	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_type, " group=Noise ");
+	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_values.type, " group=Noise ");
 
 	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.width, " group=Noise step=1");
 	TwAddVarCB(bar, "noise_height", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_values.height, " group=Noise step=1");
@@ -247,7 +246,7 @@ void initAntTwBar() {
 
 	TwEnumVal noise_effect_array[] = { { NO_EFFECT, "NO_EFFECT" }, { ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { DISCRETIZE, "DISCRETIZE" } };
 	TwType noise_effect_type = TwDefineEnum("NoiseEffect", noise_effect_array, 4);
-	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_values.noise_effect, " group=Noise ");
+	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_values.effect, " group=Noise ");
 
 	/* Fractal */
 
@@ -257,7 +256,7 @@ void initAntTwBar() {
 	fractalType = TwDefineEnum("FractalType", fractalEV, 2);
 	TwAddVarCB(bar, "fractal_type", fractalType, setIntParamCallback, getIntParamCallback, &fractal_values.fractal_type, " group=Fractal ");
 
-	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_enable, " group=Fractal ");
+	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, &fractal_values.enable, " group=Fractal ");
 	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &fractal_values.H, " group=Fractal step=0.1");
 	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_values.lacunarity, " group=Fractal step=1 min=2");
 	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &fractal_values.octaves, " group=Fractal step=1 min=1");
@@ -271,14 +270,14 @@ void initAntTwBar() {
 	/* Water */
 
 	TwAddVarCB(bar, "enable", TW_TYPE_BOOLCPP, setBoolParamCallback, getBoolParamCallback, nullptr, " group=Water ");
-	TwAddVarCB(bar, "height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.height, " group=Water step=0.1");
-	TwAddVarCB(bar, "alpha", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.transparency, " group=Water step=0.1 min=0, max=1");
-	TwAddVarCB(bar, "depth_alpha_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.depth_alpha_factor, " group=Water step=0.1 min=0");
-	TwAddVarCB(bar, "depth_color_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.depth_color_factor, " group=Water step=0.1 min=0");
-	TwAddVarCB(bar, "reflection_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.reflection_factor, " group=Water step=0.1 min=0 max=1");
-	TwAddVarCB(bar, "red", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[0], " group=Water step=0.05 min=0 max=1");
-	TwAddVarCB(bar, "green", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[1], " group=Water step=0.05 min=0 max=1");
-	TwAddVarCB(bar, "blue", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water.color[2], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.height, " group=Water step=0.1");
+	TwAddVarCB(bar, "alpha", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.transparency, " group=Water step=0.1 min=0, max=1");
+	TwAddVarCB(bar, "depth_alpha_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.depth_alpha_factor, " group=Water step=0.1 min=0");
+	TwAddVarCB(bar, "depth_color_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.depth_color_factor, " group=Water step=0.1 min=0");
+	TwAddVarCB(bar, "reflection_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.reflection_factor, " group=Water step=0.1 min=0 max=1");
+	TwAddVarCB(bar, "red", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[0], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "green", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[1], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "blue", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[2], " group=Water step=0.05 min=0 max=1");
 
 	/* I/O */
 
@@ -297,77 +296,11 @@ void init(){
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
     
-
-
-	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-
-	grid_model_matrix = mat4::Identity();
-	water_model_matrix = mat4::Identity();
-
-	cam_pos = vec3(0.0f, 2.0f, 4.0f);
-	cam_dir = vec3(0.0f, 0.0f, 0.0f);
-	cam_up = vec3(0.0f, 1.0f, 0.0f);
-
-	view_matrix = lookAt(cam_pos, cam_dir, cam_up);
-
-	glGenTextures(1, &tex_texture1);
-	glBindTexture(GL_TEXTURE_2D, tex_texture1);
-	glfwLoadTexture2D("textures/tex_grass.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glGenTextures(1, &tex_texture2);
-	glBindTexture(GL_TEXTURE_2D, tex_texture2);
-	glfwLoadTexture2D("textures/tex_deep_fire.tga" /* aka tex_rock.tga */, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glGenTextures(1, &tex_texture3);
-	glBindTexture(GL_TEXTURE_2D, tex_texture3);
-	glfwLoadTexture2D("textures/tex_sahara.tga" /* aka tex_sand.tga */, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glGenTextures(1, &tex_texture4);
-	glBindTexture(GL_TEXTURE_2D, tex_texture4);
-	glfwLoadTexture2D("textures/tex_snow.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	box.init();
-	grid.init();
-	grid.setMainTexture(tex_texture1, tex_texture2, tex_texture3, tex_texture4);
-	tex_mirror = fbw.init();
-	water.init();
-	sky.init();
-
-	// --- Noise ---
-	noise_values.noise_type = PERLIN_NOISE;
-	noise_values.noise_effect = NO_EFFECT;
-	noise_values.height = 1;
-	noise_values.width = 1;
-	noise_values.offset = 0.0f;
-	noise_values.amplitude = 1.0f;
-	noise_values.seed = glfwGetTime();
-	noise_values.seed -= floor(noise_values.seed);
-
-	// --- Fractal ---
-	fractal_values.fractal_type = FBM;
-	fractal_values.fractal_effect = NO_EFFECT;
-	fractal_values.amplitude = 1.0f;
-	fractal_values.offset = 0.0f;
-	fractal_values.H = 0.8f;
-	fractal_values.lacunarity = 2;
-	fractal_values.octaves = 6;
-	fractal_enable = true;
+	// All in main.h
+	initParams();
+	initTextures();
+	initViewMatrices();
+	initSceneObjects();
 
 	compute_height_map();
 
@@ -390,15 +323,16 @@ void display(){
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(grid_model_matrix, view_matrix_mirrored, projection_matrix, true);
+		grid.draw(view_matrix_mirrored, projection_matrix, true);
 	fbw.unbind();
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	grid.draw(grid_model_matrix, view_matrix, projection_matrix, false);
-	water.draw(water_model_matrix, view_matrix, projection_matrix);
-	box.draw(grid_model_matrix, view_matrix, projection_matrix);
-	sky.draw(grid_model_matrix, view_matrix, projection_matrix);
+
+	grid.draw(view_matrix, projection_matrix, false);
+	water.draw(view_matrix, projection_matrix);
+	box.draw(view_matrix, projection_matrix);
+	sky.draw(view_matrix, projection_matrix);
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();

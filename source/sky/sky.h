@@ -10,6 +10,8 @@ public :
 		GLuint _vao;
 		GLuint _vbo;
 		GLuint _pid;
+
+		mat4 model = mat4::Identity();
 	protected:
 		
 
@@ -86,7 +88,7 @@ public :
 			}
 
 			vector<const GLchar*> faces;
-			faces.push_back("textures/skybox/swagnuage/XN.tga");
+			faces.push_back("textures/skybox/swagnuage/XN.tga"); 
 			faces.push_back("textures/skybox/swagnuage/XP.tga");
 			faces.push_back("textures/skybox/swagnuage/YN.tga");
 			faces.push_back("textures/skybox/swagnuage/YP.tga");
@@ -121,7 +123,7 @@ public :
 			glDeleteProgram(_pid);
 		}
 
-		void draw(const mat4& model, const mat4& view, const mat4& projection)
+		void draw(const mat4& view, const mat4& projection)
 		{
 			glUseProgram(_pid);
 			glBindVertexArray(_vao);
@@ -129,7 +131,7 @@ public :
 			glDepthMask(GL_FALSE);
 
 			// Setup MVP
-			mat4 MVP = projection*view*model;
+			mat4 MVP = projection*view;
 			GLuint MVP_id = glGetUniformLocation(_pid, "mvp");
 			glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
 			

@@ -25,7 +25,7 @@ void main() {
 		color = vec4(0.3f, 0.3f, 0.3f, 1.0f);
 	} else if (fragment_pos[1] < water_height) {
 		// Water
-		color = vec4(0.5, 0.5, 1, 0.5);//vec4(mix(texture_color, mirror_color, vec3(water_reflection_factor)), alpha);
+		color = vec4(water_color, water_transparency);
 	} else {
 		// Air
 		discard;

@@ -5,6 +5,7 @@ class Water {
 
 private:
 	int grid_size = 2048;
+	mat4 model = mat4::Identity();
 
 protected:
 	GLuint _vao;          ///< vertex array object
@@ -19,28 +20,15 @@ protected:
 
 public:
 
-	float height;
-	float transparency;
-	float color[3];
-	float depth_alpha_factor;
-	float depth_color_factor;
-	float reflection_factor;
+	WaterParams* water_params;
 
-	void init(){
+	void init(WaterParams* water_params){
 		///--- Compile the shaders
 		_pid = opengp::load_shaders("water/Water_vshader.glsl", "water/Water_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
 		glUseProgram(_pid);
 
-		height = 0;
-		transparency = 0.9;
-		depth_alpha_factor = 0;
-		depth_color_factor = 0;
-		reflection_factor = 0.25;
-
-		color[0] = 0.1f;
-		color[1] = 0.3f;
-		color[2] = 0.6f;
+		this->water_params = water_params;
 
 		///--- Vertex one vertex Array
 		glGenVertexArrays(1, &_vao);
@@ -123,17 +111,11 @@ public:
 		_tex_height = tex_height;
 	}
 
-	void draw(const mat4& model, const mat4& view, const mat4& projection){
+	void draw(const mat4& view, const mat4& projection){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 
-		// Send Uniforms
-		glUniform1f(glGetUniformLocation(_pid, "water_height"), height);
-		glUniform1f(glGetUniformLocation(_pid, "water_transparency"), transparency);
-		glUniform3f(glGetUniformLocation(_pid, "water_color"), color[0], color[1], color[2]);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_alpha_factor"), depth_alpha_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_depth_color_factor"), depth_color_factor);
-		glUniform1f(glGetUniformLocation(_pid, "water_reflection_factor"), reflection_factor);
+		water_params->setup(_pid);
 
 		///--- Texture uniforms
 		GLuint tex_id = glGetUniformLocation(_pid, "tex_main");

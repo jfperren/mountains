@@ -1,28 +1,13 @@
 #pragma once
 #include "icg_common.h"
+#include "../constants.h"
 
-struct Light{
-	vec3 Ia = vec3(0.7f, 0.7f, 0.7f);
-	vec3 Id = vec3(0.3f, 0.3f, 0.3f);
-
-	vec3 light_pos = vec3(2.0f, 2.0f, 2.0f);
-
-	///--- Pass light properties to the shader
-	void setup(GLuint _pid){
-		glUseProgram(_pid);
-		GLuint light_pos_id = glGetUniformLocation(_pid, "light_pos"); //Given in camera space
-		GLuint Ia_id = glGetUniformLocation(_pid, "Ia");
-		GLuint Id_id = glGetUniformLocation(_pid, "Id");
-		glUniform3fv(light_pos_id, ONE, light_pos.data());
-		glUniform3fv(Ia_id, ONE, Ia.data());
-		glUniform3fv(Id_id, ONE, Id.data());
-	}
-};
-
-class Grid : public Light{
+class Grid {
 
 private:
 	static const int grid_dim_ = 2048;
+	LightParams* light_params;
+	mat4 model = mat4::Identity();
 
 protected:
     GLuint _vao;          ///< vertex array object
@@ -44,7 +29,10 @@ public:
 		return i + j * grid_dim;
 	}
 
-    void init(){
+    void init(LightParams* light_params){
+
+		this->light_params = light_params;
+
         // Compile the shaders
         _pid = opengp::load_shaders("grid/Grid_vshader.glsl", "grid/Grid_fshader.glsl");
         if(!_pid) exit(EXIT_FAILURE);       
@@ -158,11 +146,11 @@ public:
 		glUniform1i(tex_snow_id, 4 /*GL_TEXTURE4*/);
 	}
 
-    void draw(const mat4& model, const mat4& view, const mat4& projection, bool only_reflect=false){
+    void draw(const mat4& view, const mat4& projection, bool only_reflect=false){
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
-		Light::setup(_pid);
+		light_params->setup(_pid);
 
 		// Texture uniforms
 		glUniform1i(glGetUniformLocation(_pid, "tex_main"), 0 /*GL_TEXTURE1*/);
@@ -201,7 +189,7 @@ public:
 
         // Draw
         glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);        
+        glBindVertexArray(0);
         glUseProgram(0);
     }
 };
