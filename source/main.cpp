@@ -300,7 +300,6 @@ void init(){
 
 
 	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-	trackball_matrix = mat4::Identity();
 
 	grid_model_matrix = mat4::Identity();
 	water_model_matrix = mat4::Identity();
@@ -310,8 +309,6 @@ void init(){
 	cam_up = vec3(0.0f, 1.0f, 0.0f);
 
 	view_matrix = lookAt(cam_pos, cam_dir, cam_up);
-
-    trackball_matrix = mat4::Identity();
 
 	glGenTextures(1, &tex_texture1);
 	glBindTexture(GL_TEXTURE_2D, tex_texture1);
