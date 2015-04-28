@@ -1,134 +1,5 @@
 #include "main.h"
 
-// Dumps noise and fractal info to file_name
-void writeFile(string file_name) {
-	ofstream myfile(file_name);
-
-	if (myfile.is_open()) {
-
-		/* Write header */
-		myfile << kHeaderString << endl;
-
-		/* The order is not important */
-
-		/* Noise */
-		myfile << "noise_type " << noise_values.type << endl;
-		myfile << "noise_width " << noise_values.width << endl;
-		myfile << "noise_height " << noise_values.height << endl;
-		myfile << "noise_offset " << noise_values.offset << endl;
-		myfile << "noise_amplitude " << noise_values.amplitude << endl;
-		myfile << "noise_seed " << noise_values.seed << endl;
-
-		/* Fractal */
-		if (fractal_values.enable) {
-			myfile << "fractal_enable " << "true" << endl;
-			myfile << "fractal_H " << fractal_values.H << endl;
-			myfile << "fractal_lacunarity " << fractal_values.lacunarity << endl;
-			myfile << "fractal_octaves " << fractal_values.octaves << endl;
-			myfile << "fractal_offset " << fractal_values.offset << endl;
-			myfile << "fractal_amplitude " << fractal_values.amplitude << endl;
-
-		} else {
-			myfile << "fractal_enable " << "false" << endl;
-		}
-
-		myfile.close();
-		cout << "Info: Data saved to " << file_name << endl;
-	} else {
-		cout << "Error: Could not save data: the file " << file_name << " could not be opened." << endl;
-	}
-}
-
-void loadFromFile(string file_name) {
-	string line;
-	ifstream myfile(file_name);
-	if (myfile.is_open())
-	{
-
-		int line_no = 0;
-
-		while (getline(myfile, line))
-		{
-			line_no++;
-
-			if (line_no == 1) {
-				if (line.compare(kHeaderString)) {
-					// the first line doesn't match the header -> illegal format
-					cout << "Error: Illegal header. Aborting load." << endl;
-					return;
-				}
-			}
-			string str = line;
-
-			// construct a stream from the string
-			stringstream strstr(str);
-
-			// use stream iterators to copy the stream to the vector as whitespace separated strings
-			istream_iterator<string> it(strstr);
-			istream_iterator<string> end;
-			vector<string> results(it, end);
-
-			// send the vector to stdout.
-			ostream_iterator<string> oit(cout);
-			copy(results.begin(), results.end(), oit);
-
-			/* Load fractal */
-			if (!results[0].compare("fractal_enable")) {
-				if (!results[1].compare("true")) {
-					fractal_values.enable = true;
-				}
-				else {
-				}
-			} else if (!results[0].compare("fractal_H")) {
-				fractal_values.H = ::atof(results[1].c_str());
-			} else if (!results[0].compare("fractal_lacunarity")) {
-				fractal_values.lacunarity = ::atoi(results[1].c_str());
-			} else if (!results[0].compare("fractal_octaves")) {
-				fractal_values.octaves = ::atoi(results[1].c_str());
-			} else if (!results[0].compare("fractal_offset")) {
-				fractal_values.offset = ::atof(results[1].c_str());
-			} else if (!results[0].compare("fractal_amplitude")) {
-				fractal_values.amplitude = ::atof(results[1].c_str());
-			}	/* Load noise */
-			else if (!results[0].compare("noise_type")) {
-				int type = ::atoi(results[1].c_str());
-				switch (type) {
-				case 0: noise_values.type = COPY_TEXTURE;
-					break;
-				case 1: noise_values.type = NO_NOISE;
-					break;
-				case 2: noise_values.type = RANDOM_NOISE;
-					break;
-				case 3: noise_values.type = PERLIN_NOISE;
-					break;
-				case 4: noise_values.type = PERLIN_NOISE_ABS;
-					break;
-				default:
-					cout << "Error: Unkown NoiseType" << endl;
-					break;
-				}
-
-			} else if (!results[0].compare("noise_width")) {
-				noise_values.width = ::atoi(results[1].c_str());
-			} else if (!results[0].compare("noise_height")) {
-				noise_values.height = ::atoi(results[1].c_str());
-			} else if (!results[0].compare("noise_offset")) {
-				noise_values.offset = ::atof(results[1].c_str());
-			} else if (!results[0].compare("noise_amplitude")) {
-				noise_values.amplitude = ::atof(results[1].c_str());
-			} else if (!results[0].compare("noise_seed")) {
-				noise_values.seed = ::atof(results[1].c_str());
-			}
-		}
-		
-		myfile.close();
-		cout << "Info: Data loaded from " << file_name << endl;
-	}
-	else {
-		cout << "Error: Could not load data: the file" << file_name << " could not be opened." << endl;
-	}
-}
-
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
     WIDTH = width;
@@ -205,7 +76,7 @@ void TW_CALL SaveCB(void * /*clientData*/)
 		g_file_name_load = g_file_name; // optional
 	}
 
-	writeFile(g_file_name);
+	writeFile(g_file_name, &noise_values, &fractal_values);
 }
 
 void TW_CALL LoadCB(void * /*clientData*/)
@@ -214,7 +85,7 @@ void TW_CALL LoadCB(void * /*clientData*/)
 		// Empty name
 		cout << "Error: Cannot load from empty name" << endl;
 	} else {
-		loadFromFile(g_file_name_load);
+		loadFromFile(g_file_name_load, &noise_values, &fractal_values);
 	}
 
 	// Update scene with the changes

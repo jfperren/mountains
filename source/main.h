@@ -19,6 +19,7 @@
 #include <algorithm>
 #include "box/BoxGrid.h"
 #include "constants.h"
+#include "io/IO.h"
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>

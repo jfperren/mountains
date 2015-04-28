@@ -1,6 +1,6 @@
 #pragma once
 
-const string kHeaderString = "HEADER: terrain data";
+const string IO_HEADER_STRING = "HEADER: terrain data";
 
 typedef enum {
 	COPY_TEXTURE,
