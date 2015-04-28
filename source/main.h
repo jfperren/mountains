@@ -132,7 +132,6 @@ void initSceneObjects() {
 	tex_mirror = fbw.init();
 	water.init(&water_params);
 	sky.init();
-	tex_mirror = fbw.init();
 }
 
 void initViewMatrices() {

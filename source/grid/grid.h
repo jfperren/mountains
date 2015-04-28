@@ -131,19 +131,19 @@ public:
 		
 		this->_tex_texture1 = t1;
 		GLuint tex_grass_id = glGetUniformLocation(_pid, "texture1");
-		glUniform1i(tex_grass_id, 1 /*GL_TEXTURE1*/);
+		glUniform1i(tex_grass_id, 11 /*GL_TEXTURE11*/);
 
 		this->_tex_texture2 = t2;
 		GLuint tex_rock_id = glGetUniformLocation(_pid, "texture2");
-		glUniform1i(tex_rock_id, 2 /*GL_TEXTURE2*/);
+		glUniform1i(tex_rock_id, 12 /*GL_TEXTURE12*/);
 
 		this->_tex_texture3 = t3;
 		GLuint tex_sand_id = glGetUniformLocation(_pid, "texture3");
-		glUniform1i(tex_sand_id, 3 /*GL_TEXTURE3*/);
+		glUniform1i(tex_sand_id, 13 /*GL_TEXTURE13*/);
 
 		this->_tex_texture4 = t4;
 		GLuint tex_snow_id = glGetUniformLocation(_pid, "texture4");
-		glUniform1i(tex_snow_id, 4 /*GL_TEXTURE4*/);
+		glUniform1i(tex_snow_id, 14 /*GL_TEXTURE14*/);
 	}
 
     void draw(const mat4& view, const mat4& projection, bool only_reflect=false){
@@ -153,12 +153,11 @@ public:
 		light_params->setup(_pid);
 
 		// Texture uniforms
-		glUniform1i(glGetUniformLocation(_pid, "tex_main"), 0 /*GL_TEXTURE1*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 1 /*GL_TEXTURE0*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture1"), 2 /*GL_TEXTURE2*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture2"), 3 /*GL_TEXTURE3*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture3"), 4 /*GL_TEXTURE4*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture4"), 5 /*GL_TEXTURE5*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 10 /*GL_TEXTURE10*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture1"), 11 /*GL_TEXTURE11*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture2"), 12 /*GL_TEXTURE12*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture3"), 13 /*GL_TEXTURE13*/);
+		glUniform1i(glGetUniformLocation(_pid, "tex_texture4"), 14 /*GL_TEXTURE14*/);
 
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
@@ -167,18 +166,15 @@ public:
 		}
 
         // Bind textures
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _tex_main);
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE10);
         glBindTexture(GL_TEXTURE_2D, _tex_height);
-
-		glActiveTexture(GL_TEXTURE2);
+		glActiveTexture(GL_TEXTURE11);
 		glBindTexture(GL_TEXTURE_2D, _tex_texture1);
-		glActiveTexture(GL_TEXTURE3);
+		glActiveTexture(GL_TEXTURE12);
 		glBindTexture(GL_TEXTURE_2D, _tex_texture2);
-		glActiveTexture(GL_TEXTURE4);
+		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_2D, _tex_texture3);
-		glActiveTexture(GL_TEXTURE5);
+		glActiveTexture(GL_TEXTURE14);
 		glBindTexture(GL_TEXTURE_2D, _tex_texture4);
 
 

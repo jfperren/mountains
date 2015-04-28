@@ -128,9 +128,9 @@ public:
 
 		///--- Texture uniforms
 		GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
-		glUniform1i(tex_height_id, 0 /*GL_TEXTURE1*/);
+		glUniform1i(tex_height_id, 15 /*GL_TEXTURE15*/);
 
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE15);
 		glBindTexture(GL_TEXTURE_2D, _tex_height);
 
 		// Setup MVP
