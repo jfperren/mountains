@@ -28,10 +28,12 @@ const float see_level = 0.0;
 const float sand_offset = 0.05;
 
 const float vegetation_start = 0.02;
-const float vegetation_threshold = 0.2;
+const float vegetation_threshold = 0.25;
 
 /** The point where snow begins to appear */
-const float snow_threshold = 0.5;
+const float snow_threshold = 0.6;
+
+const float snow_offset = 0.02;
 
 /* range from 0 to 1 in the reals.
    0: more grass
@@ -87,19 +89,29 @@ void main() {
 	if (height_to_texture <= see_level) {
 		// Mix sand and rock
 		texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture0, 10 * uv).xyz, alpha * scale_factor_rock_sand);
-	} else if (height_to_texture <= vegetation_start) {
-		// Mix sand_rock and rock_grass
+	} else if (height_to_texture <= vegetation_start - 0.005) {
+		// Mix sand + rock (depending on the steepness)
+		texture_tot = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture0, 10 * uv).xyz, alpha * 0.1);
 
-		vec3 sand_rock = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture0, 10 * uv).xyz, alpha * scale_factor_rock_sand);
+	} else if (height_to_texture <= vegetation_start + 0.005) {
+		// Fade from sand to grass
+		vec3 temp = mix(texture(tex_texture3, 60 * uv).xyz, texture(tex_texture0, 10 * uv).xyz, alpha * 0.1);
 		vec3 rock_grass = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_grass);
+		texture_tot = mix(temp, rock_grass, compute_linear_interpolation(vegetation_start - 0.005, vegetation_start + 0.005, height_to_texture));
 
-		texture_tot = mix(sand_rock, rock_grass, compute_linear_interpolation(see_level, vegetation_start, height_to_texture));
-	} else {
+	} else if (height_to_texture <= snow_threshold - snow_offset) {
+		texture_tot = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_grass);
+	}
+	else if (height_to_texture <= snow_threshold + snow_offset) {
 		// height > snow_threshold
 		// Mix grass+rock and snow
 
 		vec3 temp = mix(texture(tex_texture1, 10 * uv).xyz, texture(tex_texture2, 10 * uv).xyz, alpha * scale_factor_rock_grass);
-		texture_tot = mix(temp, texture(tex_texture4, 30 * uv).xyz, compute_linear_interpolation(vegetation_threshold, snow_threshold, height_to_texture));
+		texture_tot = mix(temp, texture(tex_texture4, 30 * uv).xyz, compute_linear_interpolation(snow_threshold - snow_offset, snow_threshold + snow_offset, height_to_texture));
+
+
+	} else {
+		texture_tot = texture(tex_texture4, 30 * uv).xyz;
 	}
 
 	//texture_tot = mix(texture(grass, 10 * uv).xyz, texture(rock, 10 * uv).xyz, alpha*scale_factor);
