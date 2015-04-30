@@ -21,7 +21,7 @@
 #include "../constants.h"
 
 // Dumps noise and fractal info to file_name
-void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params) {
+void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params, WaterParams *water_params) {
 	ofstream myfile(file_name);
 
 	if (myfile.is_open()) {
@@ -53,15 +53,23 @@ void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fract
 			myfile << "fractal_enable " << "false" << endl;
 		}
 
+		/* Water */
+		myfile << "water_height " << water_params->height << endl;
+		myfile << "water_transparency " << water_params->transparency << endl;
+		myfile << "water_depth_alpha_factor " << water_params->depth_alpha_factor << endl;
+		myfile << "water_depth_color_factor " << water_params->depth_color_factor << endl;
+		myfile << "water_color (" << water_params->color[0] << "," << water_params->color[1] << "," << water_params->color[2] << ")" << endl;
+
+
 		myfile.close();
-		cout << "Info: Data saved to " << file_name << endl;
+		std::cout << "[Info] Data saved to " << file_name << endl;
 	}
 	else {
-		cout << "Error: Could not save data: the file " << file_name << " could not be opened." << endl;
+		std::cout << "[Error] Could not save data: the file " << file_name << " could not be opened." << endl;
 	}
 }
 
-void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params) {
+void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params, WaterParams *water_params) {
 	string line;
 	ifstream myfile(file_name);
 	if (myfile.is_open())
@@ -76,7 +84,7 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 			if (line_no == 1) {
 				if (line.compare(IO_HEADER_STRING)) {
 					// the first line doesn't match the header -> illegal format
-					cout << "Error: Illegal header. Aborting load." << endl;
+					std::cout << "Error: Illegal header. Aborting load." << endl;
 					return;
 				}
 			}
@@ -91,7 +99,7 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 			vector<string> results(it, end);
 
 			// send the vector to stdout.
-			ostream_iterator<string> oit(cout);
+			ostream_iterator<string> oit(std::cout);
 			copy(results.begin(), results.end(), oit);
 
 			/* Load fractal */
@@ -116,7 +124,9 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 			}
 			else if (!results[0].compare("fractal_amplitude")) {
 				fractal_params->amplitude = ::atof(results[1].c_str());
-			}	/* Load noise */
+			}
+			
+			/* Load noise */
 			else if (!results[0].compare("noise_type")) {
 				int type = ::atoi(results[1].c_str());
 				switch (type) {
@@ -131,7 +141,7 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 				case 4: noise_params->type = PERLIN_NOISE_ABS;
 					break;
 				default:
-					cout << "Error: Unkown NoiseType" << endl;
+					std::cout << "[Error] Unkown NoiseType" << endl;
 					break;
 				}
 
@@ -151,12 +161,35 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 			else if (!results[0].compare("noise_seed")) {
 				noise_params->seed = ::atof(results[1].c_str());
 			}
+
+			/* Load water */
+			else if (!results[0].compare("water_height")) {
+				water_params->height = ::atof(results[1].c_str());
+			}
+			else if (!results[0].compare("water_transparency")) {
+				water_params->transparency = ::atof(results[1].c_str());
+			}
+			else if (!results[0].compare("water_depth_alpha_factor")) {
+				water_params->depth_alpha_factor = ::atof(results[1].c_str());
+			}
+			else if (!results[0].compare("water_depth_color_factor")) {
+				water_params->depth_color_factor = ::atof(results[1].c_str());
+			}
+			else if (!results[0].compare("water_color")) {
+				/* TODO load color */
+			}
 		}
 
+		/*myfile << "water_height " << water_params->height << endl;
+		myfile << "water_transparency " << water_params->transparency << endl;
+		myfile << "water_depth_alpha_factor " << water_params->depth_alpha_factor << endl;
+		myfile << "water_depth_color_factor " << water_params->depth_color_factor << endl;
+		myfile << "water_color (" << water_params->color[0] << "," << water_params->color[1] << "," << water_params->color[2] << endl;*/
+
 		myfile.close();
-		cout << "Info: Data loaded from " << file_name << endl;
+		std::cout << "[Info] Data loaded from " << file_name << endl;
 	}
 	else {
-		cout << "Error: Could not load data: the file" << file_name << " could not be opened." << endl;
+		std::cout << "[Error] Could not load data: the file" << file_name << " could not be opened." << endl;
 	}
 }

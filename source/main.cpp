@@ -76,16 +76,16 @@ void TW_CALL SaveCB(void * /*clientData*/)
 		g_file_name_load = g_file_name; // optional
 	}
 
-	writeFile(g_file_name, &noise_values, &fractal_values);
+	writeFile(g_file_name, &noise_values, &fractal_values, &water_params);
 }
 
 void TW_CALL LoadCB(void * /*clientData*/)
 {
 	if (!g_file_name_load.compare("")) {
 		// Empty name
-		cout << "Error: Cannot load from empty name" << endl;
+		std::cout << "Error: Cannot load from empty name" << endl;
 	} else {
-		loadFromFile(g_file_name_load, &noise_values, &fractal_values);
+		loadFromFile(g_file_name_load, &noise_values, &fractal_values, &water_params);
 	}
 
 	// Update scene with the changes
