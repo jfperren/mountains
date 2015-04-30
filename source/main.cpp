@@ -33,6 +33,32 @@ void compute_height_map() {
 	water.setMirrorTexture(tex_mirror);
 }
 
+void keyboard(int key, int action) {
+	if (action == GLFW_RELEASE)
+		pressed_keys[key] = false;
+	if (action == GLFW_PRESS)
+		pressed_keys[key] = true;
+}
+
+void move() {
+	mat4 translation = mat4::Identity();
+
+	if (pressed_keys[65]) // A
+		translation = Eigen::Affine3f(Eigen::Translation3f(-DX, 0, 0)).matrix();
+	if (pressed_keys[87]) // W
+		translation = Eigen::Affine3f(Eigen::Translation3f(0, 0, -DX)).matrix();
+	if (pressed_keys[83]) // S
+		translation = Eigen::Affine3f(Eigen::Translation3f(0, 0, DX)).matrix();
+	if (pressed_keys[68]) // D
+		translation = Eigen::Affine3f(Eigen::Translation3f(DX, 0, 0)).matrix();
+	if (pressed_keys[32]) // SPACE
+		translation = Eigen::Affine3f(Eigen::Translation3f(0, DX, 0)).matrix();
+	if (pressed_keys[287]) // SHIFT
+		translation = Eigen::Affine3f(Eigen::Translation3f(0, -DX, 0)).matrix();
+	
+	cam_pos = (translation * vec4(cam_pos[0], cam_pos[1], cam_pos[2], 1.0f)).head<3>();
+}
+
 void TW_CALL setIntParamCallback(const void* value, void* clientData) {
 	*((int*)clientData) = *((int*)value);
 	compute_height_map();
@@ -188,6 +214,9 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	vec3 cam_center = cam_pos + cam_dir;
+	view_matrix = Eigen::lookAt(cam_pos, cam_center, cam_up);
+
 	vec3 cam_pos_mirrored = vec3(cam_pos[0], -cam_pos[1], cam_pos[2]);
 	mat4 view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_dir, cam_up);
 
@@ -204,6 +233,8 @@ void display(){
 	water.draw(view_matrix, projection_matrix);
 	box.draw(view_matrix, projection_matrix);
 	sky.draw(view_matrix, projection_matrix);
+
+	move();
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
@@ -230,20 +261,8 @@ void mouse_button(int button, int action) {
         vec2 p = transform_screen_coords(x_i, y_i);
         trackball.begin_drag(p.x(), p.y());
 		// Store the current state of the model matrix.
-		old_cam_pos = cam_pos;
+		old_cam_dir = cam_dir;
     }
-
-	// Zoom
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-		// Get 2-d vector of the mouse position on screen in range [-1, 1]
-		int x_i, y_i;
-		glfwGetMousePos(&x_i, &y_i);
-		vec2 p = transform_screen_coords(x_i, y_i);
-
-		// Store y value & current state of the view matrix
-		zoom_start_y = p[1];
-		old_cam_pos = cam_pos;
-	}
 }
 
 void mouse_pos(int x, int y) {
@@ -252,11 +271,7 @@ void mouse_pos(int x, int y) {
         vec2 p = transform_screen_coords(x, y);
 		// Compute the new trackball_matrix
 
-		vec4 cam_pos4 = vec4(old_cam_pos[0], old_cam_pos[1], old_cam_pos[2], 0);
-
-		cam_pos4 = trackball.drag(p[0], p[1]).inverse() * cam_pos4;
-
-		cam_pos = vec3(cam_pos4[0], cam_pos4[1], cam_pos4[2]);
+		cam_dir = (trackball.drag(p[0], p[1]).inverse() * vec4(old_cam_dir[0], old_cam_dir[1], old_cam_dir[2], 1.0f)).head<3>();
 
 		view_matrix = lookAt(cam_pos, cam_dir, cam_up);
     }
@@ -309,6 +324,9 @@ void GLFWCALL OnMouseWheel(int pos)
 // Callback function called by GLFW on key event
 void GLFWCALL OnKey(int glfwKey, int glfwAction)
 {
+	
+	keyboard(glfwKey, glfwAction);
+	
 	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
 	{
 		if (glfwKey == GLFW_KEY_ESC && glfwAction == GLFW_PRESS) // Want to quit?

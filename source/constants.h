@@ -2,6 +2,8 @@
 
 const string IO_HEADER_STRING = "HEADER: terrain data";
 
+float DX = 0.01f;
+
 typedef enum {
 	COPY_TEXTURE,
 	NO_NOISE,

@@ -39,6 +39,7 @@ vec3 cam_up;
 vec3 cam_pos;
 vec3 cam_dir;
 vec3 old_cam_pos;
+vec3 old_cam_dir;
 mat4 projection_matrix;
 mat4 view_matrix;
 
@@ -93,6 +94,8 @@ LightParams light_params;
 string g_file_name = "";
 string g_file_name_load = "";
 
+std::map<int, bool> pressed_keys;
+
 void initParams() {
 	
 	// --- Noise ---
@@ -142,7 +145,7 @@ void initViewMatrices() {
 	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
 	cam_pos = vec3(0.0f, 2.0f, 4.0f);
-	cam_dir = vec3(0.0f, 0.0f, 0.0f);
+	cam_dir = vec3(0.0f, -1.0f, -2.0f);
 	cam_up = vec3(0.0f, 1.0f, 0.0f);
 
 	view_matrix = lookAt(cam_pos, cam_dir, cam_up);
