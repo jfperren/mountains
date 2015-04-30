@@ -117,7 +117,7 @@ void initParams() {
 
 	// --- Water ---
 	water_params.height = 0;
-	water_params.color = vec3(0.9f, 0.5f, 0.9f);
+	water_params.color = vec3(0.5f, 0.5f, 0.9f);
 	water_params.depth_alpha_factor = 0.0f;
 	water_params.depth_color_factor = 0.0f;
 	water_params.transparency = 0.9f;
@@ -168,7 +168,7 @@ void initTextures() {
 
 	glGenTextures(1, &tex_texture2);
 	glBindTexture(GL_TEXTURE_2D, tex_texture2);
-	glfwLoadTexture2D("textures/terrains/tex_deep_fire.tga" /* aka tex_rock.tga */, 0);
+	glfwLoadTexture2D("textures/terrains/tex_rock_underwater.tga" /* aka tex_rock.tga */, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

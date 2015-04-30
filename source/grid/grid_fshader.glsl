@@ -25,22 +25,22 @@ in vec2 uv;
 const float see_level = 0.0;
 
 /** The higher point of the beach */
-const float sand_offset = 0.01;
+const float sand_offset = 0.05;
 
 const float vegetation_start = 0.02;
 const float vegetation_threshold = 0.2;
 
 /** The point where snow begins to appear */
-const float snow_threshold = 0.7;
+const float snow_threshold = 0.5;
 
 /* range from 0 to 1 in the reals.
-   1: more rock
-   2: more grass*/
-const float scale_factor_rock_grass = 0.8;
+   0: more grass
+   1: more rock*/
+const float scale_factor_rock_grass = 0.3;
 
 /* range from 0 to 1 in the reals.
-   1: more rock
-   2: more sand*/
+   0: more rock
+   1: more sand*/
 const float scale_factor_rock_sand = 0.6;
 
 /** Computes the coefficient used as the 3rd arg of mix(3).
