@@ -20,7 +20,7 @@
 #include "../box/BoxGrid.h"
 #include "../constants.h"
 
-// Dumps noise and fractal info to file_name
+/* Writes noise, fractal and water info to file_name */
 void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params, WaterParams *water_params) {
 	ofstream myfile(file_name);
 
@@ -58,7 +58,7 @@ void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fract
 		myfile << "water_transparency " << water_params->transparency << endl;
 		myfile << "water_depth_alpha_factor " << water_params->depth_alpha_factor << endl;
 		myfile << "water_depth_color_factor " << water_params->depth_color_factor << endl;
-		myfile << "water_color (" << water_params->color[0] << "," << water_params->color[1] << "," << water_params->color[2] << ")" << endl;
+		myfile << "water_color " << water_params->color[0] << ' ' << water_params->color[1] << ' ' << water_params->color[2] << endl;
 
 
 		myfile.close();
@@ -98,9 +98,6 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 			istream_iterator<string> end;
 			vector<string> results(it, end);
 
-			// send the vector to stdout.
-			ostream_iterator<string> oit(std::cout);
-			copy(results.begin(), results.end(), oit);
 
 			/* Load fractal */
 			if (!results[0].compare("fractal_enable")) {
@@ -176,15 +173,9 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 				water_params->depth_color_factor = ::atof(results[1].c_str());
 			}
 			else if (!results[0].compare("water_color")) {
-				/* TODO load color */
+				water_params->color = vec3(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()));
 			}
 		}
-
-		/*myfile << "water_height " << water_params->height << endl;
-		myfile << "water_transparency " << water_params->transparency << endl;
-		myfile << "water_depth_alpha_factor " << water_params->depth_alpha_factor << endl;
-		myfile << "water_depth_color_factor " << water_params->depth_color_factor << endl;
-		myfile << "water_color (" << water_params->color[0] << "," << water_params->color[1] << "," << water_params->color[2] << endl;*/
 
 		myfile.close();
 		std::cout << "[Info] Data loaded from " << file_name << endl;

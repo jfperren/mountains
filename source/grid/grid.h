@@ -131,7 +131,7 @@ public:
 		// Pass texture to instance
 		
 		this->_tex_texture0 = t0;
-		GLuint tex_texture0_id = glGetUniformLocation(_pid, "texture1");
+		GLuint tex_texture0_id = glGetUniformLocation(_pid, "texture0");
 		glUniform1i(tex_texture0_id, 10 /*GL_TEXTURE11*/);
 
 		this->_tex_texture1 = t1;

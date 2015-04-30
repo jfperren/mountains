@@ -71,7 +71,7 @@ void TW_CALL SaveCB(void * /*clientData*/)
 {
 	if (!g_file_name.compare("")) {
 		std::stringstream sstm;
-		sstm << "mountain-" << glfwGetTime() << ".terrain";
+		sstm << "terrain-" << glfwGetTime() << ".terrain";
 		g_file_name = sstm.str();
 		g_file_name_load = g_file_name; // optional
 	}
@@ -83,7 +83,7 @@ void TW_CALL LoadCB(void * /*clientData*/)
 {
 	if (!g_file_name_load.compare("")) {
 		// Empty name
-		std::cout << "Error: Cannot load from empty name" << endl;
+		std::cout << "[Error] Cannot load from empty name" << endl;
 	} else {
 		loadFromFile(g_file_name_load, &noise_values, &fractal_values, &water_params);
 	}
