@@ -144,7 +144,7 @@ void initParams() {
 
 void initSceneObjects() {
 	box.init(&water_params);
-	grid.init(&light_params);
+	grid.init(&grid_params, &light_params);
 	grid.setMainTexture(tex_texture0, tex_texture1, tex_texture2, tex_texture3, tex_texture4);
 	tex_mirror = fbw.init();
 	water.init(&water_params);

@@ -7,6 +7,7 @@ class Grid {
 private:
 	static const int grid_dim_ = 2048;
 	LightParams* light_params;
+	GridParams* _grid_params;
 	mat4 model = mat4::Identity();
 
 protected:
@@ -26,13 +27,14 @@ protected:
     
 public:    
 
-	int get_vertex_index(int i, int j, int grid_dim) {
-		return i + j * grid_dim;
+	int get_vertex_index(int i, int j) {
+		return i + j * _grid_params->chunk_resolution * _grid_params->length_in_chunks;
 	}
 
-    void init(LightParams* light_params){
+    void init(GridParams* grid_params, LightParams* light_params){
 
 		this->light_params = light_params;
+		_grid_params = grid_params;
 
         // Compile the shaders
         _pid = opengp::load_shaders("grid/Grid_vshader.glsl", "grid/Grid_fshader.glsl");
@@ -46,31 +48,32 @@ public:
         // Vertex coordinates and indices
         {
         	std::vector<GLfloat> vertices;
-            	std::vector<GLuint> indices;
+            std::vector<GLuint> indices;
             	
-            	// Grid dimension
-            	int grid_dim = 100;
+            // Grid dimension
+			int grid_length = _grid_params->chunk_resolution * _grid_params->length_in_chunks;
+			int grid_width = _grid_params->chunk_resolution * _grid_params->width_in_chunks;
 
 			// Put vertex positions
-			for (int i = 0; i < grid_dim; i++) {
-				for (int j = 0; j < grid_dim; j++) {
-					float x =  float(i) * (2.0f / (grid_dim - 1)) - 1;
-					float y =  float(j) * (2.0f / (grid_dim - 1)) - 1;
+			for (int i = 0; i < grid_length ; i++) {
+				for (int j = 0; j < grid_width; j++) {
+					float x = float(i) * (_grid_params->length_in_chunks * 2.0f / (grid_length - 1)) - _grid_params->length_in_chunks;
+					float y = float(j) * (_grid_params->width_in_chunks * 2.0f / (grid_width - 1)) - _grid_params->width_in_chunks;
 					vertices.push_back(x);
 					vertices.push_back(y);
 				}
 			}
 	
-			for (int i = 0; i < grid_dim - 1; i++) {
-				for (int j = 0; j < grid_dim - 1; j++) {
+			for (int i = 0; i < grid_length - 1; i++) {
+				for (int j = 0; j < grid_width - 1; j++) {
 					// triangle (i,j), (i+1, j), (i, j+1)
-					indices.push_back(get_vertex_index(i, j, grid_dim));
-					indices.push_back(get_vertex_index(i+1, j, grid_dim));
-					indices.push_back(get_vertex_index(i, j+1, grid_dim));
+					indices.push_back(get_vertex_index(i, j));
+					indices.push_back(get_vertex_index(i+1, j));
+					indices.push_back(get_vertex_index(i, j+1));
 				
-					indices.push_back(get_vertex_index(i+1, j, grid_dim));
-					indices.push_back(get_vertex_index(i, j+1, grid_dim));
-					indices.push_back(get_vertex_index(i+1, j+1, grid_dim));
+					indices.push_back(get_vertex_index(i+1, j));
+					indices.push_back(get_vertex_index(i, j+1));
+					indices.push_back(get_vertex_index(i+1, j+1));
 				}
 			}
 
