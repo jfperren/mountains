@@ -1,7 +1,7 @@
 #pragma once
 
 #include "icg_common.h"
-#include "../trackball/Trackball.h"
+#include "../camera/camera.h"
 #include "../grid/Grid.h"
 #include "../framebuffer/Framebuffer.h"
 #include "../framebuffer/FramebufferWater.h"

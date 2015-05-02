@@ -2,8 +2,6 @@
 
 const string IO_HEADER_STRING = "HEADER: terrain data";
 
-float DX = 0.01f;
-
 typedef enum {
 	COPY_TEXTURE,
 	NO_NOISE,
@@ -27,6 +25,11 @@ typedef enum {
 } Effect;
 
 const static int PIXELS_PER_UNIT = 2048;
+
+typedef struct WindowParams {
+	int width;
+	int height;
+};
 
 typedef struct GridParams {
 	int grid_size;

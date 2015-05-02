@@ -22,7 +22,7 @@ void main() {
 	// Check if we need to take it into account
 	if (fragment_pos[1] < grid_height) {
 		// Solid base
-		color = vec4(0.3f, 0.3f, 0.3f, 1.0f);
+		color = vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	} else if (fragment_pos[1] < water_height) {
 		// Water
 		color = vec4(water_color, water_transparency);

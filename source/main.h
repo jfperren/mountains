@@ -1,7 +1,7 @@
 #pragma once
 
 #include "icg_common.h"
-#include "trackball/Trackball.h"
+#include "camera/camera.h"
 #include "grid/Grid.h"
 #include "framebuffer/Framebuffer.h"
 #include "framebuffer/FramebufferWater.h"
@@ -28,23 +28,12 @@ TwBar *bar;
 
 using namespace std;
 
+const int WIDTH = 800;
+const int HEIGHT = 600;
+
 // --- Window --- //
 
-int WIDTH = 800;
-int HEIGHT = 600;
-
-// --- View --- //
-
-vec3 cam_up;
-vec3 cam_pos;
-vec3 cam_dir;
-vec3 old_cam_pos;
-vec3 old_cam_dir;
-mat4 projection_matrix;
-mat4 view_matrix;
-
-Trackball trackball;
-float zoom_start_y;
+WindowParams window_params{ WIDTH, HEIGHT };
 
 // --- Scene Objects --- // 
 
@@ -94,9 +83,21 @@ LightParams light_params;
 string g_file_name = "";
 string g_file_name_load = "";
 
-std::map<int, bool> pressed_keys;
+Camera camera(&window_params);
+
+// --- Callbacks ---
+void GLFWCALL OnWindowSize(int width, int height);
+void GLFWCALL OnChar(int glfwChar, int glfwAction);
+void GLFWCALL OnKey(int glfwKey, int glfwAction);
+void GLFWCALL OnMouseWheel(int pos);
+void GLFWCALL OnMousePos(int mouseX, int mouseY);
+void GLFWCALL OnMouseButton(int glfwButton, int glfwAction);
 
 void initParams() {
+
+	// --- Window ---
+	window_params.width = WIDTH;
+	window_params.height = HEIGHT;
 	
 	// --- Noise ---
 	noise_values.type = PERLIN_NOISE;
@@ -139,16 +140,6 @@ void initSceneObjects() {
 	tex_mirror = fbw.init();
 	water.init(&water_params);
 	sky.init();
-}
-
-void initViewMatrices() {
-	projection_matrix = Eigen::perspective(45.0f, WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-
-	cam_pos = vec3(0.0f, 2.0f, 4.0f);
-	cam_dir = vec3(0.0f, -1.0f, -2.0f);
-	cam_up = vec3(0.0f, 1.0f, 0.0f);
-
-	view_matrix = lookAt(cam_pos, cam_dir, cam_up);
 }
 
 void initTextures() {
