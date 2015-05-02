@@ -57,8 +57,8 @@ public:
 			// Put vertex positions
 			for (int i = 0; i < grid_length ; i++) {
 				for (int j = 0; j < grid_width; j++) {
-					float x = float(i) * (_grid_params->length_in_chunks * 2.0f / (grid_length - 1)) - _grid_params->length_in_chunks;
-					float y = float(j) * (_grid_params->width_in_chunks * 2.0f / (grid_width - 1)) - _grid_params->width_in_chunks;
+					float x = float(i) * (_grid_params->length_in_chunks / (grid_length - 1.0f)) - _grid_params->length_in_chunks/2.0f;
+					float y = float(j) * (_grid_params->width_in_chunks / (grid_width - 1.0f)) - _grid_params->width_in_chunks/2.0f;
 					vertices.push_back(x);
 					vertices.push_back(y);
 				}
@@ -159,6 +159,7 @@ public:
         glBindVertexArray(_vao);
 
 		light_params->setup(_pid);
+		_grid_params->setup(_pid);
 
 		// Texture uniforms
 		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 10 /*GL_TEXTURE10*/);

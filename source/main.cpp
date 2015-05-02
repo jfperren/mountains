@@ -193,7 +193,7 @@ void display(){
 
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	//box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 
 	camera.move();
