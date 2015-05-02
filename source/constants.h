@@ -26,6 +26,11 @@ typedef enum {
 
 const static int PIXELS_PER_UNIT = 2048;
 
+typedef struct WindowParams {
+	int width;
+	int height;
+};
+
 typedef struct GridParams {
 	int grid_size;
 };

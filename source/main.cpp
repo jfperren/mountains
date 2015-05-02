@@ -2,18 +2,13 @@
 
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
-    WIDTH = width;
-    HEIGHT = height;
+    window_params.width = width;
+	window_params.height = height;
 
-    std::cout << "Window has been resized to " << WIDTH << "x" << HEIGHT << "." << std::endl;
-    glViewport(0, 0, WIDTH, HEIGHT);
-
-    GLfloat top = 1.0f;
-    GLfloat right = (GLfloat)WIDTH / HEIGHT * top;
-
+    glViewport(0, 0, width, height);
 	fbw.resize(width, height);
 
-    projection_matrix = Eigen::perspective(45.0f, (GLfloat)WIDTH / HEIGHT, 0.1f, 100.0f);
+	camera.compute_projection_matrix();
 }
 
 void compute_height_map() {
@@ -100,7 +95,7 @@ void initAntTwBar() {
 	TwInit(TW_OPENGL_CORE, NULL);
 	// Needed to work with dynamic strings
 	TwCopyStdStringToClientFunc(CopyStdStringToClient);
-	TwWindowSize(WIDTH, HEIGHT);
+	TwWindowSize(window_params.width, window_params.height);
 	bar = TwNewBar("Settings");
 
 	/* Noise */
@@ -170,7 +165,6 @@ void init(){
 	// All in main.h
 	initParams();
 	initTextures();
-	initViewMatrices();
 	initSceneObjects();
 
 	compute_height_map();
@@ -188,22 +182,21 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	vec3 cam_pos_mirrored = vec3(cam_pos[0], -cam_pos[1], cam_pos[2]);
-	mat4 view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_dir, cam_up);
-
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(view_matrix_mirrored, projection_matrix, true);
+		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
 
-	glViewport(0, 0, WIDTH, HEIGHT);
+	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	grid.draw(view_matrix, projection_matrix, false);
-	water.draw(view_matrix, projection_matrix);
-	box.draw(view_matrix, projection_matrix);
-	sky.draw(view_matrix, projection_matrix);
+	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+
+	camera.move();
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
@@ -216,64 +209,25 @@ void cleanup(){
 #endif
 }
 
-// Transforms glfw screen coordinates into normalized OpenGL coordinates.
-vec2 transform_screen_coords(int x, int y) {
-    return vec2(2.0f * (float)x / WIDTH - 1.0f,
-                1.0f - 2.0f * (float)y / HEIGHT);
+int main(int, char**){
+    glfwInitWindowSize(window_params.width, window_params.height);
+    glfwCreateWindow("Terrain");
+    glfwDisplayFunc(display);
+
+	glfwSetWindowSizeCallback(OnWindowSize);
+	glfwSetMouseButtonCallback(OnMouseButton);
+	glfwSetMousePosCallback(OnMousePos);
+	glfwSetMouseWheelCallback(OnMouseWheel);
+	glfwSetKeyCallback(OnKey);
+	glfwSetCharCallback(OnChar);
+
+    init();
+    glfwMainLoop();
+    cleanup();
+    return EXIT_SUCCESS;
 }
 
-void mouse_button(int button, int action) {
-	// Rotation
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        int x_i, y_i;
-        glfwGetMousePos(&x_i, &y_i);
-        vec2 p = transform_screen_coords(x_i, y_i);
-        trackball.begin_drag(p.x(), p.y());
-		// Store the current state of the model matrix.
-		old_cam_pos = cam_pos;
-    }
-
-	// Zoom
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-		// Get 2-d vector of the mouse position on screen in range [-1, 1]
-		int x_i, y_i;
-		glfwGetMousePos(&x_i, &y_i);
-		vec2 p = transform_screen_coords(x_i, y_i);
-
-		// Store y value & current state of the view matrix
-		zoom_start_y = p[1];
-		old_cam_pos = cam_pos;
-	}
-}
-
-void mouse_pos(int x, int y) {
-    // Rotation
-    if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        vec2 p = transform_screen_coords(x, y);
-		// Compute the new trackball_matrix
-
-		vec4 cam_pos4 = vec4(old_cam_pos[0], old_cam_pos[1], old_cam_pos[2], 0);
-
-		cam_pos4 = trackball.drag(p[0], p[1]).inverse() * cam_pos4;
-
-		cam_pos = vec3(cam_pos4[0], cam_pos4[1], cam_pos4[2]);
-
-		view_matrix = lookAt(cam_pos, cam_dir, cam_up);
-    }
-
-    // Zoom
-    if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-		// Get position on screen
-		vec2 p = transform_screen_coords(x, y);
-		// Zoom proportional to the distance
-		float zoom = (p[1] - zoom_start_y);
-		// Apply it to translate the view matrix along the z-axis
-		vec4 cam_pos4 = Eigen::Affine3f(Eigen::Translation3f(zoom * old_cam_pos)).matrix() * vec4(old_cam_pos[0], old_cam_pos[1], old_cam_pos[2], 1.0f);
-		cam_pos = vec3(cam_pos4[0], cam_pos4[1], cam_pos4[2]);
-
-		view_matrix = lookAt(cam_pos, cam_dir, cam_up);
-    }
-}
+// --- Callbacks --- //
 
 // Callback function called by GLFW when a mouse button is clicked
 void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
@@ -281,7 +235,7 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 	if (!TwEventMouseButtonGLFW(glfwButton, glfwAction))   // Send event to AntTweakBar
 	{
 		// Event not handled by AntTweakBar, we handle it ourselves
-		mouse_button(glfwButton, glfwAction);
+		camera.mouse_button(glfwButton, glfwAction);
 	}
 }
 
@@ -291,7 +245,7 @@ void GLFWCALL OnMousePos(int mouseX, int mouseY)
 {
 	if (!TwEventMousePosGLFW(mouseX, mouseY))  // Send event to AntTweakBar
 	{
-		mouse_pos(mouseX, mouseY);
+		camera.mouse_pos(mouseX, mouseY);
 	}
 }
 
@@ -309,6 +263,9 @@ void GLFWCALL OnMouseWheel(int pos)
 // Callback function called by GLFW on key event
 void GLFWCALL OnKey(int glfwKey, int glfwAction)
 {
+
+	camera.keyboard(glfwKey, glfwAction);
+
 	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
 	{
 		if (glfwKey == GLFW_KEY_ESC && glfwAction == GLFW_PRESS) // Want to quit?
@@ -338,22 +295,4 @@ void GLFWCALL OnWindowSize(int width, int height)
 	TwWindowSize(width, height);
 
 	resize_callback(width, height);
-}
-
-int main(int, char**){
-    glfwInitWindowSize(WIDTH, HEIGHT);
-    glfwCreateWindow("Terrain");
-    glfwDisplayFunc(display);
-
-	glfwSetWindowSizeCallback(OnWindowSize);
-	glfwSetMouseButtonCallback(OnMouseButton);
-	glfwSetMousePosCallback(OnMousePos);
-	glfwSetMouseWheelCallback(OnMouseWheel);
-	glfwSetKeyCallback(OnKey);
-	glfwSetCharCallback(OnChar);
-
-    init();
-    glfwMainLoop();
-    cleanup();
-    return EXIT_SUCCESS;
 }
