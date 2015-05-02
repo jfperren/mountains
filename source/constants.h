@@ -32,7 +32,10 @@ typedef struct WindowParams {
 };
 
 typedef struct GridParams {
-	int grid_size;
+	int length_in_chunks;
+	int width_in_chunks;
+
+	int chunk_resolution;
 };
 
 typedef struct NoiseParams {

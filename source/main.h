@@ -35,6 +35,10 @@ const int HEIGHT = 600;
 
 WindowParams window_params{ WIDTH, HEIGHT };
 
+// --- Grid --- //
+
+GridParams grid_params;
+
 // --- Scene Objects --- // 
 
 Grid grid;
@@ -98,6 +102,11 @@ void initParams() {
 	// --- Window ---
 	window_params.width = WIDTH;
 	window_params.height = HEIGHT;
+
+	// --- Grid ---
+	grid_params.chunk_resolution = 100;
+	grid_params.length_in_chunks = 3;
+	grid_params.width_in_chunks = 3;
 	
 	// --- Noise ---
 	noise_values.type = PERLIN_NOISE;
