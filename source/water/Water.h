@@ -6,11 +6,10 @@ class Water {
 private:
 	int grid_size = 2048;
 	mat4 model = mat4::Identity();
+	GridParams* _grid_params;
 
 protected:
 	GLuint _vao;          ///< vertex array object
-	GLuint _vbo_position; ///< memory buffer for positions
-	GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
 	GLuint _tex_main;
 	GLuint _tex_mirror;
@@ -22,13 +21,14 @@ public:
 
 	WaterParams* water_params;
 
-	void init(WaterParams* water_params){
+	void init(GridParams* grid_params, WaterParams* water_params){
 		///--- Compile the shaders
 		_pid = opengp::load_shaders("water/Water_vshader.glsl", "water/Water_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
 		glUseProgram(_pid);
 
 		this->water_params = water_params;
+		this->_grid_params = grid_params;
 
 		///--- Vertex one vertex Array
 		glGenVertexArrays(1, &_vao);
@@ -37,10 +37,10 @@ public:
 		///--- Vertex coordinates
 		{
 			const GLfloat vpoint[] = {	
-				/*V1*/ -1.0f, -1.0f,
-				/*V2*/ +1.0f, -1.0f,
-				/*V3*/ -1.0f, +1.0f,
-				/*V4*/ +1.0f, +1.0f
+				/*V1*/ -0.5f, -0.5f,
+				/*V2*/ +0.5f, -0.5f,
+				/*V3*/ -0.5f, +0.5f,
+				/*V4*/ +0.5f, +0.5f
 			};
 
 			///--- Buffer
@@ -52,25 +52,6 @@ public:
 			GLuint vertex_pos_id = glGetAttribLocation(_pid, "vertex_pos");
 			glEnableVertexAttribArray(vertex_pos_id);
 			glVertexAttribPointer(vertex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-		}
-
-		///--- Texture coordinates
-		{
-			const GLfloat vtexcoord[] = { 
-				/*V1*/ 0.0f, 0.0f,
-				/*V2*/ 1.0f, 0.0f,
-				/*V3*/ 0.0f, 1.0f,
-				/*V4*/ 1.0f, 1.0f };
-
-			///--- Buffer
-			glGenBuffers(1, &_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
-
-			///--- Attribute
-			GLuint vertex_tex_coord_id = glGetAttribLocation(_pid, "vertex_tex_coord");
-			glEnableVertexAttribArray(vertex_tex_coord_id);
-			glVertexAttribPointer(vertex_tex_coord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 		}
 
 		///--- Load texture
@@ -90,8 +71,7 @@ public:
 	}
 
 	void cleanup(){
-		glDeleteBuffers(1, &_vbo_position);
-		glDeleteBuffers(1, &_vbo_index);
+		glDeleteBuffers(1, &_vbo);
 		glDeleteVertexArrays(1, &_vao);
 		glDeleteProgram(_pid);
 	}
@@ -116,6 +96,7 @@ public:
 		glBindVertexArray(_vao);
 
 		water_params->setup(_pid);
+		_grid_params->setup(_pid);
 
 		///--- Texture uniforms
 		GLuint tex_id = glGetUniformLocation(_pid, "tex_main");
