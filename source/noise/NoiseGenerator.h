@@ -1,7 +1,6 @@
 #pragma once
 
 #include "icg_common.h"
-#include "../framebuffer/Framebuffer.h"
 #include "../framebuffer/frame_buffer_generic.h"
 #include "../noise/NoiseQuad.h"
 #include "../constants.h"

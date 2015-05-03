@@ -3,8 +3,6 @@
 #include "icg_common.h"
 #include "../camera/camera.h"
 #include "../grid/Grid.h"
-#include "../framebuffer/Framebuffer.h"
-#include "../framebuffer/FramebufferWater.h"
 #include "../noise/NoiseQuad.h"
 #include "../noise/NoiseGenerator.h"
 #include "../water/Water.h"
