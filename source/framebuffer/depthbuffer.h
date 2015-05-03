@@ -26,11 +26,6 @@ public:
 
 	///--- Warning: ovverrides viewport!!
 	void bind() {
-		if (glIsEnabled(GL_DEPTH_CLAMP_NV)){
-			cout << "oui" << endl;
-		}
-
-		glEnable(GL_DEPTH_CLAMP_NV);
 		glViewport(0, 0, _width, _height);
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
 		const GLenum buffers[] = { GL_DEPTH_ATTACHMENT };

@@ -25,11 +25,14 @@ void main() {
 	// Get the size of the screen (same as size of tex_mirror)
     ivec2 texture_size = textureSize(tex_mirror, 0);
 
-	// FragCoord gives pixel coordinates, transform it into uv coordinates by normalizing
+	// Get screen-wide uv coordinates
     float _u = gl_FragCoord[0] / texture_size[0];
     float _v_inv = 1-gl_FragCoord[1] / texture_size[1];
 	float _v = gl_FragCoord[1] / texture_size[1];
+	vec2 uv_screen = gl_FragCoord.xy / texture_size.xy;
+	vec2 uv_screen_inv = vec2(0, 1) + vec2(1, -1) * uv_screen;
 
+	// Compute the depth of the water
 	float z_ = texture(tex_depth, vec2(_u, _v))[0];
 	float grid_depth = (-2*far*near)/(far -near)/(z_ - ((far-near)/(far+near)));
 	float water_depth = (-2*far*near)/(far -near)/(gl_FragCoord.z - ((far-near)/(far+near)));
@@ -41,14 +44,12 @@ void main() {
 		discard;
 	}
     
-    
-    // Get texture color w/ usual uv, mirror with computed _u/_v
-    vec3 texture_color = water_color;
+	// Compute color & alpha according to depth
+	vec3 texture_color = water_color / (1 + depth * water_depth_color_factor);
+	float alpha = water_transparency * (1 + water_depth_alpha_factor * depth);
 
-	texture_color = texture_color/(water_depth_color_factor * depth + 1);
-	float alpha = water_transparency + (1 - water_transparency) * (water_depth_alpha_factor * depth);
-
-    vec3 mirror_color = texture(tex_mirror, vec2(_u, _v_inv)).rgb;
+	// Get 
+    vec3 mirror_color = texture(tex_mirror, uv_screen_inv).rgb;
     
     // Mix the two together
     color = vec4(mix(texture_color, mirror_color, vec3(water_reflection_factor)), alpha);

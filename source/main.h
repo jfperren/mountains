@@ -132,10 +132,10 @@ void initParams() {
 
 	// --- Water ---
 	water_params.height = 0;
-	water_params.color = vec3(0.5f, 0.5f, 0.9f);
-	water_params.depth_alpha_factor = 0.0f;
-	water_params.depth_color_factor = 0.0f;
-	water_params.transparency = 0.9f;
+	water_params.color = vec3(0.4f, 0.55f, 0.6f);
+	water_params.depth_alpha_factor = 1.4f;
+	water_params.depth_color_factor = 0.05f;
+	water_params.transparency = 0.4f;
 	water_params.reflection_factor = 0.25f;
 
 	// --- Light ---
