@@ -2,6 +2,7 @@
 
 #include "icg_common.h"
 #include "../framebuffer/Framebuffer.h"
+#include "../framebuffer/frame_buffer_generic.h"
 #include "../noise/NoiseQuad.h"
 #include "../constants.h"
 
@@ -11,13 +12,15 @@ void renderNoise(GLuint* out_texture, NoiseParams* noise_params, GLuint* in_text
 	quad.init();
 
 	// Create framebuffer with texture as output
-	Framebuffer fb(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
-	fb.initWithTexture(out_texture);
+	FB fb(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
+	fb.set_texture(out_texture);
+	fb.init2(GL_R32F, GL_RED, GL_FLOAT);
+
 
 	///--- Render random noise on quad in the framebuffer
 	fb.bind();
-	glClear(GL_COLOR_BUFFER_BIT);
-	quad.drawNoise(noise_params, in_texture, aggregation_type);
+		glClear(GL_COLOR_BUFFER_BIT);
+		quad.drawNoise(noise_params, in_texture, aggregation_type);
 	fb.unbind();
 }
 
