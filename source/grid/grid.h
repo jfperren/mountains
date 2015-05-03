@@ -57,8 +57,8 @@ public:
 			// Put vertex positions
 			for (int i = 0; i < grid_length ; i++) {
 				for (int j = 0; j < grid_width; j++) {
-					float x = float(i) * (_grid_params->length_in_chunks / (grid_length - 1.0f)) - _grid_params->length_in_chunks/2.0f;
-					float y = float(j) * (_grid_params->width_in_chunks / (grid_width - 1.0f)) - _grid_params->width_in_chunks/2.0f;
+					float x = 2 * float(i) * (_grid_params->length_in_chunks / (grid_length - 1.0f)) - _grid_params->length_in_chunks;
+					float y = 2 * float(j) * (_grid_params->width_in_chunks / (grid_width - 1.0f)) - _grid_params->width_in_chunks;
 					vertices.push_back(x);
 					vertices.push_back(y);
 				}

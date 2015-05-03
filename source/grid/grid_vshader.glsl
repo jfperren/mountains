@@ -12,7 +12,7 @@ out float height;
 out vec2 uv;
 
 void main() {
-    uv = (2 * position / vec2(grid_length_in_chunks, grid_width_in_chunks) + vec2(1.0, 1.0)) * 0.5;
+    uv = (position / vec2(grid_length_in_chunks, grid_width_in_chunks) + vec2(1.0, 1.0)) * 0.5;
 
 	height = texture(tex_height, uv).rgb[0];
 

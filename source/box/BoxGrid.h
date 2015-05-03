@@ -1,29 +1,40 @@
 #pragma once
 #include "icg_common.h"
 
+// Vertices [Left/Right] [Back/Front] [Bottom/Top]
+#define LFB -1, -1, -1
+#define LFT -1, +1, -1
+#define LBB -1, -1, +1
+#define LBT -1, +1, +1
+#define RFB +1, -1, -1
+#define RFT +1, +1, -1
+#define RBB +1, -1, +1
+#define RBT +1, +1, +1
+
 class BoxGrid {
 
 private:
 	mat4 model = mat4::Identity();
-	WaterParams* water_params;
+	WaterParams* _water_params;
+	GridParams* _grid_params;
 
 protected:
 	GLuint _vao;          ///< vertex array object
-	GLuint _vbo_position; ///< memory buffer for positions
-	GLuint _vbo_index;    ///< memory buffer for indice
-	GLuint _vbo;
+	GLuint _vbo_pos;
+	GLuint _vbo_tex;
 	GLuint _tex_height;
 	GLuint _pid;          ///< GLSL shader program ID
 	GLuint _num_indices;  ///< number of vertices to render
 
 public:
-	void init(WaterParams* water_params){
+	void init(GridParams* grid_params, WaterParams* water_params){
 		///--- Compile the shaders
-		_pid = opengp::load_shaders("box/Box_vshader.glsl", "box/Box_fshader.glsl");
+		_pid = opengp::load_shaders("box/box_vshader.glsl", "box/box_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
 		glUseProgram(_pid);
 
-		this->water_params = water_params;
+		_water_params = water_params;
+		_grid_params = grid_params;
 
 		///--- Vertex one vertex Array
 		glGenVertexArrays(1, &_vao);
@@ -31,47 +42,18 @@ public:
 
 		///--- Vertex coordinates
 		{
-			std::vector<GLfloat> vertices;
-			std::vector<GLuint> indices;
-
-			// Put vertex positions
-			for (int i = 0; i < 8; i++) {
-				float x = ((i >> 0) % 2 == 0) ? -1 : 1;
-				float y = ((i >> 1) % 2 == 0) ? -1 : 1;
-				float z = ((i >> 2) % 2 == 0) ? -1 : 1;
-
-				vertices.push_back(x);
-				vertices.push_back(y);
-				vertices.push_back(z);
-
-				if (i == 0 || i == 3 || i == 5 || i == 6) {
-					int same_side = ((i >> 0) % 2 == 0) ? i + 1 : i - 1;
-					int same_depth = ((i >> 1) % 2 == 0) ? i + 2 : i - 2;
-					int same_height = ((i >> 2) % 2 == 0) ? i + 4 : i - 4;
-
-					indices.push_back(i);
-					indices.push_back(same_side);
-					indices.push_back(same_depth);
-
-					indices.push_back(i);
-					indices.push_back(same_side);
-					indices.push_back(same_height);
-
-					indices.push_back(i);
-					indices.push_back(same_depth);
-					indices.push_back(same_height);
-				}
-			}
+			const GLfloat faces[] = {
+				LFB, LBB, LFT, LBT, // Left
+				RFB, RBB, RFT, RBT, // Right 
+				LFB, RFB, LFT, RFT, // Front
+				LBB, RBB, LBT, RBT, // Back
+				LFB, RFB, LBB, RBB  // Bottom
+			};
 
 			// position buffer
-			glGenBuffers(1, &_vbo_position);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo_position);
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-
-			// vertex indices
-			glGenBuffers(1, &_vbo_index);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo_index);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+			glGenBuffers(1, &_vbo_pos);
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo_pos);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(faces), faces, GL_STATIC_DRAW);
 
 			// position shader attribute
 			GLuint vertex_pos_id = glGetAttribLocation(_pid, "vertex_pos");
@@ -88,8 +70,8 @@ public:
 				/*V4*/ 1.0f, 1.0f };
 
 			///--- Buffer
-			glGenBuffers(1, &_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+			glGenBuffers(1, &_vbo_tex);
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo_tex);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
 
 			///--- Attribute
@@ -108,8 +90,8 @@ public:
 	}
 
 	void cleanup(){
-		glDeleteBuffers(1, &_vbo_position);
-		glDeleteBuffers(1, &_vbo_index);
+		glDeleteBuffers(1, &_vbo_tex);
+		glDeleteBuffers(1, &_vbo_pos);
 		glDeleteVertexArrays(1, &_vao);
 		glDeleteProgram(_pid);
 	}
@@ -124,7 +106,8 @@ public:
 		glBindVertexArray(_vao);
 
 		// Send Uniforms
-		water_params->setup(_pid);
+		_water_params->setup(_pid);
+		_grid_params->setup(_pid);
 
 		///--- Texture uniforms
 		GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
@@ -139,7 +122,10 @@ public:
 		glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
 
 		// Draw
-		glDrawElements(GL_TRIANGLES, 48, GL_UNSIGNED_INT, 0);
+		for (GLuint i = 0; i < 20; i += 4){
+			glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
+		}
+
 		glBindVertexArray(0);
 		glUseProgram(0);
 	}

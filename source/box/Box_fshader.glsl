@@ -1,6 +1,7 @@
 #version 330 core
 
 in vec3 fragment_pos;
+in vec2 uv;
 
 out vec4 color;
 
@@ -14,8 +15,6 @@ uniform float water_depth_color_factor;
 uniform float water_reflection_factor;
 
 void main() {
-
-	vec2 uv = vec2((fragment_pos[0] + 1)/2.0f, 1 - (fragment_pos[2] + 1)/2.0f);
     
 	float grid_height = texture(tex_height, uv)[0];
 

@@ -37,10 +37,10 @@ public:
 		///--- Vertex coordinates
 		{
 			const GLfloat vpoint[] = {	
-				/*V1*/ -0.5f, -0.5f,
-				/*V2*/ +0.5f, -0.5f,
-				/*V3*/ -0.5f, +0.5f,
-				/*V4*/ +0.5f, +0.5f
+				/*V1*/ -1.0f, -1.0f,
+				/*V2*/ +1.0f, -1.0f,
+				/*V3*/ -1.0f, +1.0f,
+				/*V4*/ +1.0f, +1.0f
 			};
 
 			///--- Buffer

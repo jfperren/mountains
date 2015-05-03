@@ -15,5 +15,5 @@ void main() {
 
     gl_Position = mvp * vec4(pos_3d, 1.0);
 
-	uv = vertex_pos + vec2(0.5, 0.5);
+	uv = 0.5 * (vertex_pos + vec2(1.0, 1.0));
 }
