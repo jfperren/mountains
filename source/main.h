@@ -5,7 +5,7 @@
 #include "grid/Grid.h"
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
-#include "framebuffer/frame_buffer_generic.h"
+#include "framebuffer/framebuffer.h"
 #include "water/Water.h"
 #include "sky/sky.h"
 #include <iostream>
