@@ -191,6 +191,15 @@ void display(){
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glEnable(GL_DEPTH);
+	glDisable(GL_ALPHA_TEST);
+
+	fb_water_depth.bind();
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+	fb_water_depth.unbind();
+	
+
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());

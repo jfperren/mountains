@@ -14,6 +14,7 @@ protected:
 	GLuint _tex_main;
 	GLuint _tex_mirror;
 	GLuint _tex_height;
+	GLuint _tex_depth;
 	GLuint _pid;          ///< GLSL shader program ID
 	GLuint _num_indices;  ///< number of vertices to render
 
@@ -91,6 +92,10 @@ public:
 		_tex_height = tex_height;
 	}
 
+	void set_depth_texture(GLuint tex_depth) {
+		_tex_depth = tex_depth;
+	}
+
 	void draw(const mat4& view, const mat4& projection){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
@@ -98,13 +103,18 @@ public:
 		water_params->setup(_pid);
 		_grid_params->setup(_pid);
 
+		glUniform1f(glGetUniformLocation(_pid, "near"), NEAR);
+		glUniform1f(glGetUniformLocation(_pid, "far"), FAR);
+
 		///--- Texture uniforms
 		GLuint tex_id = glGetUniformLocation(_pid, "tex_main");
 		glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
 		GLuint tex_mirror_id = glGetUniformLocation(_pid, "tex_mirror");
 		glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
 		GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
-		glUniform1i(tex_height_id, 2 /*GL_TEXTURE1*/);
+		glUniform1i(tex_height_id, 2 /*GL_TEXTURE2*/);
+		GLuint tex_depth_id = glGetUniformLocation(_pid, "tex_depth");
+		glUniform1i(tex_depth_id, 3 /*GL_TEXTURE3*/);
 
 		///--- Bind textures
 		glActiveTexture(GL_TEXTURE0);
@@ -113,6 +123,8 @@ public:
 		glBindTexture(GL_TEXTURE_2D, _tex_mirror);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, _tex_height);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, _tex_depth);
 
 		// Setup MVP
 		mat4 MVP = projection*view*model;

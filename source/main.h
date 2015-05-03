@@ -6,6 +6,7 @@
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
 #include "framebuffer/framebuffer.h"
+#include "framebuffer/depthbuffer.h"
 #include "water/Water.h"
 #include "sky/sky.h"
 #include <iostream>
@@ -48,11 +49,13 @@ Sky sky;
 // --- FrameBuffers --- // 
 
 FB fbw(WIDTH, HEIGHT);
+Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 
 // --- Textures --- //
 
 GLuint tex_height;
 GLuint tex_mirror;
+GLuint tex_water_depth;
 
 /* TODO:
 At this time, there are 4 harded textures. We might want to refactor the code and
@@ -145,9 +148,16 @@ void initSceneObjects() {
 	box.init(&grid_params, &water_params);
 	grid.init(&grid_params, &light_params);
 	grid.setMainTexture(tex_texture0, tex_texture1, tex_texture2, tex_texture3, tex_texture4);
+
 	tex_mirror = fbw.init_texture();
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
+
+	tex_water_depth = fb_water_depth.init_texture();
+	//fb_water_depth.init(GL_FLOAT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
+	fb_water_depth.init();
+
 	water.init(&grid_params, &water_params);
+	water.set_depth_texture(tex_water_depth);
 	sky.init();
 }
 
