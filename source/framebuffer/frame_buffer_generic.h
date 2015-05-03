@@ -15,9 +15,8 @@ protected:
 	int _width;
 	int _height;
 	GLuint _fbo;
-	GLuint _tex;
 
-	GLuint* _texture;
+	GLuint* _tex;
 
 public:
 	FB(int image_width, int image_height){
@@ -38,8 +37,11 @@ public:
 	}
 
 	int init_texture(bool use_interpolation = false) {
-		glGenTextures(1, &_tex);
-		glBindTexture(GL_TEXTURE_2D, _tex);
+
+		_tex = (GLuint*) malloc(sizeof(GLuint));
+
+		glGenTextures(1, _tex);
+		glBindTexture(GL_TEXTURE_2D, *_tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -52,13 +54,13 @@ public:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		}
 
-		return _tex;
+		return *_tex;
 	}
 
 	void set_texture(GLuint* texture, bool use_interpolation = false) {
-		_texture = texture;
-		glGenTextures(1, _texture);
-		glBindTexture(GL_TEXTURE_2D, *_texture);
+		_tex = texture;
+		glGenTextures(1, _tex);
+		glBindTexture(GL_TEXTURE_2D, *_tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -69,42 +71,6 @@ public:
 		else {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		}
-	}
-
-	void initWithTexture(GLuint* texture, bool use_interpolation = false) {
-		///--- Create color attachment
-			{
-				_texture = texture;
-				glGenTextures(1, _texture);
-				glBindTexture(GL_TEXTURE_2D, *_texture);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-				if (use_interpolation){
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				}
-				else {
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				}
-
-				///--- Create texture for the color attachment
-				/// See Table.2 https://www.khronos.org/opengles/sdk/docs/man3/docbook4/xhtml/glTexImage2D.xml
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F,
-					_width, _height, 0,
-					GL_RED, GL_FLOAT, NULL); ///< how to load from buffer
-			}
-
-		///--- Tie it all together
-		{
-			glGenFramebuffers(1, &_fbo);
-			glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 /*location = 0*/, GL_TEXTURE_2D, *_texture, 0 /*level*/);
-			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				std::cerr << "!!!ERROR: Framebuffer not OK :(" << std::endl;
-			glBindFramebuffer(GL_FRAMEBUFFER, 0); ///< avoid pollution
 		}
 	}
 
@@ -119,25 +85,7 @@ public:
 		{
 			glGenFramebuffers(1, &_fbo);
 			glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 /*location = 0*/, GL_TEXTURE_2D, _tex, 0 /*level*/);
-			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				std::cerr << "!!!ERROR: Framebuffer not OK :(" << std::endl;
-			glBindFramebuffer(GL_FRAMEBUFFER, 0); ///< avoid pollution
-		}
-	}
-
-	void init2(GLint internal_format, GLenum format, GLenum type) {
-		///--- Create texture for the color attachment
-		/// See Table.2 https://www.khronos.org/opengles/sdk/docs/man3/docbook4/xhtml/glTexImage2D.xml
-		glTexImage2D(GL_TEXTURE_2D, 0, internal_format,
-			_width, _height, 0,
-			format, type, NULL); ///< how to load from buffer
-
-		///--- Tie it all together
-		{
-			glGenFramebuffers(1, &_fbo);
-			glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 /*location = 0*/, GL_TEXTURE_2D, *_texture, 0 /*level*/);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 /*location = 0*/, GL_TEXTURE_2D, *_tex, 0 /*level*/);
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				std::cerr << "!!!ERROR: Framebuffer not OK :(" << std::endl;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0); ///< avoid pollution
@@ -150,7 +98,7 @@ public:
 	}
 
 	void cleanup() {
-		glDeleteTextures(1, &_tex);
+		glDeleteTextures(1, _tex);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0 /*UNBIND*/);
 		glDeleteFramebuffers(1, &_fbo);
 	}

@@ -14,7 +14,7 @@ void renderNoise(GLuint* out_texture, NoiseParams* noise_params, GLuint* in_text
 	// Create framebuffer with texture as output
 	FB fb(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
 	fb.set_texture(out_texture);
-	fb.init2(GL_R32F, GL_RED, GL_FLOAT);
+	fb.init(GL_R32F, GL_RED, GL_FLOAT);
 
 
 	///--- Render random noise on quad in the framebuffer
