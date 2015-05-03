@@ -15,6 +15,8 @@ class Grid {
 	const int SNOW = 3;
 	const int ROCK_UNDERWATER = 4;
 
+	const char* GRASS_PATH = "textures/terrains/mountain/tex_grass.tga";
+
 	const int TEXTURES_COUNT = 5;
 
 	string TEX_NAMES[5];
@@ -141,19 +143,20 @@ public:
 			for (int i = 0; i < TEXTURES_COUNT; i++){
 
 				GLuint tex;
-				string full_name = TEX_PATH + TEX_NAMES[i] + TEX_EXT;
-					
+				const char* full_name = (TEX_PATH + TEX_NAMES[i] + TEX_EXT).data();
+				cout << full_name << endl;
 				glGenTextures(1, &tex);
 				glBindTexture(GL_TEXTURE_2D, tex);
-				glfwLoadTexture2D(full_name.c_str, 0);
+				glfwLoadTexture2D(full_name, 0);
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-				GLuint tex_snow_id = glGetUniformLocation(_pid, &TEX_NAMES[i].c_str);
+				GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
 				glUniform1i(tex_snow_id, i);
+				glActiveTexture(GL_TEXTURE0 + i);
 
 				_texs.push_back(tex);
 			}
