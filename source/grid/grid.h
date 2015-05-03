@@ -2,7 +2,23 @@
 #include "icg_common.h"
 #include "../constants.h"
 
+using namespace std;
+
 class Grid {
+
+	string TEX_PATH = "textures/terrains/mountain/";
+	string TEX_EXT = ".tga";
+
+	const int GRASS = 0;
+	const int SAND = 1;
+	const int ROCK = 2;
+	const int SNOW = 3;
+	const int ROCK_UNDERWATER = 4;
+
+	const int TEXTURES_COUNT = 5;
+
+	string TEX_NAMES[5];
+
 
 private:
 	static const int grid_dim_ = 2048;
@@ -17,12 +33,11 @@ protected:
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
     GLuint _tex_height;    ///< HeightMap Texture ID
+
 	GLuint _tex_main;
-	GLuint _tex_texture0;
-	GLuint _tex_texture1;        ///< Grass Texture ID
-	GLuint _tex_texture2;        ///< Rock Texture ID
-	GLuint _tex_texture3;        ///< Sand Texture ID
-	GLuint _tex_texture4;        ///< Snow Texture ID
+
+	vector<GLuint> _texs;     
+
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
@@ -32,6 +47,12 @@ public:
 	}
 
     void init(GridParams* grid_params, LightParams* light_params){
+
+		TEX_NAMES[0] = "tex_grass";
+		TEX_NAMES[1] = "tex_sand";
+		TEX_NAMES[2] = "tex_rock";
+		TEX_NAMES[3] = "tex_snow";
+		TEX_NAMES[4] = "tex_rock_underwater";
 
 		this->light_params = light_params;
 		_grid_params = grid_params;
@@ -114,6 +135,30 @@ public:
 			glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 		}
 
+		// --- Create Textures ---
+
+		{
+			for (int i = 0; i < TEXTURES_COUNT; i++){
+
+				GLuint tex;
+				string full_name = TEX_PATH + TEX_NAMES[i] + TEX_EXT;
+					
+				glGenTextures(1, &tex);
+				glBindTexture(GL_TEXTURE_2D, tex);
+				glfwLoadTexture2D(full_name.c_str, 0);
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+				GLuint tex_snow_id = glGetUniformLocation(_pid, &TEX_NAMES[i].c_str);
+				glUniform1i(tex_snow_id, i);
+
+				_texs.push_back(tex);
+			}
+		}
+
 		// to avoid the current object being polluted
 		glBindVertexArray(0);
     }
@@ -130,29 +175,6 @@ public:
 		_tex_height = tex_height;
 	}
 
-	void setMainTexture(GLuint t0, GLuint t1, GLuint t2, GLuint t3, GLuint t4){
-		// Pass texture to instance
-		
-		this->_tex_texture0 = t0;
-		GLuint tex_texture0_id = glGetUniformLocation(_pid, "texture0");
-		glUniform1i(tex_texture0_id, 10 /*GL_TEXTURE11*/);
-
-		this->_tex_texture1 = t1;
-		GLuint tex_grass_id = glGetUniformLocation(_pid, "texture1");
-		glUniform1i(tex_grass_id, 11 /*GL_TEXTURE11*/);
-
-		this->_tex_texture2 = t2;
-		GLuint tex_rock_id = glGetUniformLocation(_pid, "texture2");
-		glUniform1i(tex_rock_id, 12 /*GL_TEXTURE12*/);
-
-		this->_tex_texture3 = t3;
-		GLuint tex_sand_id = glGetUniformLocation(_pid, "texture3");
-		glUniform1i(tex_sand_id, 13 /*GL_TEXTURE13*/);
-
-		this->_tex_texture4 = t4;
-		GLuint tex_snow_id = glGetUniformLocation(_pid, "texture4");
-		glUniform1i(tex_snow_id, 14 /*GL_TEXTURE14*/);
-	}
 
     void draw(const mat4& view, const mat4& projection, bool only_reflect=false){
         glUseProgram(_pid);
@@ -177,14 +199,7 @@ public:
         // Bind textures
         glActiveTexture(GL_TEXTURE10);
         glBindTexture(GL_TEXTURE_2D, _tex_height);
-		glActiveTexture(GL_TEXTURE11);
-		glBindTexture(GL_TEXTURE_2D, _tex_texture1);
-		glActiveTexture(GL_TEXTURE12);
-		glBindTexture(GL_TEXTURE_2D, _tex_texture2);
-		glActiveTexture(GL_TEXTURE13);
-		glBindTexture(GL_TEXTURE_2D, _tex_texture3);
-		glActiveTexture(GL_TEXTURE14);
-		glBindTexture(GL_TEXTURE_2D, _tex_texture4);
+
 
 
         // Setup MVP
