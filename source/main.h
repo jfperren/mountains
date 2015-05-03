@@ -7,6 +7,7 @@
 #include "framebuffer/FramebufferWater.h"
 #include "noise/NoiseQuad.h"
 #include "noise/NoiseGenerator.h"
+#include "framebuffer/frame_buffer_generic.h"
 #include "water/Water.h"
 #include "sky/sky.h"
 #include <iostream>
@@ -48,7 +49,7 @@ Sky sky;
 
 // --- FrameBuffers --- // 
 
-FramebufferWater fbw(WIDTH, HEIGHT);
+FB fbw(WIDTH, HEIGHT);
 
 // --- Textures --- //
 
@@ -146,7 +147,8 @@ void initSceneObjects() {
 	box.init(&grid_params, &water_params);
 	grid.init(&grid_params, &light_params);
 	grid.setMainTexture(tex_texture0, tex_texture1, tex_texture2, tex_texture3, tex_texture4);
-	tex_mirror = fbw.init();
+	tex_mirror = fbw.init_texture();
+	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 	water.init(&grid_params, &water_params);
 	sky.init();
 }
