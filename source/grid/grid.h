@@ -15,12 +15,10 @@ class Grid {
 	const int SNOW = 3;
 	const int ROCK_UNDERWATER = 4;
 
-	const char* GRASS_PATH = "textures/terrains/mountain/tex_grass.tga";
-
 	const int TEXTURES_COUNT = 5;
 
+	const char* TEX_PATHS[5];
 	string TEX_NAMES[5];
-
 
 private:
 	static const int grid_dim_ = 2048;
@@ -49,6 +47,12 @@ public:
 	}
 
     void init(GridParams* grid_params, LightParams* light_params){
+
+		TEX_PATHS[0] = "textures/terrains/mountain/tex_grass.tga";
+		TEX_PATHS[1] = "textures/terrains/mountain/tex_sand.tga";
+		TEX_PATHS[2] = "textures/terrains/mountain/tex_rock.tga";
+		TEX_PATHS[3] = "textures/terrains/mountain/tex_snow.tga";
+		TEX_PATHS[4] = "textures/terrains/mountain/tex_rock_underwater.tga";
 
 		TEX_NAMES[0] = "tex_grass";
 		TEX_NAMES[1] = "tex_sand";
@@ -144,10 +148,9 @@ public:
 
 				GLuint tex;
 				const char* full_name = (TEX_PATH + TEX_NAMES[i] + TEX_EXT).data();
-				cout << full_name << endl;
 				glGenTextures(1, &tex);
 				glBindTexture(GL_TEXTURE_2D, tex);
-				glfwLoadTexture2D(full_name, 0);
+				glfwLoadTexture2D(TEX_PATHS[i], 0);
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -155,8 +158,8 @@ public:
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 				GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
-				glUniform1i(tex_snow_id, i);
-				glActiveTexture(GL_TEXTURE0 + i);
+				glUniform1i(tex_snow_id, 11 + i);
+				glActiveTexture(GL_TEXTURE11 + i);
 
 				_texs.push_back(tex);
 			}
@@ -188,10 +191,6 @@ public:
 
 		// Texture uniforms
 		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 10 /*GL_TEXTURE10*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture1"), 11 /*GL_TEXTURE11*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture2"), 12 /*GL_TEXTURE12*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture3"), 13 /*GL_TEXTURE13*/);
-		glUniform1i(glGetUniformLocation(_pid, "tex_texture4"), 14 /*GL_TEXTURE14*/);
 
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
