@@ -7,6 +7,7 @@ void resize_callback(int width, int height) {
 
     glViewport(0, 0, width, height);
 	fbw.resize(width, height);
+	fb_water_depth.resize(width, height);
 
 	camera.compute_projection_matrix();
 }
@@ -150,8 +151,8 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "sand_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.sand_min_height, " group=Texture step=0.05");
 	TwAddVarCB(bar, "sand_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.sand_max_height, " group=Texture step=0.05");
 	TwAddVarCB(bar, "grass_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.grass_max_height, " group=Texture step=0.05");
-	TwAddVarCB(bar, "sand_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.sand_max_slope, " group=Texture step=0.05");
-	TwAddVarCB(bar, "grass_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.grass_max_slope, " group=Texture step=0.05");
+	TwAddVarCB(bar, "sand_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.sand_max_slope, " group=Texture step=0.02");
+	TwAddVarCB(bar, "grass_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.grass_max_slope, " group=Texture step=0.02");
 
 	/* I/O */
 

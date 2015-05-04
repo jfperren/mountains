@@ -64,6 +64,13 @@ float clamp_height(float height) {
 	return height_to_texture;
 }
 
+float smooth_interpolate(float alpha, float factor, float threshold) {
+	if (alpha < threshold) 
+		return 1-exp(-factor * (threshold-alpha));
+	else
+		return 0;
+}
+
 void main() {
 
 	float height_to_texture = clamp_height(height);
@@ -76,28 +83,40 @@ void main() {
 	vec3 color_grass = texture(tex_grass, uv * vec2(20)).rgb;
 	vec3 color_rock_underwater = texture(tex_rock_underwater, uv * vec2(20)).rgb;
 
-	float slope = dot(normal, vec3(0, 0, 1));
-	float alpha_sand =  min(1, pow(slope/sand_max_slope, 6));
-	float alpha_grass =  min(1, pow(slope/grass_max_slope, 6));
+
+	float slope = 1- dot(normal, vec3(0, 0, 1));
+
+	float alpha_sand = smooth_interpolate(slope, 20, sand_max_slope);
+	float alpha_grass = smooth_interpolate(slope, 80, grass_max_slope);
+
 
 	vec3 texture_color;
 
 	// Sand vs rock
+	/*if (slope < sand_max_slope) {
+		alpha_sand = smooth_interpolate(slope, 80, sand_max_slope);
+	} else {
+		alpha_sand = 1;
+	}*/
+
 	vec3 sand_and_rock = alpha_sand * color_sand + (1-alpha_sand) * color_rock;
 	vec3 grass_and_rock = alpha_grass * color_grass + (1-alpha_grass) * color_rock;
 
 	if (height < sand_min_height) {
-		float gamma = 1 - exp(10 * (height - sand_min_height));
 
+		float gamma = smooth_interpolate(height, 40, sand_min_height);
 		texture_color = gamma * color_rock_underwater + (1-gamma) * sand_and_rock;
+
 	} else if (height < sand_max_height) {
-		float gamma = 1 - exp(100 * (height - sand_max_height));
 
+		float gamma = smooth_interpolate(height, 40, sand_max_height);
 		texture_color = gamma * sand_and_rock + (1-gamma) * grass_and_rock;
-	} else if (height < grass_max_height) {
-		float gamma = 1 - exp(10 * (height - grass_max_height));
 
+	} else if (height < grass_max_height) {
+
+		float gamma = smooth_interpolate(height, 10, grass_max_height);
 		texture_color = gamma * grass_and_rock + (1-gamma) * color_rock;
+
 	} else {
 		texture_color = color_rock;
 	}

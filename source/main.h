@@ -28,8 +28,8 @@ TwBar *bar;
 
 using namespace std;
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 1600;
+const int HEIGHT = 1000;
 
 // --- Window --- //
 
@@ -126,10 +126,10 @@ void initParams() {
 
 	// --- Texture ---
 	texture_params.sand_min_height = -1;
-	texture_params.sand_max_height = 0.1f;
+	texture_params.sand_max_height = 0.05f;
 	texture_params.grass_max_height = 1.0f;
-	texture_params.sand_max_slope = 0.3f;
-	texture_params.grass_max_slope = 0.3f;
+	texture_params.sand_max_slope = 0.8f;
+	texture_params.grass_max_slope = 0.9f;
 
 }
 

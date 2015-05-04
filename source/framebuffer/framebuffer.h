@@ -18,6 +18,10 @@ protected:
 
 	GLuint* _tex;
 
+	GLint _internal_format;
+	GLenum _format;
+	GLenum _type;
+
 public:
 	FB(int image_width, int image_height){
 		this->_width = image_width;
@@ -75,6 +79,11 @@ public:
 	}
 
 	void init(GLint internal_format, GLenum format, GLenum type) {
+
+		_internal_format = internal_format;
+		_format = format;
+		_type = type;
+
 		///--- Create texture for the color attachment
 		/// See Table.2 https://www.khronos.org/opengles/sdk/docs/man3/docbook4/xhtml/glTexImage2D.xml
 		glTexImage2D(GL_TEXTURE_2D, 0, internal_format,
