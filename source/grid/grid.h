@@ -160,6 +160,7 @@ public:
 				GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
 				glUniform1i(tex_snow_id, 11 + i);
 				glActiveTexture(GL_TEXTURE11 + i);
+				glBindTexture(GL_TEXTURE_2D, tex);
 
 				_texs.push_back(tex);
 			}
@@ -177,8 +178,9 @@ public:
     }
 
 	void setHeightTexture(GLuint tex_height) {
-		// Pass texture to instance
+
 		_tex_height = tex_height;
+		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
 	}
 
 
@@ -189,9 +191,6 @@ public:
 		light_params->setup(_pid);
 		_grid_params->setup(_pid);
 
-		// Texture uniforms
-		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 10 /*GL_TEXTURE10*/);
-
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
 		} else {
@@ -199,10 +198,16 @@ public:
 		}
 
         // Bind textures
-        glActiveTexture(GL_TEXTURE10);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _tex_height);
 
+		for (int i = 0; i < TEXTURES_COUNT; i++){
 
+			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
+			glUniform1i(tex_snow_id, 1 + i);
+			glActiveTexture(GL_TEXTURE1 + i);
+			glBindTexture(GL_TEXTURE_2D, _texs[i]);
+		}
 
         // Setup MVP
         mat4 MVP = projection*view*model;

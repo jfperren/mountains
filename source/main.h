@@ -57,26 +57,6 @@ GLuint tex_height;
 GLuint tex_mirror;
 GLuint tex_water_depth;
 
-/* TODO:
-At this time, there are 4 harded textures. We might want to refactor the code and
-work with a single array of textures in the future.
-*/
-
-// Texture for underwater rock
-GLuint tex_texture0;
-
-// Texture for grass
-GLuint tex_texture1;
-
-// Texture for rock
-GLuint tex_texture2;
-
-// Texture for sand
-GLuint tex_texture3;
-
-// Texture for snow
-GLuint tex_texture4;
-
 // --- Variables for AntTweakBar ---
 
 NoiseParams noise_values;
@@ -123,11 +103,11 @@ void initParams() {
 	// --- Fractal ---
 	fractal_values.fractal_type = FBM;
 	fractal_values.fractal_effect = NO_EFFECT;
-	fractal_values.amplitude = 1.0f;
+	fractal_values.amplitude = 2.0f;
 	fractal_values.offset = 0.0f;
-	fractal_values.H = 0.8f;
+	fractal_values.H = 1.2f;
 	fractal_values.lacunarity = 2;
-	fractal_values.octaves = 6;
+	fractal_values.octaves = 12;
 	fractal_values.enable = true;
 
 	// --- Water ---
@@ -152,7 +132,6 @@ void initSceneObjects() {
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 
 	tex_water_depth = fb_water_depth.init_texture();
-	//fb_water_depth.init(GL_FLOAT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
 	fb_water_depth.init();
 
 	water.init(&grid_params, &water_params);

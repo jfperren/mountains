@@ -1,15 +1,33 @@
 #version 330 core
 
-uniform sampler2D tex_height;
+layout(location = 0) uniform sampler2D tex_height;
 
-uniform sampler2D tex_grass;
-uniform sampler2D tex_snow;
-uniform sampler2D tex_rock;
-uniform sampler2D tex_sand;
-uniform sampler2D tex_rock_underwater;
+layout(location = 1) uniform sampler2D tex_grass;
+layout(location = 2) uniform sampler2D tex_sand;
+layout(location = 3) uniform sampler2D tex_rock;
+layout(location = 4) uniform sampler2D tex_snow;
+layout(location = 5) uniform sampler2D tex_rock_underwater;
 
 uniform vec3 light_pos;
 uniform vec3 Ia, Id;
+
+const float SNOW_MIN_LEVEL = 1.0;
+const float SAND_MAX_LEVEL = 0.04;
+const float GRASS_MAX_LEVEL = 0.8;
+const float SAND_MIN_LEVEL = -0.1;
+
+const float SAND_MAX_SLOPE = 0.8;
+const float GRASS_MAX_SLOPE = 0.2;
+
+const float GRASS_CF = 1.0;
+const float SAND_CF = 1.0;
+const float ROCK_CF = 0;
+
+const float GRASS_SF = 0;
+const float SAND_SF = 0;
+const float ROCK_SF = 0.5;
+
+uniform float water_height;
 
 const float pixel_unit = 1.0/2048.0;
 
@@ -20,30 +38,6 @@ out vec4 color;
 in float height;
 
 in vec2 uv;
-
-/** The higher point reached by water */
-const float see_level = 0.0;
-
-/** The higher point of the beach */
-const float sand_offset = 0.05;
-
-const float vegetation_start = 0.02;
-const float vegetation_threshold = 0.25;
-
-/** The point where snow begins to appear */
-const float snow_threshold = 0.6;
-
-const float snow_offset = 0.02;
-
-/* range from 0 to 1 in the reals.
-   0: more grass
-   1: more rock*/
-const float scale_factor_rock_grass = 0.3;
-
-/* range from 0 to 1 in the reals.
-   0: more rock
-   1: more sand*/
-const float scale_factor_rock_sand = 0.6;
 
 /** Computes the coefficient used as the 3rd arg of mix(3).
 	The output ranges from 0 to 1 in the reals.
@@ -72,6 +66,26 @@ float clamp_height(float height) {
 	return height_to_texture;
 }
 
+float f(float alpha) {
+	return min(1, pow(alpha/GRASS_MAX_SLOPE, 6));
+}
+
+float alpha_interval(float max, float min, float value){
+	float sharpness = 0.1;
+
+	if (value < min - sharpness) {
+		return 0;
+	} else if (value < min + sharpness) {
+		return (value - (min - sharpness))/(2*sharpness);
+	} else if (value < max - sharpness) {
+		return 1;
+	} else if (value < max + sharpness) {
+		return 1 - (value - (max - sharpness))/(2*sharpness);
+	} else {
+		return 0;
+	}
+}
+
 void main() {
 
 	float height_to_texture = clamp_height(height);
@@ -79,50 +93,42 @@ void main() {
 	vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, pixel_unit))[0] - 1000*texture(tex_height, uv - vec2(0, pixel_unit))[0]);
 	vec3 normal = normalize(cross(derivative_x, derivative_y));
 
+	float alpha =  f(dot(normal, vec3(0, 0, 1)));
 
+	vec3 color_rock = texture(tex_rock, uv * vec2(20)).rgb;
+	vec3 color_sand = texture(tex_sand, uv * vec2(80)).rgb;
+	vec3 color_grass = texture(tex_grass, uv * vec2(20)).rgb;
+	vec3 color_rock_underwater = texture(tex_rock_underwater, uv * vec2(20)).rgb;
 
-	float alpha = 1 - dot(normal, vec3(0, 0, 1));
+	vec3 texture_color;
 
-	// Default (for debug) texture is gray
-	vec3 texture_tot = vec3(0.5, 0.5, 0.5);
+	// Sand vs rock
+	vec3 sand_and_rock = alpha * color_sand + (1-alpha) * color_rock;
+	vec3 grass_and_rock = alpha * color_grass + (1-alpha) * color_rock;
 
-	if (height_to_texture <= see_level) {
-		// Mix sand and rock
-		texture_tot = mix(texture(tex_rock, 60 * uv).xyz, texture(tex_rock_underwater, 10 * uv).xyz, alpha * scale_factor_rock_sand);
-	} else if (height_to_texture <= vegetation_start - 0.005) {
-		// Mix sand + rock (depending on the steepness)
-		texture_tot = mix(texture(tex_rock, 60 * uv).xyz, texture(tex_rock_underwater, 10 * uv).xyz, alpha * 0.1);
+	if (height < SAND_MIN_LEVEL) {
+		float gamma = 1 - exp(10 * (height - SAND_MIN_LEVEL));
 
-	} else if (height_to_texture <= vegetation_start + 0.005) {
-		// Fade from sand to grass
-		vec3 temp = mix(texture(tex_rock, 60 * uv).xyz, texture(tex_rock_underwater, 10 * uv).xyz, alpha * 0.1);
-		vec3 rock_grass = mix(texture(tex_grass, 10 * uv).xyz, texture(tex_snow, 10 * uv).xyz, alpha * scale_factor_rock_grass);
-		texture_tot = mix(temp, rock_grass, compute_linear_interpolation(vegetation_start - 0.005, vegetation_start + 0.005, height_to_texture));
+		texture_color = gamma * color_rock_underwater + (1-gamma) * sand_and_rock;
+	} else if (height < SAND_MAX_LEVEL) {
+		float gamma = 1 - exp(100 * (height - SAND_MAX_LEVEL));
 
-	} else if (height_to_texture <= snow_threshold - snow_offset) {
-		texture_tot = mix(texture(tex_grass, 10 * uv).xyz, texture(tex_snow, 10 * uv).xyz, alpha * scale_factor_rock_grass);
-	}
-	else if (height_to_texture <= snow_threshold + snow_offset) {
-		// height > snow_threshold
-		// Mix grass+rock and snow
+		texture_color = gamma * sand_and_rock + (1-gamma) * grass_and_rock;
+	} else if (height < GRASS_MAX_LEVEL) {
+		float gamma = 1 - exp(10 * (height - GRASS_MAX_LEVEL));
 
-		vec3 temp = mix(texture(tex_grass, 10 * uv).xyz, texture(tex_snow, 10 * uv).xyz, alpha * scale_factor_rock_grass);
-		texture_tot = mix(temp, texture(tex_sand, 30 * uv).xyz, compute_linear_interpolation(snow_threshold - snow_offset, snow_threshold + snow_offset, height_to_texture));
-
-
+		texture_color = gamma * grass_and_rock + (1-gamma) * color_rock;
 	} else {
-		texture_tot = texture(tex_sand, 30 * uv).xyz;
+		texture_color = color_rock;
 	}
 
-	//texture_tot = mix(texture(grass, 10 * uv).xyz, texture(rock, 10 * uv).xyz, alpha*scale_factor);
-
-   	vec3 ambient = Ia * texture_tot;
+   	vec3 ambient = Ia * texture_color;
   	vec3 diffuse = Id * dot(normal, normalize(light_pos));
 
 
 	if (only_reflect == 1 && height < 0) {
 		discard;
 	} else {
-		color = vec4(ambient + diffuse, 1.0f);
+		color = vec4(ambient + diffuse, 1.0);
 	}
 }
