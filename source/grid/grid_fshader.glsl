@@ -32,6 +32,12 @@ uniform float grass_max_height;
 uniform float sand_max_slope;
 uniform float grass_max_slope;
 
+uniform int grass_h_transition;
+uniform int grass_s_transition;
+uniform int sand_h_transition;
+uniform int sand_s_transition;
+
+
 // others
 uniform float water_height;
 const float pixel_unit = 1.0/2048.0;
@@ -86,8 +92,8 @@ void main() {
 
 	float slope = 1- dot(normal, vec3(0, 0, 1));
 
-	float alpha_sand = smooth_interpolate(slope, 20, sand_max_slope);
-	float alpha_grass = smooth_interpolate(slope, 80, grass_max_slope);
+	float alpha_sand = smooth_interpolate(slope, sand_s_transition, sand_max_slope);
+	float alpha_grass = smooth_interpolate(slope, grass_s_transition, grass_max_slope);
 
 
 	vec3 texture_color;
@@ -109,12 +115,12 @@ void main() {
 
 	} else if (height < sand_max_height) {
 
-		float gamma = smooth_interpolate(height, 40, sand_max_height);
+		float gamma = smooth_interpolate(height, sand_h_transition, sand_max_height);
 		texture_color = gamma * sand_and_rock + (1-gamma) * grass_and_rock;
 
 	} else if (height < grass_max_height) {
 
-		float gamma = smooth_interpolate(height, 10, grass_max_height);
+		float gamma = smooth_interpolate(height, grass_h_transition, grass_max_height);
 		texture_color = gamma * grass_and_rock + (1-gamma) * color_rock;
 
 	} else {

@@ -117,6 +117,11 @@ typedef struct TextureParams {
 	float sand_max_slope;
 	float grass_max_slope;
 
+	int grass_h_transition;
+	int grass_s_transition;
+	int sand_h_transition;
+	int sand_s_transition;
+
 	void setup(GLuint pid) {
 		glUniform1f(glGetUniformLocation(pid, "sand_min_height"), sand_min_height);
 		glUniform1f(glGetUniformLocation(pid, "sand_max_height"), sand_max_height);
@@ -124,6 +129,11 @@ typedef struct TextureParams {
 
 		glUniform1f(glGetUniformLocation(pid, "sand_max_slope"), sand_max_slope);
 		glUniform1f(glGetUniformLocation(pid, "grass_max_slope"), grass_max_slope);
+
+		glUniform1i(glGetUniformLocation(pid, "grass_h_transition"), grass_h_transition);
+		glUniform1i(glGetUniformLocation(pid, "grass_s_transition"), grass_s_transition);
+		glUniform1i(glGetUniformLocation(pid, "sand_h_transition"), sand_h_transition);
+		glUniform1i(glGetUniformLocation(pid, "sand_s_transition"), sand_s_transition);
 	}
 
 };

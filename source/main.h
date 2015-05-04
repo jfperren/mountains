@@ -126,10 +126,16 @@ void initParams() {
 
 	// --- Texture ---
 	texture_params.sand_min_height = -1;
-	texture_params.sand_max_height = 0.05f;
+	texture_params.sand_max_height = 0.15f;
 	texture_params.grass_max_height = 1.0f;
-	texture_params.sand_max_slope = 0.8f;
+	texture_params.sand_max_slope = 0.92f;
 	texture_params.grass_max_slope = 0.9f;
+
+	texture_params.grass_h_transition = 3;
+	texture_params.grass_s_transition = 50;
+	texture_params.sand_h_transition = 5;
+	texture_params.sand_s_transition = 50;
+
 
 }
 
