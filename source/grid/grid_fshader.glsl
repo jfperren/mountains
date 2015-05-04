@@ -25,20 +25,12 @@ uniform vec3 light_pos;
 uniform vec3 Ia, Id;
 
 // texture_params
-uniform float sand_min_level;
-uniform float sand_max_level;
-uniform float grass_max_level;
+uniform float sand_min_height;
+uniform float sand_max_height;
+uniform float grass_max_height;
 
 uniform float sand_max_slope;
 uniform float grass_max_slope;
-
-const float SNOW_MIN_LEVEL = 1.0;
-const float SAND_MAX_LEVEL = 0.04;
-const float GRASS_MAX_LEVEL = 0.8;
-const float SAND_MIN_LEVEL = -0.1;
-
-const float SAND_MAX_SLOPE = 0.8;
-const float GRASS_MAX_SLOPE = 0.2;
 
 // others
 uniform float water_height;
@@ -72,26 +64,6 @@ float clamp_height(float height) {
 	return height_to_texture;
 }
 
-float f(float alpha) {
-	return min(1, pow(alpha/GRASS_MAX_SLOPE, 6));
-}
-
-float alpha_interval(float max, float min, float value){
-	float sharpness = 0.1;
-
-	if (value < min - sharpness) {
-		return 0;
-	} else if (value < min + sharpness) {
-		return (value - (min - sharpness))/(2*sharpness);
-	} else if (value < max - sharpness) {
-		return 1;
-	} else if (value < max + sharpness) {
-		return 1 - (value - (max - sharpness))/(2*sharpness);
-	} else {
-		return 0;
-	}
-}
-
 void main() {
 
 	float height_to_texture = clamp_height(height);
@@ -99,29 +71,31 @@ void main() {
 	vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, pixel_unit))[0] - 1000*texture(tex_height, uv - vec2(0, pixel_unit))[0]);
 	vec3 normal = normalize(cross(derivative_x, derivative_y));
 
-	float alpha =  f(dot(normal, vec3(0, 0, 1)));
-
 	vec3 color_rock = texture(tex_rock, uv * vec2(20)).rgb;
 	vec3 color_sand = texture(tex_sand, uv * vec2(80)).rgb;
 	vec3 color_grass = texture(tex_grass, uv * vec2(20)).rgb;
 	vec3 color_rock_underwater = texture(tex_rock_underwater, uv * vec2(20)).rgb;
 
+	float slope = dot(normal, vec3(0, 0, 1));
+	float alpha_sand =  min(1, pow(slope/sand_max_slope, 6));
+	float alpha_grass =  min(1, pow(slope/grass_max_slope, 6));
+
 	vec3 texture_color;
 
 	// Sand vs rock
-	vec3 sand_and_rock = alpha * color_sand + (1-alpha) * color_rock;
-	vec3 grass_and_rock = alpha * color_grass + (1-alpha) * color_rock;
+	vec3 sand_and_rock = alpha_sand * color_sand + (1-alpha_sand) * color_rock;
+	vec3 grass_and_rock = alpha_grass * color_grass + (1-alpha_grass) * color_rock;
 
-	if (height < SAND_MIN_LEVEL) {
-		float gamma = 1 - exp(10 * (height - SAND_MIN_LEVEL));
+	if (height < sand_min_height) {
+		float gamma = 1 - exp(10 * (height - sand_min_height));
 
 		texture_color = gamma * color_rock_underwater + (1-gamma) * sand_and_rock;
-	} else if (height < SAND_MAX_LEVEL) {
-		float gamma = 1 - exp(100 * (height - SAND_MAX_LEVEL));
+	} else if (height < sand_max_height) {
+		float gamma = 1 - exp(100 * (height - sand_max_height));
 
 		texture_color = gamma * sand_and_rock + (1-gamma) * grass_and_rock;
-	} else if (height < GRASS_MAX_LEVEL) {
-		float gamma = 1 - exp(10 * (height - GRASS_MAX_LEVEL));
+	} else if (height < grass_max_height) {
+		float gamma = 1 - exp(10 * (height - grass_max_height));
 
 		texture_color = gamma * grass_and_rock + (1-gamma) * color_rock;
 	} else {
