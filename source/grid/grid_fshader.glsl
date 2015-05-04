@@ -1,15 +1,36 @@
 #version 330 core
 
-layout(location = 0) uniform sampler2D tex_height;
+// --- Inputs --- //
 
+in float height;
+in vec2 uv;
+
+// --- Outputs --- //
+
+out vec4 color;
+
+// --- Textures --- //
+
+layout(location = 0) uniform sampler2D tex_height;
 layout(location = 1) uniform sampler2D tex_grass;
 layout(location = 2) uniform sampler2D tex_sand;
 layout(location = 3) uniform sampler2D tex_rock;
 layout(location = 4) uniform sampler2D tex_snow;
 layout(location = 5) uniform sampler2D tex_rock_underwater;
 
+// --- Uniforms --- //
+
+// light_params
 uniform vec3 light_pos;
 uniform vec3 Ia, Id;
+
+// texture_params
+uniform float sand_min_level;
+uniform float sand_max_level;
+uniform float grass_max_level;
+
+uniform float sand_max_slope;
+uniform float grass_max_slope;
 
 const float SNOW_MIN_LEVEL = 1.0;
 const float SAND_MAX_LEVEL = 0.04;
@@ -19,25 +40,10 @@ const float SAND_MIN_LEVEL = -0.1;
 const float SAND_MAX_SLOPE = 0.8;
 const float GRASS_MAX_SLOPE = 0.2;
 
-const float GRASS_CF = 1.0;
-const float SAND_CF = 1.0;
-const float ROCK_CF = 0;
-
-const float GRASS_SF = 0;
-const float SAND_SF = 0;
-const float ROCK_SF = 0.5;
-
+// others
 uniform float water_height;
-
 const float pixel_unit = 1.0/2048.0;
-
 uniform int only_reflect;
-
-out vec4 color;
-
-in float height;
-
-in vec2 uv;
 
 /** Computes the coefficient used as the 3rd arg of mix(3).
 	The output ranges from 0 to 1 in the reals.

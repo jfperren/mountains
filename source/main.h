@@ -63,6 +63,7 @@ NoiseParams noise_values;
 FractalParams fractal_values;
 WaterParams water_params;
 LightParams light_params;
+TextureParams texture_params;
 
 // --- I/O ---
 
@@ -122,11 +123,19 @@ void initParams() {
 	light_params.Ia = vec3(0.7f, 0.7f, 0.7f);
 	light_params.Id = vec3(0.3f, 0.3f, 0.3f);
 	light_params.position = vec3(2.0f, 2.0f, 2.0f);
+
+	// --- Texture ---
+	texture_params.sand_min_height = -1;
+	texture_params.sand_max_height = 0.1f;
+	texture_params.grass_max_height = 1.0f;
+	texture_params.sand_max_slope = 0.3f;
+	texture_params.grass_max_slope = 0.3f;
+
 }
 
 void initSceneObjects() {
 	box.init(&grid_params, &water_params);
-	grid.init(&grid_params, &light_params);
+	grid.init(&grid_params, &light_params, &texture_params);
 
 	tex_mirror = fbw.init_texture();
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);

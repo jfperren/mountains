@@ -94,6 +94,7 @@ typedef struct WaterParams {
 		glUniform1f(glGetUniformLocation(pid, "water_reflection_factor"), reflection_factor);
 	}
 };
+
 typedef struct LightParams {
 	vec3 Ia;
 	vec3 Id;
@@ -106,4 +107,23 @@ typedef struct LightParams {
 		glUniform3fv(glGetUniformLocation(pid, "Ia"), ONE, Ia.data());
 		glUniform3fv(glGetUniformLocation(pid, "Id"), ONE, Id.data());
 	}
+};
+
+typedef struct TextureParams {
+	float sand_min_height;
+	float sand_max_height;
+	float grass_max_height;
+	
+	float sand_max_slope;
+	float grass_max_slope;
+
+	void setup(GLuint pid) {
+		glUniform1f(glGetUniformLocation(pid, "sand_min_height"), sand_min_height);
+		glUniform1f(glGetUniformLocation(pid, "sand_max_height"), sand_max_height);
+		glUniform1f(glGetUniformLocation(pid, "grass_max_height"), grass_max_height);
+
+		glUniform1f(glGetUniformLocation(pid, "sand_max_slope"), sand_max_slope);
+		glUniform1f(glGetUniformLocation(pid, "grass_max_slope"), grass_max_slope);
+	}
+
 };

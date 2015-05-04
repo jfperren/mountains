@@ -22,8 +22,11 @@ class Grid {
 
 private:
 	static const int grid_dim_ = 2048;
-	LightParams* light_params;
+
+	LightParams* _light_params;
 	GridParams* _grid_params;
+	TextureParams* _texture_params;
+
 	mat4 model = mat4::Identity();
 
 protected:
@@ -46,7 +49,7 @@ public:
 		return i + j * _grid_params->chunk_resolution * _grid_params->length_in_chunks;
 	}
 
-    void init(GridParams* grid_params, LightParams* light_params){
+	void init(GridParams* grid_params, LightParams* light_params, TextureParams* texture_params){
 
 		TEX_PATHS[0] = "textures/terrains/mountain/tex_grass.tga";
 		TEX_PATHS[1] = "textures/terrains/mountain/tex_sand.tga";
@@ -60,8 +63,9 @@ public:
 		TEX_NAMES[3] = "tex_snow";
 		TEX_NAMES[4] = "tex_rock_underwater";
 
-		this->light_params = light_params;
+		_light_params = light_params;
 		_grid_params = grid_params;
+		_texture_params = texture_params;
 
         // Compile the shaders
         _pid = opengp::load_shaders("grid/Grid_vshader.glsl", "grid/Grid_fshader.glsl");
@@ -188,8 +192,9 @@ public:
         glUseProgram(_pid);
         glBindVertexArray(_vao);
 
-		light_params->setup(_pid);
+		_light_params->setup(_pid);
 		_grid_params->setup(_pid);
+		_texture_params->setup(_pid);
 
 		if (only_reflect){
 			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
