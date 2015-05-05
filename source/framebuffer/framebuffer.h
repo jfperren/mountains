@@ -23,6 +23,9 @@ protected:
 	GLenum _type;
 
 public:
+
+	FB(){ }
+
 	FB(int image_width, int image_height){
 		this->_width = image_width;
 		this->_height = image_height;
@@ -38,6 +41,13 @@ public:
 
 	void unbind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void clear() {
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+		glClearColor( .0, .0, .0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(.937, .937, .937, 1.0);
 	}
 
 	int init_texture(bool use_interpolation = false) {

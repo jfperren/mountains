@@ -14,14 +14,7 @@ void resize_callback(int width, int height) {
 
 void compute_height_map() {
 
-	if (fractal_values.enable) {
-		renderFractal(&tex_height,
-			&noise_values,
-			&fractal_values
-		);
-	} else {
-		renderNoise(&tex_height, &noise_values);
-	}
+	noise_generator.renderFractal();
 
 	box.setHeightTexture(tex_height);
 	grid.setHeightTexture(tex_height);

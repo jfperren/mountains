@@ -65,6 +65,10 @@ WaterParams water_params;
 LightParams light_params;
 TextureParams texture_params;
 
+// --- Noise --- // 
+
+NoiseGenerator noise_generator(&tex_height, &noise_values, &fractal_values);
+
 // --- I/O ---
 
 string g_file_name = "";
@@ -73,6 +77,7 @@ string g_file_name_load = "";
 Camera camera(&window_params);
 
 // --- Callbacks ---
+
 void GLFWCALL OnWindowSize(int width, int height);
 void GLFWCALL OnChar(int glfwChar, int glfwAction);
 void GLFWCALL OnKey(int glfwKey, int glfwAction);
@@ -135,8 +140,6 @@ void initParams() {
 	texture_params.grass_s_transition = 50;
 	texture_params.sand_h_transition = 5;
 	texture_params.sand_s_transition = 50;
-
-
 }
 
 void initSceneObjects() {
@@ -152,6 +155,8 @@ void initSceneObjects() {
 	water.init(&grid_params, &water_params);
 	water.set_depth_texture(tex_water_depth);
 	sky.init();
+
+	noise_generator.init();
 }
 
 void initTextures() {
