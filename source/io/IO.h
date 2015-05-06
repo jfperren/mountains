@@ -2,10 +2,10 @@
 
 #include "icg_common.h"
 #include "../camera/camera.h"
-#include "../grid/Grid.h"
-#include "../noise/NoiseQuad.h"
-#include "../noise/NoiseGenerator.h"
-#include "../water/Water.h"
+#include "../grid/grid.h"
+#include "../noise/noise_quad.h"
+#include "../noise/noise_generator.h"
+#include "../water/water.h"
 #include "../main.h"
 #include <iostream>
 #include <fstream>
@@ -15,21 +15,21 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
-#include "../box/BoxGrid.h"
+#include "../box/box.h"
 #include "../constants.h"
 
 /* Writes noise, fractal and water info to file_name */
-void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params, WaterParams *water_params) {
-	ofstream myfile(file_name);
+void writeFile(string file_name, NoiseParams *noise_params, WaterParams *water_params) {
+	/*ofstream myfile(file_name);
 
 	if (myfile.is_open()) {
 
-		/* Write header */
+		/* Write header 
 		myfile << IO_HEADER_STRING << endl;
 
-		/* The order is not important */
+		/* The order is not important 
 
-		/* Noise */
+		/* Noise 
 		myfile << "noise_type " << noise_params->type << endl;
 		myfile << "noise_width " << noise_params->width << endl;
 		myfile << "noise_height " << noise_params->height << endl;
@@ -37,7 +37,7 @@ void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fract
 		myfile << "noise_amplitude " << noise_params->amplitude << endl;
 		myfile << "noise_seed " << noise_params->seed << endl;
 
-		/* Fractal */
+		/* Fractal 
 		if (fractal_params->enable) {
 			myfile << "fractal_enable " << "true" << endl;
 			myfile << "fractal_H " << fractal_params->H << endl;
@@ -51,7 +51,7 @@ void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fract
 			myfile << "fractal_enable " << "false" << endl;
 		}
 
-		/* Water */
+		/* Water 
 		myfile << "water_height " << water_params->height << endl;
 		myfile << "water_transparency " << water_params->transparency << endl;
 		myfile << "water_depth_alpha_factor " << water_params->depth_alpha_factor << endl;
@@ -64,11 +64,11 @@ void writeFile(string file_name, NoiseParams *noise_params, FractalParams *fract
 	}
 	else {
 		std::cout << "[Error] Could not save data: the file " << file_name << " could not be opened." << endl;
-	}
+	}*/
 }
 
-void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fractal_params, WaterParams *water_params) {
-	string line;
+void loadFromFile(string file_name, NoiseParams *noise_params, WaterParams *water_params) {
+	/*string line;
 	ifstream myfile(file_name);
 	if (myfile.is_open())
 	{
@@ -97,7 +97,7 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 			vector<string> results(it, end);
 
 
-			/* Load fractal */
+			/* Load fractal 
 			if (!results[0].compare("fractal_enable")) {
 				if (!results[1].compare("true")) {
 					fractal_params->enable = true;
@@ -121,7 +121,7 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 				fractal_params->amplitude = ::atof(results[1].c_str());
 			}
 			
-			/* Load noise */
+			/* Load noise 
 			else if (!results[0].compare("noise_type")) {
 				int type = ::atoi(results[1].c_str());
 				switch (type) {
@@ -157,7 +157,7 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 				noise_params->seed = ::atof(results[1].c_str());
 			}
 
-			/* Load water */
+			/* Load water 
 			else if (!results[0].compare("water_height")) {
 				water_params->height = ::atof(results[1].c_str());
 			}
@@ -180,5 +180,5 @@ void loadFromFile(string file_name, NoiseParams *noise_params, FractalParams *fr
 	}
 	else {
 		std::cout << "[Error] Could not load data: the file" << file_name << " could not be opened." << endl;
-	}
+	}*/
 }

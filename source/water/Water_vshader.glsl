@@ -18,6 +18,5 @@ void main() {
 
 	water_depth = gl_Position[2];
 
-
 	uv = 0.5 * (vertex_pos + vec2(1.0, 1.0));
 }

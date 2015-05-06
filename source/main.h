@@ -2,12 +2,12 @@
 
 #include "icg_common.h"
 #include "camera/camera.h"
-#include "grid/Grid.h"
-#include "noise/NoiseQuad.h"
-#include "noise/NoiseGenerator.h"
+#include "grid/grid.h"
+#include "noise/noise_quad.h"
+#include "noise/noise_generator.h"
 #include "framebuffer/framebuffer.h"
 #include "framebuffer/depthbuffer.h"
-#include "water/Water.h"
+#include "water/water.h"
 #include "sky/sky.h"
 #include <iostream>
 #include <fstream>
@@ -17,9 +17,9 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
-#include "box/BoxGrid.h"
+#include "box/box.h"
 #include "constants.h"
-#include "io/IO.h"
+#include "io/io.h"
 
 #ifdef WITH_ANTTWEAKBAR
 #include <AntTweakBar.h>
@@ -43,12 +43,12 @@ GridParams grid_params;
 
 Grid grid;
 Water water;
-BoxGrid box;
+Box box;
 Sky sky;
 
 // --- FrameBuffers --- // 
 
-FB fbw(WIDTH, HEIGHT);
+Framebuffer fbw(WIDTH, HEIGHT);
 Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 
 // --- Textures --- //
@@ -60,14 +60,13 @@ GLuint tex_water_depth;
 // --- Variables for AntTweakBar ---
 
 NoiseParams noise_values;
-FractalParams fractal_values;
 WaterParams water_params;
 LightParams light_params;
 TextureParams texture_params;
 
 // --- Noise --- // 
 
-NoiseGenerator noise_generator(&tex_height, &noise_values, &fractal_values);
+NoiseGenerator noise_generator(&tex_height, &noise_values);
 
 // --- I/O ---
 
@@ -97,24 +96,19 @@ void initParams() {
 	grid_params.width_in_chunks = 2;
 	
 	// --- Noise ---
-	noise_values.type = PERLIN_NOISE;
-	noise_values.effect = NO_EFFECT;
+	noise_values.noise_type = PERLIN_NOISE;
+	noise_values.fractal_type = FBM;
+	noise_values.noise_effect = NO_EFFECT;
+	noise_values.fractal_effect = NO_EFFECT;
 	noise_values.height = 1;
 	noise_values.width = 1;
 	noise_values.offset = 0.0f;
 	noise_values.amplitude = 1.0f;
+	noise_values.H = 1.2f;
+	noise_values.lacunarity = 2;
+	noise_values.octaves = 12;
 	noise_values.seed = glfwGetTime();
 	noise_values.seed -= floor(noise_values.seed);
-
-	// --- Fractal ---
-	fractal_values.fractal_type = FBM;
-	fractal_values.fractal_effect = NO_EFFECT;
-	fractal_values.amplitude = 2.0f;
-	fractal_values.offset = 0.0f;
-	fractal_values.H = 1.2f;
-	fractal_values.lacunarity = 2;
-	fractal_values.octaves = 12;
-	fractal_values.enable = true;
 
 	// --- Water ---
 	water_params.height = 0;

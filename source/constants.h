@@ -2,12 +2,13 @@
 
 const string IO_HEADER_STRING = "HEADER: terrain data";
 
+const int DRAW_NOISE = 0;
+const int COPY_NOISE = 1;
+
 typedef enum {
-	COPY_TEXTURE,
 	NO_NOISE,
 	RANDOM_NOISE,
 	PERLIN_NOISE,
-	PERLIN_NOISE_ABS,
 	WORLEY_NOISE
 } NoiseType;
 
@@ -44,35 +45,73 @@ typedef struct GridParams {
 };
 
 typedef struct NoiseParams {
-	NoiseType type;
-	Effect effect;
+	NoiseType noise_type;
+	FractalType fractal_type;
+
+	Effect noise_effect;
+	Effect fractal_effect;
+
 	int width;
 	int height;
 	float amplitude;
 	float offset;
-	float seed;
 
-	void setup(GLuint pid) {
-		// Pass parameters to the shaders
-		glUniform1f(glGetUniformLocation(pid, "noise_width"), width);
-		glUniform1f(glGetUniformLocation(pid, "noise_height"), height);
-		glUniform1f(glGetUniformLocation(pid, "noise_offset"), offset);
-		glUniform1f(glGetUniformLocation(pid, "noise_amplitude"), amplitude);
-		glUniform1i(glGetUniformLocation(pid, "noise_type"), type);
-		glUniform1f(glGetUniformLocation(pid, "noise_seed"), seed);
-		glUniform1i(glGetUniformLocation(pid, "noise_effect"), effect);
-	}
-};
-
-typedef struct FractalParams {
-	FractalType fractal_type;
-	Effect fractal_effect;
 	float H;
 	int lacunarity;
 	int octaves;
-	float amplitude;
-	float offset;
-	bool enable;
+
+	float seed;
+
+	NoiseParams copy() {
+		return {
+			noise_type,
+			fractal_type,
+			noise_effect,
+			fractal_effect,
+			width,
+			height,
+			amplitude,
+			offset,
+			H,
+			lacunarity,
+			octaves,
+			seed
+		};
+	}
+
+	void setup_copy(GLuint pid) {
+		glUniform1f(glGetUniformLocation(pid, "fractal_offset"), offset);
+		glUniform1f(glGetUniformLocation(pid, "fractal_amplitude"), amplitude);
+		glUniform1i(glGetUniformLocation(pid, "fractal_type"), fractal_type);
+		glUniform1i(glGetUniformLocation(pid, "fractal_effect"), fractal_effect);
+	}
+
+	void setup_draw(GLuint pid) {
+		glUniform1i(glGetUniformLocation(pid, "noise_type"), noise_type);
+		glUniform1i(glGetUniformLocation(pid, "noise_effect"), noise_effect);
+
+		glUniform1f(glGetUniformLocation(pid, "noise_width"), width);
+		glUniform1f(glGetUniformLocation(pid, "noise_height"), height);
+
+		glUniform1f(glGetUniformLocation(pid, "noise_seed"), seed);
+
+		glUniform1i(glGetUniformLocation(pid, "fractal_type"), fractal_type);
+	}
+};
+
+static NoiseParams FLAT_NOISE = {
+	NO_NOISE,
+	FBM,
+	NO_EFFECT,
+	NO_EFFECT,
+	1,
+	1,
+	0,
+	1,
+	0,
+	0,
+	0,
+	0
 };
 
 typedef struct WaterParams {
@@ -135,5 +174,4 @@ typedef struct TextureParams {
 		glUniform1i(glGetUniformLocation(pid, "sand_h_transition"), sand_h_transition);
 		glUniform1i(glGetUniformLocation(pid, "sand_s_transition"), sand_s_transition);
 	}
-
 };
