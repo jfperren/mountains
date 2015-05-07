@@ -109,6 +109,7 @@ public:
 
 		water_params->setup(_pid);
 		_grid_params->setup(_pid);
+		_light_params->setup(_pid);
 
 		glUniform1f(glGetUniformLocation(_pid, "near"), NEAR);
 		glUniform1f(glGetUniformLocation(_pid, "far"), FAR);
