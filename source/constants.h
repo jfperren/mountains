@@ -86,7 +86,7 @@ typedef struct WaterParams {
 
 	/* Waves */
 	float waves_speed;
-	int waves_tile_factor;
+	float waves_tile_factor;
 	float waves_amplitude;
 
 	void setup(GLuint pid) {

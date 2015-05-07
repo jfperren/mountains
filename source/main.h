@@ -28,8 +28,8 @@ TwBar *bar;
 
 using namespace std;
 
-const int WIDTH = 1600;
-const int HEIGHT = 1000;
+const int WIDTH = 1920;
+const int HEIGHT = 1080;
 
 // --- Window --- //
 
@@ -121,7 +121,7 @@ void initParams() {
 
 	water_params.reflection_factor = 0.25f;
 	water_params.waves_speed = 0.04f;
-	water_params.waves_tile_factor = 5.0;
+	water_params.waves_tile_factor = 2.0;
 	water_params.waves_amplitude = 1.0f;
 
 
