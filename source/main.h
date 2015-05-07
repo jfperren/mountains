@@ -56,6 +56,7 @@ Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 GLuint tex_height;
 GLuint tex_mirror;
 GLuint tex_water_depth;
+GLuint tex_normal_map;
 
 // --- Variables for AntTweakBar ---
 
@@ -149,11 +150,17 @@ void initSceneObjects() {
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
 
-	water.init(&grid_params, &water_params);
+	water.init(&grid_params, &water_params, &light_params);
 	water.set_depth_texture(tex_water_depth);
 	sky.init();
 }
 
 void initTextures() {
-
+	glGenTextures(1, &tex_normal_map);
+	glBindTexture(GL_TEXTURE_2D, tex_normal_map);
+	glfwLoadTexture2D("textures/water/tex_normal_map.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }

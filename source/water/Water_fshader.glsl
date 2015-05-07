@@ -9,6 +9,11 @@ uniform sampler2D tex_main;
 uniform sampler2D tex_mirror;
 uniform sampler2D tex_height;
 uniform sampler2D tex_depth;
+uniform sampler2D tex_normal_map;
+
+
+uniform vec3 light_pos;
+uniform vec3 Id;
 
 uniform float far;
 uniform float near;
@@ -19,6 +24,17 @@ uniform	float water_transparency;
 uniform	float water_depth_alpha_factor;
 uniform float water_depth_color_factor;
 uniform float water_reflection_factor;
+
+uniform float time;
+
+// Speed
+// Tile factor
+// direction
+// amplitude
+
+/* *//////////////////////////////////
+
+const float time_factor = 0.05;
 
 void main() {
     
@@ -50,7 +66,17 @@ void main() {
 
 	// Get 
     vec3 mirror_color = texture(tex_mirror, uv_screen_inv).rgb;
+
+	vec3 ambiant = mix(texture_color, mirror_color, vec3(water_reflection_factor));
     
+	vec3 normal = vec3(texture(tex_normal_map,  uv + vec2(time *  time_factor, time * time_factor)));	
+	normal[1] = 1;
+
+
+	vec3 diffuse = Id * (dot(normalize(normal), normalize(light_pos)) - 0.8);
+	diffuse = diffuse * vec3(4);
+
     // Mix the two together
-    color = vec4(mix(texture_color, mirror_color, vec3(water_reflection_factor)), alpha);
+    color = vec4(ambiant + diffuse, alpha);
+	//color = vec4(texture(tex_normal_map,  uv + vec2(time *  time_factor, time * time_factor)).xyz, alpha);
 }

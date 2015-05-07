@@ -15,14 +15,16 @@ protected:
 	GLuint _tex_mirror;
 	GLuint _tex_height;
 	GLuint _tex_depth;
+	GLuint _tex_normal_map;
 	GLuint _pid;          ///< GLSL shader program ID
 	GLuint _num_indices;  ///< number of vertices to render
 
 public:
 
 	WaterParams* water_params;
+	LightParams* _light_params;
 
-	void init(GridParams* grid_params, WaterParams* water_params){
+	void init(GridParams* grid_params, WaterParams* water_params, LightParams* light_params){
 		///--- Compile the shaders
 		_pid = opengp::load_shaders("water/Water_vshader.glsl", "water/Water_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
@@ -30,6 +32,7 @@ public:
 
 		this->water_params = water_params;
 		this->_grid_params = grid_params;
+		this->_light_params = light_params;
 
 		///--- Vertex one vertex Array
 		glGenVertexArrays(1, &_vao);
@@ -96,6 +99,10 @@ public:
 		_tex_depth = tex_depth;
 	}
 
+	void setNormalMap(GLuint tex_normal_map) {
+		_tex_normal_map = tex_normal_map;
+	}
+
 	void draw(const mat4& view, const mat4& projection){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
@@ -115,6 +122,8 @@ public:
 		glUniform1i(tex_height_id, 2 /*GL_TEXTURE2*/);
 		GLuint tex_depth_id = glGetUniformLocation(_pid, "tex_depth");
 		glUniform1i(tex_depth_id, 3 /*GL_TEXTURE3*/);
+		GLuint tex_normal_map_id = glGetUniformLocation(_pid, "tex_normal_map");
+		glUniform1i(tex_normal_map_id, 4 /*GL_TEXTURE4*/);
 
 		///--- Bind textures
 		glActiveTexture(GL_TEXTURE0);
@@ -125,6 +134,13 @@ public:
 		glBindTexture(GL_TEXTURE_2D, _tex_height);
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, _tex_depth);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, _tex_normal_map);
+
+		// Give time
+		GLfloat time = glfwGetTime();
+		GLuint time_id = glGetUniformLocation(_pid, "time");
+		glUniform1f(time_id, time);
 
 		// Setup MVP
 		mat4 MVP = projection*view*model;

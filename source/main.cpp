@@ -27,6 +27,7 @@ void compute_height_map() {
 	grid.setHeightTexture(tex_height);
 	water.setHeightTexture(tex_height);
 	water.setMirrorTexture(tex_mirror);
+	water.setNormalMap(tex_normal_map);
 }
 
 void TW_CALL setIntParamCallback(const void* value, void* clientData) {
