@@ -19,6 +19,10 @@ uniform float water_depth_color_factor;
 uniform float water_reflection_factor;
 uniform float time;
 
+uniform float waves_speed;
+uniform float waves_tile_factor;
+uniform float waves_amplitude;
+
 // Speed
 // Tile factor
 // direction
@@ -50,16 +54,16 @@ void main() {
 
     vec3 mirror_color = texture(tex_mirror, vec2(_u, _v)).rgb;
     
-    // Mix the two together
     vec3 ambiant = vec3(mix(texture_color, mirror_color, vec3(water_reflection_factor)));
 
-	vec3 normal = vec3(texture(tex_normal_map,  uv + vec2(time *  time_factor, time * time_factor)));	
+	ambiant *= vec3(0.5, 0.5, 1);
+
+	// Compute normal from the texture tex_normal_map
+	vec3 normal = vec3(texture(tex_normal_map,  uv * vec2(waves_tile_factor)  + vec2(time * waves_speed))).rgb;
 	normal[1] = 1;
 
-
 	vec3 diffuse =  Id * (dot(normalize(normal), normalize(light_pos)));
-	//diffuse = diffuse * vec3(4);
+	diffuse = diffuse * vec3(waves_amplitude);
 
 	color = vec4(ambiant + diffuse, alpha);
-	//color = vec4(texture(tex_normal_map,  uv + vec2(time *  time_factor, time * time_factor)).xyz, alpha);
 }

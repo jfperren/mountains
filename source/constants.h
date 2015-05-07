@@ -76,6 +76,7 @@ typedef struct FractalParams {
 };
 
 typedef struct WaterParams {
+	/* Water*/
 	float height;
 	float transparency;
 	float depth_alpha_factor;
@@ -83,15 +84,26 @@ typedef struct WaterParams {
 	float reflection_factor;
 	vec3 color;
 
+	/* Waves */
+	float waves_speed;
+	int waves_tile_factor;
+	float waves_amplitude;
+
 	void setup(GLuint pid) {
 		glUseProgram(pid);
 
+		/* Water */
 		glUniform1f(glGetUniformLocation(pid, "water_height"), height);
 		glUniform1f(glGetUniformLocation(pid, "water_transparency"), transparency);
 		glUniform3f(glGetUniformLocation(pid, "water_color"), color[0], color[1], color[2]);
 		glUniform1f(glGetUniformLocation(pid, "water_depth_alpha_factor"), depth_alpha_factor);
 		glUniform1f(glGetUniformLocation(pid, "water_depth_color_factor"), depth_color_factor);
 		glUniform1f(glGetUniformLocation(pid, "water_reflection_factor"), reflection_factor);
+
+		/* Waves */
+		glUniform1f(glGetUniformLocation(pid, "waves_speed"), waves_speed);
+		glUniform1f(glGetUniformLocation(pid, "waves_tile_factor"), waves_tile_factor);
+		glUniform1f(glGetUniformLocation(pid, "waves_amplitude"), waves_amplitude);
 	}
 };
 

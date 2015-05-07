@@ -118,7 +118,12 @@ void initParams() {
 	water_params.depth_alpha_factor = 1.4f;
 	water_params.depth_color_factor = 0.05f;
 	water_params.transparency = 0.4f;
+
 	water_params.reflection_factor = 0.25f;
+	water_params.waves_speed = 0.04f;
+	water_params.waves_tile_factor = 5.0;
+	water_params.waves_amplitude = 1.0f;
+
 
 	// --- Light ---
 	light_params.Ia = vec3(0.7f, 0.7f, 0.7f);

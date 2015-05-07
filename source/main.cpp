@@ -147,6 +147,11 @@ void initAntTwBar() {
 	TwAddVarCB(bar, "color_shallow_green", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[1], " group=Water step=0.05 min=0 max=1");
 	TwAddVarCB(bar, "color_shallow_blue", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.color[2], " group=Water step=0.05 min=0 max=1");
 
+	/* Waves */
+	TwAddVarCB(bar, "waves_speed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.waves_speed, " group=Water step=0.01 min=0.01 max=20");
+	TwAddVarCB(bar, "waves_tile_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.waves_tile_factor, " group=Water step=1 min=1 max=20");
+	TwAddVarCB(bar, "waves_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params.waves_amplitude, " group=Water step=0.1 min=0.1 max=10 label='water_intensity' ");
+
 	/* Texture */
 
 	TwAddVarCB(bar, "sand_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params.sand_min_height, " group=Texture step=0.05");
@@ -194,6 +199,8 @@ void init(){
 
 // Gets called for every frame.
 void display(){
+
+	opengp::update_title_fps("Terrain");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
