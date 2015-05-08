@@ -137,7 +137,7 @@ void initParams() {
 }
 
 void initSceneObjects() {
-	box.init(&grid_params, &water_params);
+	box.init(&grid_params, &water_params, &noise_values);
 	grid.init(&grid_params, &light_params, &texture_params);
 
 	tex_mirror = fbw.init_texture();

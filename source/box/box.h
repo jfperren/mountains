@@ -18,6 +18,7 @@ private:
 	mat4 model = mat4::Identity();
 	WaterParams* _water_params;
 	GridParams* _grid_params;
+	NoiseParams* _noise_params;
 
 protected:
 	GLuint _vao;          ///< vertex array object
@@ -28,7 +29,7 @@ protected:
 	GLuint _num_indices;  ///< number of vertices to render
 
 public:
-	void init(GridParams* grid_params, WaterParams* water_params);
+	void init(GridParams* grid_params, WaterParams* water_params, NoiseParams* noise_params);
 	void draw(const mat4& view, const mat4& projection);
 	void cleanup();
 

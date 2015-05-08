@@ -17,7 +17,7 @@ uniform float water_reflection_factor;
 void main() {
     
 	float grid_height = texture(tex_height, uv)[0];
-
+	color = vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	// Check if we need to take it into account
 	if (fragment_pos[1] < grid_height) {
 		// Solid base

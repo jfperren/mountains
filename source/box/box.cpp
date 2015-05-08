@@ -1,6 +1,6 @@
 #include "box.h"
 
-void Box::init(GridParams* grid_params, WaterParams* water_params){
+void Box::init(GridParams* grid_params, WaterParams* water_params, NoiseParams* noise_params){
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("box/box_vshader.glsl", "box/box_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
@@ -8,6 +8,7 @@ void Box::init(GridParams* grid_params, WaterParams* water_params){
 
 	_water_params = water_params;
 	_grid_params = grid_params;
+	_noise_params = noise_params;
 
 	///--- Vertex one vertex Array
 	glGenVertexArrays(1, &_vao);
@@ -81,6 +82,7 @@ void Box::draw(const mat4& view, const mat4& projection){
 	// Send Uniforms
 	_water_params->setup(_pid);
 	_grid_params->setup(_pid);
+	_noise_params->setup_copy(_pid);
 
 	///--- Texture uniforms
 	GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");

@@ -55,6 +55,7 @@ void NoiseGenerator::renderFractal() {
 	_framebuffer[2].clear();
 		
 	NoiseParams noise_params_tmp = _noise_params->copy();
+	noise_params_tmp.amplitude = 1;
 
 	// Two variables to swap buffers
 	int in = 1;
