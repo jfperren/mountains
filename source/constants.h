@@ -1,9 +1,24 @@
 #pragma once
 
+const int WIDTH = 1600;
+const int HEIGHT = 1000;
+
 const string IO_HEADER_STRING = "HEADER: terrain data";
 
 const int DRAW_NOISE = 0;
 const int COPY_NOISE = 1;
+
+const vec3 START_CAM_UP = vec3(0.0f, 1.0f, 0.0f);
+const vec3 START_CAM_DIR = vec3(0.0f, -1.0f, -2.0f).normalized();
+const vec3 START_CAM_POS = vec3(0.0f, 2.0f, 4.0f);
+
+const float MAX_Y_CAM_DIR = 0.9;
+
+const float DX = 0.01f;
+const float DPHI = 1.0f;
+
+const float NEAR = 0.1f;
+const float FAR = 40.0f;
 
 typedef enum {
 	NO_NOISE,

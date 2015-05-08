@@ -1,12 +1,5 @@
 #include "noise_generator.h"
 
-#pragma once
-
-#include "icg_common.h"
-#include "../framebuffer/framebuffer.h"
-#include "noise_quad.h"
-#include "../constants.h"
-
 NoiseGenerator::NoiseGenerator(GLuint* out_tex, NoiseParams* noise_params) :
 		_noise_params(noise_params)
 	{

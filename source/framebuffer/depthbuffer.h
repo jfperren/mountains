@@ -1,4 +1,5 @@
 #pragma once
+
 #include "icg_common.h"
 
 #ifdef WITH_OPENCV

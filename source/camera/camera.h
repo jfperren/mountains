@@ -1,25 +1,11 @@
-//#pragma once
+#pragma once
 
-#ifndef CAMERA_H
-#define CAMERA_H
+#include <math.h>
 
 #include "icg_common.h"
 #include "../constants.h"
-#include <math.h>
 
 using namespace Eigen;
-
-const vec3 START_CAM_UP  = vec3(0.0f, 1.0f, 0.0f);
-const vec3 START_CAM_DIR = vec3(0.0f, -1.0f, -2.0f).normalized();
-const vec3 START_CAM_POS = vec3(0.0f, 2.0f, 4.0f);
-
-const float MAX_Y_CAM_DIR = 0.9;
-
-const float DX = 0.01f;
-const float DPHI = 1.0f;
-
-const float NEAR = 0.1f;
-const float FAR = 40.0f;
 
 class Camera {
 
@@ -65,5 +51,3 @@ private:
 	// Helpers
 	vec2 transform_screen_coords(int x, int y);
 };
-
-#endif
