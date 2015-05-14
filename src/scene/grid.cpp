@@ -26,7 +26,7 @@ using namespace std;
 		_texture_params = texture_params;
 
 		// Compile the shaders
-		_pid = opengp::load_shaders("grid/Grid_vshader.glsl", "grid/Grid_fshader.glsl");
+		_pid = opengp::load_shaders("scene/Grid_vshader.glsl", "scene/Grid_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
 		glUseProgram(_pid);
 

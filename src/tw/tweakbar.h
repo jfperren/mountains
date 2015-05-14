@@ -12,15 +12,15 @@
 
 #include "icg_common.h"
 #include "../camera/camera.h"
-#include "../main.h"
-#include "../grid/grid.h"
-#include "../framebuffer/framebuffer.h"
+#include "../app/main.h"
+#include "../scene/grid.h"
+#include "../buffers/framebuffer.h"
 #include "../noise/noise_quad.h"
 #include "../noise/noise_generator.h"
-#include "../water/water.h"
-#include "../box/box.h"
-#include "../constants.h"
-#include "../io/io.h"
+#include "../scene/water.h"
+#include "../scene/box.h"
+#include "../app/constants.h"
+#include "../tw/io.h"
 
 void initAntTwBar(WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params);
 
@@ -36,5 +36,5 @@ void TW_CALL getBoolParamCallback(void* value, void* clientData);
 // --- Save Functions --- //
 
 void TW_CALL CopyStdStringToClient(std::string& destinationClientString, const std::string& sourceLibraryString);
-void TW_CALL SaveCB(void * /*clientData*/);
-void TW_CALL LoadCB(void * /*clientData*/);
+void TW_CALL SaveCB(void * clientData);
+void TW_CALL LoadCB(void * clientData);

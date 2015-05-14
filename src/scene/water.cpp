@@ -2,7 +2,7 @@
 
 void Water::init(GridParams* grid_params, WaterParams* water_params){
 	///--- Compile the shaders
-	_pid = opengp::load_shaders("water/Water_vshader.glsl", "water/Water_fshader.glsl");
+	_pid = opengp::load_shaders("scene/water_vshader.glsl", "scene/water_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
 

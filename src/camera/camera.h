@@ -3,7 +3,7 @@
 #include <math.h>
 
 #include "icg_common.h"
-#include "../constants.h"
+#include "../app/constants.h"
 
 using namespace Eigen;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "icg_common.h"
-#include "../constants.h"
+#include "../app/constants.h"
 
 // Vertices [Left/Right] [Back/Front] [Bottom/Top]
 #define LFB -1, -1, -1

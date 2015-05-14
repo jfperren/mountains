@@ -2,7 +2,7 @@
 
 void Box::init(GridParams* grid_params, WaterParams* water_params, NoiseParams* noise_params){
 	///--- Compile the shaders
-	_pid = opengp::load_shaders("box/box_vshader.glsl", "box/box_fshader.glsl");
+	_pid = opengp::load_shaders("scene/box_vshader.glsl", "scene/box_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
 

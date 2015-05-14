@@ -1,9 +1,9 @@
 #pragma once
 
 #include "icg_common.h"
-#include "../framebuffer/framebuffer.h"
+#include "../buffers/framebuffer.h"
 #include "noise_quad.h"
-#include "../constants.h"
+#include "../app/constants.h"
 
 class NoiseGenerator {
 

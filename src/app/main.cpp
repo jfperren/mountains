@@ -1,11 +1,12 @@
 #include "main.h"
 
-// --- Window --- //
+// --- Params --- // 
 
+NoiseParams noise_params;
+WaterParams water_params;
+LightParams light_params;
+TextureParams texture_params;
 WindowParams window_params{ WIDTH, HEIGHT };
-
-// --- Grid --- //
-
 GridParams grid_params;
 
 // --- Scene Objects --- // 
@@ -15,7 +16,7 @@ Water water;
 Box box;
 Sky sky;
 
-// --- FrameBuffers --- // 
+// --- Buffers --- // 
 
 Framebuffer fbw(WIDTH, HEIGHT);
 Depthbuffer fb_water_depth(WIDTH, HEIGHT);
@@ -26,77 +27,10 @@ GLuint tex_height;
 GLuint tex_mirror;
 GLuint tex_water_depth;
 
-// --- Variables for AntTweakBar ---
+// --- Other --- //
 
-NoiseParams noise_values;
-WaterParams water_params;
-LightParams light_params;
-TextureParams texture_params;
-
-// --- Noise --- // 
-
-NoiseGenerator noise_generator(&tex_height, &noise_values);
-
+NoiseGenerator noise_generator(&tex_height, &noise_params);
 Camera camera(&window_params);
-
-void init(){
-	// Sets background color.
-	glClearColor(/*gray*/ .937, .937, .937, /*solid*/1.0);
-
-	// Enable depth test.
-	glEnable(GL_DEPTH_TEST);
-
-	// All in main.h
-	initParams();
-	initTextures();
-	initSceneObjects();
-	cout << "debug" << endl;
-	compute_height_map();
-
-#ifdef WITH_ANTTWEAKBAR
-	initAntTwBar(&window_params, &noise_values, &water_params, &texture_params);
-#endif
-
-	check_error_gl();
-}
-
-// Gets called for every frame.
-void display(){
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Render the water reflect
-	fbw.bind();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true /* Only reflect */);
-	fbw.unbind();
-
-	glViewport(0, 0, window_params.width, window_params.height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	fb_water_depth.bind();
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	fb_water_depth.unbind();
-
-
-	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-
-	camera.move();
-
-#ifdef WITH_ANTTWEAKBAR
-	TwDraw();
-#endif
-}
-
-void cleanup(){
-#ifdef WITH_ANTTWEAKBAR
-	TwTerminate();
-#endif
-}
 
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
@@ -111,12 +45,76 @@ void resize_callback(int width, int height) {
 }
 
 void compute_height_map() {
+
 	noise_generator.renderFractal();
 
 	box.setHeightTexture(tex_height);
 	grid.setHeightTexture(tex_height);
 	water.setHeightTexture(tex_height);
 	water.setMirrorTexture(tex_mirror);
+	//water.setNormalMap(tex_normal_map);
+}
+
+void init(){
+    // Sets background color.
+    glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
+    
+    // Enable depth test.
+    glEnable(GL_DEPTH_TEST);
+    
+	// All in main.h
+	initParams();
+	initTextures();
+	initSceneObjects();
+
+	compute_height_map();
+
+#ifdef WITH_ANTTWEAKBAR
+
+	initAntTwBar(&window_params, &noise_params, &water_params, &texture_params);
+#endif
+
+	check_error_gl();
+}
+
+// Gets called for every frame.
+void display(){
+
+	opengp::update_title_fps("Terrain");
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Render the water reflect
+	fbw.bind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
+	fbw.unbind();
+
+	glViewport(0, 0, window_params.width, window_params.height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	fb_water_depth.bind();
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+	fb_water_depth.unbind();
+	
+
+	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+
+	camera.move();
+
+#ifdef WITH_ANTTWEAKBAR
+	TwDraw();
+#endif
+}
+
+void cleanup(){
+#ifdef WITH_ANTTWEAKBAR
+    TwTerminate();
+#endif
 }
 
 int main(int, char**){
@@ -137,6 +135,8 @@ int main(int, char**){
     return EXIT_SUCCESS;
 }
 
+// --- Helpers --- //
+
 void initParams() {
 
 	// --- Window ---
@@ -149,19 +149,19 @@ void initParams() {
 	grid_params.width_in_chunks = 2;
 
 	// --- Noise ---
-	noise_values.noise_type = PERLIN_NOISE;
-	noise_values.fractal_type = FBM;
-	noise_values.noise_effect = NO_EFFECT;
-	noise_values.fractal_effect = NO_EFFECT;
-	noise_values.height = 1;
-	noise_values.width = 1;
-	noise_values.offset = 0.0f;
-	noise_values.amplitude = 2.0f;
-	noise_values.H = 1.2f;
-	noise_values.lacunarity = 2;
-	noise_values.octaves = 12;
-	noise_values.seed = glfwGetTime();
-	noise_values.seed -= floor(noise_values.seed);
+	noise_params.noise_type = PERLIN_NOISE;
+	noise_params.fractal_type = FBM;
+	noise_params.noise_effect = NO_EFFECT;
+	noise_params.fractal_effect = NO_EFFECT;
+	noise_params.height = 1;
+	noise_params.width = 1;
+	noise_params.offset = 0.0f;
+	noise_params.amplitude = 1.0f;
+	noise_params.H = 1.2f;
+	noise_params.lacunarity = 2;
+	noise_params.octaves = 12;
+	noise_params.seed = glfwGetTime();
+	noise_params.seed -= floor(noise_params.seed);
 
 	// --- Water ---
 	water_params.height = 0;
@@ -169,7 +169,12 @@ void initParams() {
 	water_params.depth_alpha_factor = 1.4f;
 	water_params.depth_color_factor = 0.05f;
 	water_params.transparency = 0.4f;
+
 	water_params.reflection_factor = 0.25f;
+	/*water_params.waves_speed = 0.04f;
+	water_params.waves_tile_factor = 2.0;
+	water_params.waves_amplitude = 1.0f;*/
+
 
 	// --- Light ---
 	light_params.Ia = vec3(0.7f, 0.7f, 0.7f);
@@ -187,10 +192,12 @@ void initParams() {
 	texture_params.grass_s_transition = 50;
 	texture_params.sand_h_transition = 5;
 	texture_params.sand_s_transition = 50;
+
+
 }
 
 void initSceneObjects() {
-	box.init(&grid_params, &water_params, &noise_values);
+	box.init(&grid_params, &water_params, &noise_params);
 	grid.init(&grid_params, &light_params, &texture_params);
 
 	tex_mirror = fbw.init_texture();
@@ -199,18 +206,22 @@ void initSceneObjects() {
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
 
-	water.init(&grid_params, &water_params);
+	water.init(&grid_params, &water_params);/* , &light_params);*/
 	water.set_depth_texture(tex_water_depth);
 	sky.init();
-
-	noise_generator.init();
 }
 
 void initTextures() {
-
+	/*glGenTextures(1, &tex_normal_map);
+	glBindTexture(GL_TEXTURE_2D, tex_normal_map);
+	glfwLoadTexture2D("textures/water/tex_normal_map.tga", 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
 }
 
-// --- User Input Callbacks --- //
+// --- Callbacks --- //
 
 // Callback function called by GLFW when a mouse button is clicked
 void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)

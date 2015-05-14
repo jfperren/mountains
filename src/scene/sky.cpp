@@ -2,7 +2,7 @@
 
 
 void Sky::init(){
-	_pid = opengp::load_shaders("sky/sky_vshader.glsl", "sky/sky_fshader.glsl");
+	_pid = opengp::load_shaders("scene/sky_vshader.glsl", "scene/sky_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
 

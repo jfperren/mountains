@@ -18,28 +18,31 @@ void initAntTwBar(WindowParams* window_params, NoiseParams* noise_params, WaterP
 	// Noise 
 
 	TwEnumVal noise_type_array[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { WORLEY_NOISE, "WORLEY_NOISE" } };
-	TwEnumVal fractalEV[] = { { FBM, "FBM" }, { MULTIFRACTAL, "MULTIFRACTAL" } };
 	TwType noise_type_type = TwDefineEnum("NoiseType", noise_type_array, 4);
-	TwType fractalType = TwDefineEnum("FractalType", fractalEV, 2);
 	TwAddVarCB(bar, "noise_type", noise_type_type, setIntParamCallback, getIntParamCallback, &noise_params->noise_type, " group=Noise ");
-	TwAddVarCB(bar, "fractal_type", fractalType, setIntParamCallback, getIntParamCallback, &noise_params->fractal_type, " group=Noise ");
+
+	TwEnumVal fractal_type_array[] = { { FBM, "FBM" }, { MULTIFRACTAL, "MULTIFRACTAL" } };
+	TwType fractal_type = TwDefineEnum("FractalType", fractal_type_array, 2);
+	TwAddVarCB(bar, "fractal_type", fractal_type, setIntParamCallback, getIntParamCallback, &noise_params->fractal_type, " group=Noise ");
 
 	TwEnumVal noise_effect_array[] = { { NO_EFFECT, "NO_EFFECT" }, { ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { DISCRETIZE, "DISCRETIZE" } };
 	TwType noise_effect_type = TwDefineEnum("NoiseEffect", noise_effect_array, 4);
+	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_params->noise_effect, " group=Noise ");
+
 	TwEnumVal fractal_effect_array[] = { { NO_EFFECT, "NO_EFFECT" }, { ABSOLUTE_VALUE, "ABSOLUTE_VALUE" }, { CLAMP_EXTREMAS, "CLAMP_EXTREMAS" }, { DISCRETIZE, "DISCRETIZE" } };
 	TwType fractal_effect_type = TwDefineEnum("FractalEffect", fractal_effect_array, 4);
-	TwAddVarCB(bar, "noise_effect", noise_effect_type, setIntParamCallback, getIntParamCallback, &noise_params->noise_effect, " group=Noise ");
 	TwAddVarCB(bar, "fractal_effect", fractal_effect_type, setIntParamCallback, getIntParamCallback, &noise_params->fractal_effect, " group=Noise ");
 
-	TwAddVarCB(bar, "noise_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->width, " group=Noise step=1");
-	TwAddVarCB(bar, "noise_height", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->height, " group=Noise step=1");
-	TwAddVarCB(bar, "fractal_offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->offset, " group=Noise step=0.1");
-	TwAddVarCB(bar, "fractal_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->amplitude, " group=Noise step=0.1");
-	TwAddVarCB(bar, "seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->seed, " group=Noise step=0.001 min=0 max=1");
+	TwAddVarCB(bar, "width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->width, " group=Noise step=1");
+	TwAddVarCB(bar, "height", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->height, " group=Noise step=1");
+	TwAddVarCB(bar, "offset", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->offset, " group=Noise step=0.1");
+	TwAddVarCB(bar, "amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->amplitude, " group=Noise step=0.1");
 
 	TwAddVarCB(bar, "H", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->H, " group=Noise step=0.1");
 	TwAddVarCB(bar, "lacunarity", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->lacunarity, " group=Noise step=1 min=2");
 	TwAddVarCB(bar, "octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->octaves, " group=Noise step=1 min=1");
+
+	TwAddVarCB(bar, "seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->seed, " group=Noise step=0.001 min=0 max=1");
 
 	// Water 
 
@@ -122,7 +125,7 @@ void TW_CALL SaveCB(void * /*clientData*/)
 		g_file_name_load = g_file_name; // optional
 	}
 
-	//writeFile(g_file_name, &noise_values, &fractal_values);
+	//writeFile(g_file_name, &noise_params, &fractal_values);
 }
 
 void TW_CALL LoadCB(void * /*clientData*/)
@@ -132,7 +135,7 @@ void TW_CALL LoadCB(void * /*clientData*/)
 		cout << "Error: Cannot load from empty name" << endl;
 	}
 	else {
-		//loadFromFile(g_file_name_load, &noise_values, &fractal_values);
+		//loadFromFile(g_file_name_load, &noise_params, &fractal_values);
 	}
 
 	// Update scene with the changes
