@@ -46,11 +46,9 @@ void resize_callback(int width, int height) {
 }
 
 void compute_height_map() {
-
 	noise_generator.renderFractal();
-
-	box.setHeightTexture(tex_height);
-	grid.setHeightTexture(tex_height);
+	box.set_height_texture(tex_height);
+	grid.set_height_texture(tex_height);
 	water.set_height_texture(tex_height);
 	water.set_mirror_texture(tex_mirror);
 	water.set_normal_map(tex_normal_map);
@@ -73,15 +71,13 @@ void init(){
 
 #ifdef WITH_ANTTWEAKBAR
 
-	//initAntTwBar(&window_params, &noise_params, &water_params, &texture_params);
+	initAntTwBar(&window_params, &noise_params, &water_params, &texture_params);
 #endif
-
 	check_error_gl();
 }
 
 // Gets called for every frame.
 void display(){
-
 	opengp::update_title_fps("Terrain");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -91,7 +87,7 @@ void display(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
-	
+	cout << "TEST" << endl;
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -108,7 +104,7 @@ void display(){
 	camera.move();
 
 #ifdef WITH_ANTTWEAKBAR
-	//TwDraw();
+	TwDraw();
 #endif
 }
 

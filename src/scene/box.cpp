@@ -53,7 +53,7 @@ void Box::cleanup(){
 	glDeleteProgram(_pid);
 }
 
-void Box::setHeightTexture(GLuint tex_height) {
+void Box::set_height_texture(GLuint tex_height) {
 	// Pass texture to instance
 	_tex_height = tex_height;
 }

@@ -121,9 +121,8 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
-	void Grid::setHeightTexture(GLuint tex_height) {
+	void Grid::set_height_texture(GLuint tex_height) {
 		_tex_height = tex_height;
-		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
 	}
 
 

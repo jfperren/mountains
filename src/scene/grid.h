@@ -49,6 +49,6 @@ public:
 	void draw(const mat4& view, const mat4& projection, bool only_reflect = false);
 	void cleanup();
 
-	void setHeightTexture(GLuint tex_height);
+	void set_height_texture(GLuint tex_height);
 	int get_vertex_index(int i, int j);
 };

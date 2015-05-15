@@ -34,5 +34,5 @@ public:
 	void draw(const mat4& view, const mat4& projection);
 	void cleanup();
 
-	void setHeightTexture(GLuint tex_height);
+	void set_height_texture(GLuint tex_height);
 };
