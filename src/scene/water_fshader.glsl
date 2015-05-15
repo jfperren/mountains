@@ -5,7 +5,7 @@ in float water_depth;
 
 out vec4 color;
 
-/*uniform sampler2D tex_main;
+uniform sampler2D tex_main;
 uniform sampler2D tex_mirror;
 uniform sampler2D tex_height;
 uniform sampler2D tex_depth;
@@ -28,9 +28,9 @@ uniform float waves_tile_factor;
 uniform float waves_amplitude;
 
 const float time_factor = 0.05;
-*/
+
 void main() {
-    /*
+    
 	// Get the size of the screen (same as size of tex_mirror)
     ivec2 texture_size = textureSize(tex_mirror, 0);
 
@@ -62,5 +62,4 @@ void main() {
     
     // Mix the two together
     color = vec4(mix(texture_color, mirror_color, vec3(water_reflection_factor)), alpha);
-*/
 }

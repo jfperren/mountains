@@ -13,19 +13,22 @@ void NoiseQuad::init(){
 
 	///--- Vertex coordinates
 	{
-		const GLfloat vpoint[] = { /*V1*/ -1.0f, -1.0f, 0.0f,
-			/*V2*/ +1.0f, -1.0f, 0.0f,
-			/*V3*/ -1.0f, +1.0f, 0.0f,
-			/*V4*/ +1.0f, +1.0f, 0.0f };
+		const GLfloat vertex_pos_array[] = { 
+			-1.0f, -1.0f, 0.0f,
+			+1.0f, -1.0f, 0.0f,
+			-1.0f, +1.0f, 0.0f,
+			+1.0f, +1.0f, 0.0f 
+		};
+
 		///--- Buffer
 		glGenBuffers(1, &_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vpoint), vpoint, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_pos_array), vertex_pos_array, GL_STATIC_DRAW);
 
 		///--- Attribute
-		GLuint vpoint_id = glGetAttribLocation(_pid, "vpoint");
-		glEnableVertexAttribArray(vpoint_id);
-		glVertexAttribPointer(vpoint_id, 3, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+		GLuint vertex_pos_id = glGetAttribLocation(_pid, "vertex_pos");
+		glEnableVertexAttribArray(vertex_pos_id);
+		glVertexAttribPointer(vertex_pos_id, 3, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 	}
 
 	///--- to avoid the current object being polluted
