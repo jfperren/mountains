@@ -26,6 +26,7 @@ Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 GLuint tex_height;
 GLuint tex_mirror;
 GLuint tex_water_depth;
+GLuint tex_normal_map;
 
 // --- Other --- //
 
@@ -50,9 +51,9 @@ void compute_height_map() {
 
 	box.setHeightTexture(tex_height);
 	grid.setHeightTexture(tex_height);
-	water.setHeightTexture(tex_height);
-	water.setMirrorTexture(tex_mirror);
-	//water.setNormalMap(tex_normal_map);
+	water.set_height_texture(tex_height);
+	water.set_mirror_texture(tex_mirror);
+	water.set_normal_map(tex_normal_map);
 }
 
 void init(){
@@ -61,17 +62,16 @@ void init(){
     
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
-    
-	// All in main.h
+
 	initParams();
 	initTextures();
 	initSceneObjects();
-
-	compute_height_map();
+	
+	//compute_height_map();
 
 #ifdef WITH_ANTTWEAKBAR
 
-	initAntTwBar(&window_params, &noise_params, &water_params, &texture_params);
+	//initAntTwBar(&window_params, &noise_params, &water_params, &texture_params);
 #endif
 
 	check_error_gl();
@@ -83,13 +83,13 @@ void display(){
 	opengp::update_title_fps("Terrain");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	/*
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
-
+	
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -102,12 +102,12 @@ void display(){
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());/*
 
-	camera.move();
+	camera.move();*/
 
 #ifdef WITH_ANTTWEAKBAR
-	TwDraw();
+	//TwDraw();
 #endif
 }
 
@@ -193,32 +193,35 @@ void initParams() {
 	texture_params.sand_h_transition = 5;
 	texture_params.sand_s_transition = 50;
 
-
+	
 }
 
 void initSceneObjects() {
+	check_error_gl();
 	box.init(&grid_params, &water_params, &noise_params);
+	check_error_gl();
 	grid.init(&grid_params, &light_params, &texture_params);
-
+	check_error_gl();
 	tex_mirror = fbw.init_texture();
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
-
+	check_error_gl();
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
 
-	water.init(&grid_params, &water_params);/* , &light_params);*/
+	water.init(&grid_params, &water_params, &light_params);
 	water.set_depth_texture(tex_water_depth);
 	sky.init();
+	check_error_gl();
 }
 
 void initTextures() {
-	/*glGenTextures(1, &tex_normal_map);
+	glGenTextures(1, &tex_normal_map);
 	glBindTexture(GL_TEXTURE_2D, tex_normal_map);
 	glfwLoadTexture2D("textures/water/tex_normal_map.tga", 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 // --- Callbacks --- //

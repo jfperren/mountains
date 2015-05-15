@@ -1,7 +1,6 @@
 #version 330 core
 
 in vec3 vertex_pos;
-in vec2 vertex_tex_coord;
 
 out vec3 fragment_pos;
 out vec2 uv;

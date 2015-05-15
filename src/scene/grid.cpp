@@ -26,7 +26,7 @@ using namespace std;
 		_texture_params = texture_params;
 
 		// Compile the shaders
-		_pid = opengp::load_shaders("scene/Grid_vshader.glsl", "scene/Grid_fshader.glsl");
+		_pid = opengp::load_shaders("scene/grid_vshader.glsl", "scene/grid_fshader.glsl");
 		if (!_pid) exit(EXIT_FAILURE);
 		glUseProgram(_pid);
 
@@ -79,28 +79,9 @@ using namespace std;
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 
 			// position shader attribute
-			GLuint loc_position = glGetAttribLocation(_pid, "position");
-			glEnableVertexAttribArray(loc_position);
-			glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-		}
-
-		{
-			///--- Texture coordinates
-			const GLfloat vtexcoord[] = {
-				/*V1*/ 0.0f, 0.0f,
-				/*V2*/ 1.0f, 0.0f,
-				/*V3*/ 0.0f, 1.0f,
-				/*V4*/ 1.0f, 1.0f };
-
-			///--- Buffer
-			glGenBuffers(1, &_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
-
-			///--- Attribute
-			GLuint vtexcoord_id = glGetAttribLocation(_pid, "vtexcoord");
-			glEnableVertexAttribArray(vtexcoord_id);
-			glVertexAttribPointer(vtexcoord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+			GLuint vertex_pos_id = glGetAttribLocation(_pid, "vertex_pos");
+			glEnableVertexAttribArray(vertex_pos_id);
+			glVertexAttribPointer(vertex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 		}
 
 		// --- Create Textures ---
@@ -130,6 +111,7 @@ using namespace std;
 
 		// to avoid the current object being polluted
 		glBindVertexArray(0);
+		check_error_gl();
 	}
 
 	void Grid::cleanup(){

@@ -1,6 +1,6 @@
 #include "water.h"
 
-void Water::init(GridParams* grid_params, WaterParams* water_params){
+void Water::init(GridParams* grid_params, WaterParams* water_params, LightParams* light_params){
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("scene/water_vshader.glsl", "scene/water_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
@@ -8,6 +8,7 @@ void Water::init(GridParams* grid_params, WaterParams* water_params){
 
 	_water_params = water_params;
 	_grid_params = grid_params;
+	_light_params = light_params;
 
 	///--- Vertex one vertex Array
 	glGenVertexArrays(1, &_vao);
@@ -16,10 +17,10 @@ void Water::init(GridParams* grid_params, WaterParams* water_params){
 	///--- Vertex coordinates
 	{
 		const GLfloat vpoint[] = {
-			/*V1*/ -1.0f, -1.0f,
-			/*V2*/ +1.0f, -1.0f,
-			/*V3*/ -1.0f, +1.0f,
-			/*V4*/ +1.0f, +1.0f
+			-1.0f, -1.0f,
+			+1.0f, -1.0f,
+			-1.0f, +1.0f,
+			+1.0f, +1.0f
 		};
 
 		///--- Buffer
@@ -47,6 +48,7 @@ void Water::init(GridParams* grid_params, WaterParams* water_params){
 	///--- to avoid the current object being polluted
 	glBindVertexArray(0);
 	glUseProgram(0);
+	check_error_gl();
 }
 
 void Water::cleanup(){
@@ -55,23 +57,27 @@ void Water::cleanup(){
 	glDeleteProgram(_pid);
 }
 
-void Water::setMainTexture(GLuint tex_main){
+void Water::set_main_texture(GLuint tex_main){
 	// Pass texture to instance
 	_tex_main = tex_main;
 }
 
-void Water::setMirrorTexture(GLuint tex_mirror){
+void Water::set_mirror_texture(GLuint tex_mirror){
 	// Pass texture to instance
 	_tex_mirror = tex_mirror;
 }
 
-void Water::setHeightTexture(GLuint tex_height) {
+void Water::set_height_texture(GLuint tex_height) {
 	// Pass texture to instance
 	_tex_height = tex_height;
 }
 
 void Water::set_depth_texture(GLuint tex_depth) {
 	_tex_depth = tex_depth;
+}
+
+void Water::set_normal_map(GLuint tex_normal_map) {
+	_tex_normal_map = tex_normal_map;
 }
 
 void Water::draw(const mat4& view, const mat4& projection){
@@ -93,6 +99,8 @@ void Water::draw(const mat4& view, const mat4& projection){
 	glUniform1i(tex_height_id, 2 /*GL_TEXTURE2*/);
 	GLuint tex_depth_id = glGetUniformLocation(_pid, "tex_depth");
 	glUniform1i(tex_depth_id, 3 /*GL_TEXTURE3*/);
+	GLuint tex_normal_map_id = glGetUniformLocation(_pid, "tex_normal_map");
+	glUniform1i(tex_normal_map_id, 4 /*GL_TEXTURE4*/);
 
 	///--- Bind textures
 	glActiveTexture(GL_TEXTURE0);
@@ -103,6 +111,8 @@ void Water::draw(const mat4& view, const mat4& projection){
 	glBindTexture(GL_TEXTURE_2D, _tex_height);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, _tex_depth);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, _tex_normal_map);
 
 	// Setup MVP
 	mat4 MVP = projection*view*model;

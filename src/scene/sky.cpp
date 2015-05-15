@@ -30,48 +30,48 @@ void Sky::init(){
 		glVertexAttribPointer(vertex_pos_id, 3, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 	}
 
-			{
-				const GLfloat vtexcoord[] = {
-					0.0f, 0.0f,
-					0.0f, 1.0f,
-					1.0f, 0.0f,
-					1.0f, 1.0f,
+	{
+		const GLfloat vtexcoord[] = {
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
 
-					1.0f, 1.0f,
-					1.0f, 0.0f,
-					0.0f, 1.0f,
-					0.0f, 0.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
 
-					0.0f, 0.0f,
-					0.0f, 1.0f,
-					1.0f, 0.0f,
-					1.0f, 1.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
 
-					0.0f, 0.0f,
-					0.0f, 1.0f,
-					1.0f, 0.0f,
-					1.0f, 1.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
 
-					1.0f, 1.0f,
-					1.0f, 0.0f,
-					0.0f, 1.0f,
-					0.0f, 0.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
 
-					0.0f, 0.0f,
-					0.0f, 1.0f,
-					1.0f, 0.0f,
-					1.0f, 1.0f
-				};
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f
+		};
 
-				glGenBuffers(1, &_vbo);
-				glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
+		glGenBuffers(1, &_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
 
-				GLuint tex_pos_id = glGetAttribLocation(_pid, "tex_pos");
-				glEnableVertexAttribArray(tex_pos_id);
-				glVertexAttribPointer(tex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-			}
-
+		GLuint tex_pos_id = glGetAttribLocation(_pid, "tex_pos");
+		glEnableVertexAttribArray(tex_pos_id);
+		glVertexAttribPointer(tex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+	}
+	
 	GLchar* faces[6];
 	faces[0] = "textures/skybox/swagnuage/XN.tga";
 	faces[1] = "textures/skybox/swagnuage/XP.tga";
@@ -82,8 +82,8 @@ void Sky::init(){
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glGenTextures(6, _tex_skybox);
-	glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, *_tex_skybox);
-
+	//glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, *_tex_skybox);
+	
 	for (GLuint i = 0; i < 6; i++){
 		glBindTexture(GL_TEXTURE_2D, _tex_skybox[i]);
 		glfwLoadTexture2D(faces[i], 0);
@@ -100,6 +100,7 @@ void Sky::init(){
 	glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+	check_error_gl();
 	glBindVertexArray(0);
 	glUseProgram(0);
 }

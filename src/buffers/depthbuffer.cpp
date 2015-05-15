@@ -5,7 +5,6 @@ Depthbuffer::Depthbuffer(int image_width, int image_height){
 	this->_height = image_height;
 }
 
-///--- Warning: ovverrides viewport!!
 void Depthbuffer::bind() {
 	glViewport(0, 0, _width, _height);
 	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);

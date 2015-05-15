@@ -3,9 +3,9 @@
 void NoiseQuad::init(){
 
 	///--- Compile the shaders
-	_pid = opengp::load_shaders("noise/noise_quad_vshader.glsl", "noise/noise_quad_fshader.glsl");
+	/*_pid = opengp::load_shaders("noise/noise_quad_vshader.glsl", "noise/noise_quad_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
-	glUseProgram(_pid);
+	glUseProgram(_pid);*/
 
 	///--- Vertex one vertex Array
 	glGenVertexArrays(1, &_vao);

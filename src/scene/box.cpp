@@ -9,12 +9,12 @@ void Box::init(GridParams* grid_params, WaterParams* water_params, NoiseParams* 
 	_water_params = water_params;
 	_grid_params = grid_params;
 	_noise_params = noise_params;
-
-	///--- Vertex one vertex Array
+	
+	//--- Vertex one vertex Array
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
 
-	///--- Vertex coordinates
+	//--- Vertex coordinates
 	{
 		const GLfloat faces[] = {
 			LFB, LBB, LFT, LBT, // Left
@@ -31,28 +31,10 @@ void Box::init(GridParams* grid_params, WaterParams* water_params, NoiseParams* 
 
 		// position shader attribute
 		GLuint vertex_pos_id = glGetAttribLocation(_pid, "vertex_pos");
+		cout << vertex_pos_id << endl;
 		glEnableVertexAttribArray(vertex_pos_id);
 		glVertexAttribPointer(vertex_pos_id, 3, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 	}
-
-	///--- Texture coordinates
-		{
-			const GLfloat vtexcoord[] = {
-				/*V1*/ 0.0f, 0.0f,
-				/*V2*/ 1.0f, 0.0f,
-				/*V3*/ 0.0f, 1.0f,
-				/*V4*/ 1.0f, 1.0f };
-
-			///--- Buffer
-			glGenBuffers(1, &_vbo_tex);
-			glBindBuffer(GL_ARRAY_BUFFER, _vbo_tex);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vtexcoord), vtexcoord, GL_STATIC_DRAW);
-
-			///--- Attribute
-			GLuint vertex_tex_coord_id = glGetAttribLocation(_pid, "vertex_tex_coord");
-			glEnableVertexAttribArray(vertex_tex_coord_id);
-			glVertexAttribPointer(vertex_tex_coord_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
-		}
 
 	// Enable blending
 	glEnable(GL_BLEND);
@@ -61,6 +43,7 @@ void Box::init(GridParams* grid_params, WaterParams* water_params, NoiseParams* 
 	///--- to avoid the current object being polluted
 	glBindVertexArray(0);
 	glUseProgram(0);
+	check_error_gl();
 }
 
 void Box::cleanup(){
