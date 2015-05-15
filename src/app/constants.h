@@ -48,14 +48,14 @@ typedef struct WindowParams {
 };
 
 typedef struct GridParams {
-	int length_in_chunks;
-	int width_in_chunks;
-	int chunk_resolution;
+	int length;
+	int width;
+	int resolution;
 
 	void setup(GLuint pid){
-		glUniform1i(glGetUniformLocation(pid, "grid_length_in_chunks"), length_in_chunks);
-		glUniform1i(glGetUniformLocation(pid, "grid_width_in_chunks"), width_in_chunks);
-		glUniform1i(glGetUniformLocation(pid, "grid_chunk_resolution"), chunk_resolution);
+		glUniform1i(glGetUniformLocation(pid, "grid_length"), length);
+		glUniform1i(glGetUniformLocation(pid, "grid_width"), width);
+		glUniform1i(glGetUniformLocation(pid, "grid_resolution"), resolution);
 	}
 };
 

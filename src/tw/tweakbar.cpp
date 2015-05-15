@@ -7,13 +7,19 @@ TwBar *bar;
 string g_file_name = "";
 string g_file_name_load = "";
 
-void initAntTwBar(WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params) {
+void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params) {
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	// Needed to work with dynamic strings
 	TwCopyStdStringToClientFunc(CopyStdStringToClient);
 	TwWindowSize(window_params->width, window_params->height);
 	bar = TwNewBar("Settings");
+
+	// Grid
+
+	TwAddVarCB(bar, "grid_length", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->length, " group=Grid step=1");
+	TwAddVarCB(bar, "grid_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->width, " group=Grid step=1");
+	TwAddVarCB(bar, "grid_resolution", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->resolution, " group=Grid step=1");
 	
 	// Noise 
 

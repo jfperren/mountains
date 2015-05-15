@@ -22,7 +22,7 @@
 #include "../app/constants.h"
 #include "../tw/io.h"
 
-void initAntTwBar(WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params);
+void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params);
 
 // --- Value Callbacks --- //
 

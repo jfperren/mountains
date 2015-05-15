@@ -71,7 +71,7 @@ void init(){
 
 #ifdef WITH_ANTTWEAKBAR
 
-	initAntTwBar(&window_params, &noise_params, &water_params, &texture_params);
+	initAntTwBar(&grid_params, &window_params, &noise_params, &water_params, &texture_params);
 #endif
 	check_error_gl();
 }
@@ -141,9 +141,9 @@ void initParams() {
 	window_params.height = HEIGHT;
 
 	// --- Grid ---
-	grid_params.chunk_resolution = 100;
-	grid_params.length_in_chunks = 2;
-	grid_params.width_in_chunks = 2;
+	grid_params.resolution = 100;
+	grid_params.length = 2;
+	grid_params.width = 2;
 
 	// --- Noise ---
 	noise_params.noise_type = PERLIN_NOISE;

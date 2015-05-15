@@ -4,7 +4,7 @@ using namespace std;
 
 
 	int Grid::get_vertex_index(int i, int j) {
-		return i + j * _grid_params->chunk_resolution * _grid_params->length_in_chunks;
+		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
 	void Grid::init(GridParams* grid_params, LightParams* light_params, TextureParams* texture_params){
@@ -40,14 +40,17 @@ using namespace std;
 			std::vector<GLuint> indices;
 
 			// Grid dimension
-			int grid_length = _grid_params->chunk_resolution * _grid_params->length_in_chunks;
-			int grid_width = _grid_params->chunk_resolution * _grid_params->width_in_chunks;
+			int grid_length = _grid_params->resolution * _grid_params->length;
+			int grid_width = _grid_params->resolution * _grid_params->width;
+
+			cout << grid_length << endl;
+			cout << grid_width << endl;
 
 			// Put vertex positions
 			for (int i = 0; i < grid_length; i++) {
 				for (int j = 0; j < grid_width; j++) {
-					float x = 2 * float(i) * (_grid_params->length_in_chunks / (grid_length - 1.0f)) - _grid_params->length_in_chunks;
-					float y = 2 * float(j) * (_grid_params->width_in_chunks / (grid_width - 1.0f)) - _grid_params->width_in_chunks;
+					float x = -0.5 + float(i) / (grid_length - 1);
+					float y = -0.5 + float(j) / (grid_width - 1);
 					vertices.push_back(x);
 					vertices.push_back(y);
 				}
