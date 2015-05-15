@@ -66,8 +66,10 @@ void init(){
 	initParams();
 	initTextures();
 	initSceneObjects();
+
+	noise_generator.init();
 	
-	//compute_height_map();
+	compute_height_map();
 
 #ifdef WITH_ANTTWEAKBAR
 
@@ -191,8 +193,6 @@ void initParams() {
 	texture_params.grass_s_transition = 50;
 	texture_params.sand_h_transition = 5;
 	texture_params.sand_s_transition = 50;
-
-	
 }
 
 void initSceneObjects() {
