@@ -83,7 +83,7 @@ void display(){
 	opengp::update_title_fps("Terrain");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*
+	
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -97,14 +97,13 @@ void display(){
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	fb_water_depth.unbind();
-	
 
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());/*
+	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 
-	camera.move();*/
+	camera.move();
 
 #ifdef WITH_ANTTWEAKBAR
 	//TwDraw();
@@ -197,20 +196,17 @@ void initParams() {
 }
 
 void initSceneObjects() {
-	check_error_gl();
 	box.init(&grid_params, &water_params, &noise_params);
-	check_error_gl();
 	grid.init(&grid_params, &light_params, &texture_params);
-	check_error_gl();
 	tex_mirror = fbw.init_texture();
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
-	check_error_gl();
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
 
 	water.init(&grid_params, &water_params, &light_params);
 	water.set_depth_texture(tex_water_depth);
 	sky.init();
+
 	check_error_gl();
 }
 

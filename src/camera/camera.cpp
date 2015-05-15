@@ -3,6 +3,11 @@
 Camera::Camera(WindowParams* window_params) : _cam_up(START_CAM_UP), _cam_pos(START_CAM_POS), 
 _cam_dir(START_CAM_DIR), _window_params(window_params), _dir_matrix(mat4::Identity())
 {
+	_cam_up = START_CAM_UP;
+	_cam_pos = START_CAM_POS;
+	_cam_dir = START_CAM_DIR;
+
+
 	compute_view_matrix();
 	compute_projection_matrix();
 }

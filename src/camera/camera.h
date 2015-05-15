@@ -29,6 +29,10 @@ private:
 	WindowParams* _window_params;
 
 public:
+	const vec3 START_CAM_UP = vec3(0.0f, 1.0f, 0.0f);
+	const vec3 START_CAM_DIR = vec3(0.0f, -1.0f, -2.0f).normalized();
+	const vec3 START_CAM_POS = vec3(0.0f, 2.0f, 4.0f);
+
 	// Constructor
 	Camera(WindowParams* window_params);
 
