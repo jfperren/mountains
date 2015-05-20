@@ -31,17 +31,6 @@ uniform float waves_amplitude;
 
 const float time_factor = 0.05;
 
-uniform float waves_speed;
-uniform float waves_tile_factor;
-uniform float waves_amplitude;
-
-// Speed
-// Tile factor
-// direction
-// amplitude
-
-const float time_factor = 0.05;
-
 void main() {
     
 	float depth = water_height - texture(tex_height, uv)[0];
@@ -58,24 +47,21 @@ void main() {
     float _u = gl_FragCoord[0] / texture_size[0];
     float _v = 1-gl_FragCoord[1] / texture_size[1];
     
-    // Get texture color w/ usual uv, mirror with computed _u/_v
-    vec3 texture_color = water_color;
+	// Compute ambiant color
+	vec3 initial_color = water_color/(water_depth_color_factor * depth + 1);
+	vec3 mirror_color = texture(tex_mirror, vec2(_u, _v)).rgb;
 
-	texture_color = texture_color/(water_depth_color_factor * depth + 1);
-	float alpha = water_transparency + (1 - water_transparency) * (water_depth_alpha_factor * depth);
+	vec3 ambiant_color = vec3(mix(initial_color, mirror_color, vec3(water_reflection_factor)));
 
-    vec3 mirror_color = texture(tex_mirror, vec2(_u, _v)).rgb;
-    
-    vec3 ambiant = vec3(mix(texture_color, mirror_color, vec3(water_reflection_factor)));
-
-	ambiant *= vec3(0.5, 0.5, 1);
-
-	// Compute normal from the texture tex_normal_map
+	// Compute diffuse color
 	vec3 normal = vec3(texture(tex_normal_map,  uv * vec2(waves_tile_factor)  + vec2(time * waves_speed))).rgb;
 	normal[1] = 1;
+	vec3 diffuse_color =  waves_amplitude * Id * (dot(normalize(normal), normalize(light_pos)));
 
-	vec3 diffuse =  Id * (dot(normalize(normal), normalize(light_pos)));
-	diffuse = diffuse * vec3(waves_amplitude);
+	// Compute alpha
+	float alpha = water_transparency + (1 - water_transparency) * (water_depth_alpha_factor * depth);
 
-	color = vec4(ambiant + diffuse, alpha);
+	// Put everything together
+	color = vec4(ambiant_color + diffuse_color, alpha);
+	color = vec4(initial_color, alpha);
 }

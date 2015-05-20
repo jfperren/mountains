@@ -90,6 +90,8 @@ void Water::draw(const mat4& view, const mat4& projection){
 	glUniform1f(glGetUniformLocation(_pid, "near"), NEAR);
 	glUniform1f(glGetUniformLocation(_pid, "far"), FAR);
 
+	glUniform1f(glGetUniformLocation(_pid, "time"), glfwGetTime());
+
 	///--- Texture uniforms
 	GLuint tex_id = glGetUniformLocation(_pid, "tex_main");
 	glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
