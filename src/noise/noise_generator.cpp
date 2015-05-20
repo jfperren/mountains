@@ -83,7 +83,7 @@ void NoiseGenerator::renderFractal() {
 		out = (out == 1 ? 2 : 1);
 	}
 
-	copyTexture(_tex[in], _tex[0]);
+	copyTexture(_framebuffer[in].get_tex(), _tex[0]);
 
 }
 
@@ -115,7 +115,7 @@ void NoiseGenerator::erode() {
 		out = 1 - out;
 	}
 
-	//*_tex_height = *_erosionbuffer[in].get_tex_height();
+	//copyTexture(_erosionbuffer[in].get_tex_height(), _tex[0]);
 }
 
 
