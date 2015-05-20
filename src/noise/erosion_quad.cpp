@@ -40,13 +40,30 @@ void ErosionQuad::cleanup(){
 	// TODO cleanup
 }
 
-void ErosionQuad::draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_height, GLuint* tex_pos, ErosionParams* erosion_params){
+void ErosionQuad::draw(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos, ErosionParams* erosion_params){
 
 	// Bind program & vertex array
 	glUseProgram(_pid);
 	glBindVertexArray(_vao);
 
 	erosion_params->setup(_pid);
+
+	// Set texture input
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, *tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_water"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, *tex_water);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_sediment"), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, *tex_sediment);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_pos"), 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, *tex_pos);
 	
 	// Draw
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

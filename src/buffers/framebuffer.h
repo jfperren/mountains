@@ -41,5 +41,4 @@ public:
 
 	void resize(float width, float height);
 	void clear();
-	
 };

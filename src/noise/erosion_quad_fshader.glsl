@@ -33,7 +33,7 @@ void main() {
 	// 0. Get water/sediment from neighbours
 
 	for(int i = -1; i <= 1; i++) {
-		for(int j = -1; j <= 1; i++) {
+		for(int j = -1; j <= 1; j++) {
 			vec2 uv_neighbour = uv + vec2(i * DX, j * DY);
 			vec4 pos_neighbour = texture(tex_in_pos, uv_neighbour);
 
@@ -65,7 +65,7 @@ void main() {
 	float lowest_j = 0;
 
 	for(int i = -1; i <= 1; i++) {
-		for(int j = -1; j <= 1; i++) {
+		for(int j = -1; j <= 1; j++) {
 			vec2 uv_neighbour = uv + vec2(i * DX, j * DY);
 
 			float neighbour_height = texture(tex_in_height, uv_neighbour)[0];
@@ -80,7 +80,7 @@ void main() {
 			}
 		}
 	}
-
+	
 	// 3.2 Move water
 
 	float sediment_ratio = sediment / water;

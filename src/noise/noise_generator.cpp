@@ -96,12 +96,16 @@ void NoiseGenerator::erode() {
 	int in = 0;
 	int out = 1;
 
+	cout << "ERODE" << endl;
+
 	for (int t = 0; t < _erosion_params->iterations; t++) {
+		cout << "ITERATION" << endl;
 		tex_height		= (t == 0) ? _tex_height : _erosionbuffer[in].get_tex_height();
 		tex_water		= _erosionbuffer[in].get_tex_water();
 		tex_sediment	= _erosionbuffer[in].get_tex_sediment();
 		tex_pos			= _erosionbuffer[in].get_tex_pos();
 
+		
 		_framebuffer[out].bind();
 			glClear(GL_COLOR_BUFFER_BIT);
 			_erosion_quad.draw(tex_height, tex_water, tex_sediment, tex_pos, _erosion_params);

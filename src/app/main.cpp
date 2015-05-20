@@ -49,7 +49,7 @@ void resize_callback(int width, int height) {
 void compute_height_map() {
 
 	noise_generator.renderFractal();
-	//noise_generator.erode();
+	noise_generator.erode();
 
 	box.set_height_texture(tex_height);
 	grid.set_height_texture(tex_height);
@@ -82,7 +82,7 @@ void init(){
 
 // Gets called for every frame.
 void display(){
-	opengp::update_title_fps("Moutains");
+	opengp::update_title_fps("Mountains");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -91,7 +91,7 @@ void display(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
-
+	
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -99,16 +99,16 @@ void display(){
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	fb_water_depth.unbind();
-
+	cout << "TEST" << endl;
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-
+	cout << "TEST" << endl;
 	camera.move();
 
 #ifdef WITH_ANTTWEAKBAR
-	TwDraw();
+	//TwDraw();
 #endif
 }
 
@@ -213,8 +213,6 @@ void initSceneObjects() {
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
-
-	
 
 	water.init(&grid_params, &water_params, &light_params);
 	water.set_depth_texture(tex_water_depth);
