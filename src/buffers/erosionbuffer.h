@@ -27,6 +27,7 @@ public:
 
 	void init();
 	void bind();
+	void bind2();
 	void unbind();
 	void clear();
 	void cleanup();

@@ -16,6 +16,17 @@ void Erosionbuffer::bind() {
 	glDrawBuffers(4, buffers);
 }
 
+void Erosionbuffer::bind2() {
+	glViewport(0, 0, _width, _height);
+	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+
+	const GLenum buffers[1] = {
+		GL_COLOR_ATTACHMENT0,
+	};
+
+	glDrawBuffers(1, buffers);
+}
+
 void Erosionbuffer::unbind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

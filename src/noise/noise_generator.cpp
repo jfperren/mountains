@@ -94,16 +94,16 @@ void NoiseGenerator::erode() {
 		tex_sediment	= _erosionbuffer[in].get_tex_sediment();
 		tex_pos			= _erosionbuffer[in].get_tex_pos();
 		
-		_framebuffer[out].bind();
+		_erosionbuffer[out].bind();
 			glClear(GL_COLOR_BUFFER_BIT);
 			_erosion_quad.draw(tex_height, tex_water, tex_sediment, tex_pos, _erosion_params);
-		_framebuffer[out].unbind();
+		_erosionbuffer[out].unbind();
 
 		in = 1 - in;
 		out = 1 - out;
 	}
 
-	//copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
+	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
 }
 
 
