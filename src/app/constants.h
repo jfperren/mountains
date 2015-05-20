@@ -161,6 +161,22 @@ typedef struct WaterParams {
 	}
 };
 
+typedef struct ErosionParams {
+	float deposition_rate;
+	float evaporation_rate;
+	float erosion_rate;
+	float rain_rate;
+
+	float direction_inertia;
+	float sediment_capacity;
+
+	int iterations;
+
+	void setup(GLuint pid) {
+		glUniform1f(glGetUniformLocation(pid, "erosion_sediment_capacity"), sediment_capacity);
+	}
+};
+
 typedef struct LightParams {
 	vec3 Ia;
 	vec3 Id;
