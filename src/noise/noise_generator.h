@@ -12,14 +12,11 @@
 class NoiseGenerator {
 
 private:
-	// 0 = out, 1/2 = tmp
-	Framebuffer _framebuffer[3];
-	Erosionbuffer _erosionbuffer[3];
 
+
+	Framebuffer _framebuffer[2];
+	Erosionbuffer _erosionbuffer[2];
 	Framebuffer _copybuffer;
-
-	GLuint* _tex[3];
-	GLuint* _tex_erosion[3];
 
 	GLuint* _tex_height;
 
