@@ -7,7 +7,7 @@ TwBar *bar;
 string g_file_name = "";
 string g_file_name_load = "";
 
-void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params) {
+void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, ErosionParams* erosion_params, WaterParams* water_params, TextureParams* texture_params) {
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	// Needed to work with dynamic strings
@@ -49,6 +49,18 @@ void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoisePar
 	TwAddVarCB(bar, "noise_octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->octaves, " group=Noise step=1 min=1");
 
 	TwAddVarCB(bar, "noise_seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->seed, " group=Noise step=0.001 min=0 max=1");
+
+	// Erosion
+
+	TwAddVarCB(bar, "deposition_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->deposition_rate, " group=Erosion step=0.001 min=0 max=1");
+	TwAddVarCB(bar, "erosion_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->erosion_rate, " group=Erosion step=0.001 min=0 max=1");
+	TwAddVarCB(bar, "evaporation_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->evaporation_rate, " group=Erosion step=0.001 min=0 max=1");
+	TwAddVarCB(bar, "rain_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->rain_rate, " group=Erosion step=0.001 min=0 max=1");
+
+	TwAddVarCB(bar, "sediment_capacity", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->sediment_capacity, " group=Erosion step=0.001 min=0 max=1");
+	TwAddVarCB(bar, "direction_intertia", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->direction_inertia, " group=Erosion step=0.001  min=0 max=1");
+
+	TwAddVarCB(bar, "iterations", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &erosion_params->iterations, " group=Erosion step=1 min=1");
 
 	// Water 
 

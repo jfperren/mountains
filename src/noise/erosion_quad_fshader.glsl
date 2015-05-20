@@ -113,14 +113,15 @@ void main() {
 
 	if (sediment > max_sediment) {
 		float extra_sediment = sediment - max_sediment;
-		height += extra_sediment;
+		//height += extra_sediment;
 		sediment = max_sediment;
 	}
 
 	// 5. Write results
 
 	gl_FragData[0] = vec4(height, 0 , 0, 0);
+	//gl_FragData[0] = vec4(0.5, 0, 0, 0);
+	/*gl_FragData[1] = vec4(water, next_water, 0, 0);
 	gl_FragData[2] = vec4(sediment, next_sediment, 0, 0);
-	gl_FragData[1] = vec4(water, next_water, 0, 0);
-	gl_FragData[3] = vec4(lowest_i, lowest_j, 0, 0);
+	gl_FragData[3] = vec4(lowest_i, lowest_j, 0, 0);*/
 }

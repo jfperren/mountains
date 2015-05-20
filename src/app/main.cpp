@@ -75,7 +75,7 @@ void init(){
 
 #ifdef WITH_ANTTWEAKBAR
 
-	initAntTwBar(&grid_params, &window_params, &noise_params, &water_params, &texture_params);
+	initAntTwBar(&grid_params, &window_params, &noise_params, &erosion_params, &water_params, &texture_params);
 #endif
 	check_error_gl();
 }
@@ -108,7 +108,7 @@ void display(){
 	camera.move();
 
 #ifdef WITH_ANTTWEAKBAR
-	//TwDraw();
+	TwDraw();
 #endif
 }
 
@@ -165,15 +165,15 @@ void initParams() {
 	noise_params.seed -= floor(noise_params.seed);
 
 	// --- Erosion ---
-	erosion_params.deposition_rate		= 0.4;
-	erosion_params.erosion_rate			= 0.4;
-	erosion_params.rain_rate			= 2.0;
-	erosion_params.evaporation_rate		= 0.5;
+	erosion_params.deposition_rate		= 0.004;
+	erosion_params.erosion_rate			= 0.004;
+	erosion_params.rain_rate			= 0.005;
+	erosion_params.evaporation_rate		= 0.002;
 	
-	erosion_params.sediment_capacity	= 4.0;
+	erosion_params.sediment_capacity	= 0.008;
 	erosion_params.direction_inertia	= 0.4;
 
-	erosion_params.iterations = 1;
+	erosion_params.iterations			= 1;
 
 	// --- Water ---
 	water_params.height					= 0;

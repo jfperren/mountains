@@ -94,3 +94,4 @@ void NoiseQuad::copyNoise(NoiseParams* noise_params, GLuint* in_texture){
 	glBindVertexArray(0);
 	glUseProgram(0);
 }
+

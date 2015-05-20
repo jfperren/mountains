@@ -36,7 +36,7 @@ public:
 	int init_texture(bool use_interpolation = false);
 	void set_texture(GLuint* texture, bool use_interpolation = false);
 	void init(GLint internal_format, GLenum format, GLenum type);
-
+	GLuint* get_tex();
 	void initForErosion();
 
 	void resize(float width, float height);
