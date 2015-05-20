@@ -66,6 +66,7 @@ typedef struct NoiseParams {
 	Effect noise_effect;
 	Effect fractal_effect;
 
+	int resolution;
 	int width;
 	int height;
 	float amplitude;
@@ -173,7 +174,13 @@ typedef struct ErosionParams {
 	int iterations;
 
 	void setup(GLuint pid) {
+		glUniform1f(glGetUniformLocation(pid, "erosion_deposition_rate"), deposition_rate);
+		glUniform1f(glGetUniformLocation(pid, "erosion_evaporation_rate"), evaporation_rate);
+		glUniform1f(glGetUniformLocation(pid, "erosion_erosion_rate"), erosion_rate);
+		glUniform1f(glGetUniformLocation(pid, "erosion_rain_rate"), rain_rate);
+
 		glUniform1f(glGetUniformLocation(pid, "erosion_sediment_capacity"), sediment_capacity);
+		glUniform1f(glGetUniformLocation(pid, "erosion_direction_inertia"), direction_inertia);
 	}
 };
 

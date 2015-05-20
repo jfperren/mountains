@@ -28,12 +28,16 @@ public:
 	Framebuffer(int image_width, int image_height);
 	
 	void bind();
+	void bindForErosion();
+
 	void unbind();
 	void cleanup();
 
 	int init_texture(bool use_interpolation = false);
 	void set_texture(GLuint* texture, bool use_interpolation = false);
 	void init(GLint internal_format, GLenum format, GLenum type);
+
+	void initForErosion();
 
 	void resize(float width, float height);
 	void clear();

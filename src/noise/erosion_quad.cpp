@@ -40,14 +40,14 @@ void ErosionQuad::cleanup(){
 	// TODO cleanup
 }
 
-void ErosionQuad::drawErosion(GLuint* tex_noise, ErosionParams* erosion_params){
+void ErosionQuad::draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_height, GLuint* tex_pos, ErosionParams* erosion_params){
 
 	// Bind program & vertex array
 	glUseProgram(_pid);
 	glBindVertexArray(_vao);
 
 	erosion_params->setup(_pid);
-
+	
 	// Draw
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

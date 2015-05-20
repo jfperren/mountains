@@ -3,6 +3,7 @@
 // --- Params --- // 
 
 NoiseParams noise_params;
+ErosionParams erosion_params;
 WaterParams water_params;
 LightParams light_params;
 TextureParams texture_params;
@@ -30,7 +31,7 @@ GLuint tex_normal_map;
 
 // --- Other --- //
 
-NoiseGenerator noise_generator(&tex_height, &noise_params);
+NoiseGenerator noise_generator(&tex_height, &noise_params, &erosion_params);
 Camera camera(&window_params);
 
 // Gets called when the windows is resized.
@@ -46,7 +47,10 @@ void resize_callback(int width, int height) {
 }
 
 void compute_height_map() {
+
 	noise_generator.renderFractal();
+	//noise_generator.erode();
+
 	box.set_height_texture(tex_height);
 	grid.set_height_texture(tex_height);
 	water.set_height_texture(tex_height);
@@ -78,7 +82,7 @@ void init(){
 
 // Gets called for every frame.
 void display(){
-	opengp::update_title_fps("Terrain");
+	opengp::update_title_fps("Moutains");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -87,7 +91,7 @@ void display(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
-	cout << "TEST" << endl;
+
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -160,35 +164,46 @@ void initParams() {
 	noise_params.seed = glfwGetTime();
 	noise_params.seed -= floor(noise_params.seed);
 
-	// --- Water ---
-	water_params.height = 0;
-	water_params.color = vec3(0.4f, 0.55f, 0.6f);
-	water_params.depth_alpha_factor = 1.4f;
-	water_params.depth_color_factor = 0.05f;
-	water_params.transparency = 0.4f;
+	// --- Erosion ---
+	erosion_params.deposition_rate		= 0.4;
+	erosion_params.erosion_rate			= 0.4;
+	erosion_params.rain_rate			= 2.0;
+	erosion_params.evaporation_rate		= 0.5;
+	
+	erosion_params.sediment_capacity	= 4.0;
+	erosion_params.direction_inertia	= 0.4;
 
-	water_params.reflection_factor = 0.25f;
+	erosion_params.iterations = 1;
+
+	// --- Water ---
+	water_params.height					= 0;
+	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
+	water_params.depth_alpha_factor		= 1.4f;
+	water_params.depth_color_factor		= 0.05f;
+	water_params.transparency			= 0.4f;
+
+	water_params.reflection_factor		= 0.25f;
 	/*water_params.waves_speed = 0.04f;
 	water_params.waves_tile_factor = 2.0;
 	water_params.waves_amplitude = 1.0f;*/
 
 
 	// --- Light ---
-	light_params.Ia = vec3(0.7f, 0.7f, 0.7f);
-	light_params.Id = vec3(0.3f, 0.3f, 0.3f);
-	light_params.position = vec3(2.0f, 2.0f, 2.0f);
+	light_params.Ia						= vec3(0.7f, 0.7f, 0.7f);
+	light_params.Id						= vec3(0.3f, 0.3f, 0.3f);
+	light_params.position				= vec3(2.0f, 2.0f, 2.0f);
 
 	// --- Texture ---
-	texture_params.sand_min_height = -1;
-	texture_params.sand_max_height = 0.15f;
-	texture_params.grass_max_height = 1.0f;
-	texture_params.sand_max_slope = 0.92f;
-	texture_params.grass_max_slope = 0.9f;
+	texture_params.sand_min_height		= -1;
+	texture_params.sand_max_height		= 0.15f;
+	texture_params.grass_max_height		= 1.0f;
+	texture_params.sand_max_slope		= 0.92f;
+	texture_params.grass_max_slope		= 0.9f;
 
-	texture_params.grass_h_transition = 3;
-	texture_params.grass_s_transition = 50;
-	texture_params.sand_h_transition = 5;
-	texture_params.sand_s_transition = 50;
+	texture_params.grass_h_transition	= 3;
+	texture_params.grass_s_transition	= 50;
+	texture_params.sand_h_transition	= 5;
+	texture_params.sand_s_transition	= 50;
 }
 
 void initSceneObjects() {
@@ -198,6 +213,8 @@ void initSceneObjects() {
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
+
+	
 
 	water.init(&grid_params, &water_params, &light_params);
 	water.set_depth_texture(tex_water_depth);

@@ -14,5 +14,5 @@ private:
 public:
 	void init();
 	void cleanup();
-	void drawErosion(GLuint* tex_noise, ErosionParams* erosion_params);
+	void draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos, ErosionParams* erosion_params);
 };

@@ -1,13 +1,16 @@
 #include "noise_generator.h"
 
-NoiseGenerator::NoiseGenerator(GLuint* out_tex, NoiseParams* noise_params) :
-		_noise_params(noise_params)
+NoiseGenerator::NoiseGenerator(GLuint* out_tex, NoiseParams* noise_params, ErosionParams* erosion_params) :
+		_noise_params(noise_params),
+		_erosion_params(erosion_params)
 	{
 		_tex[0] = (GLuint*)malloc(sizeof(GLuint));
 		_tex[1] = (GLuint*)malloc(sizeof(GLuint));
 		_tex[2] = (GLuint*)malloc(sizeof(GLuint));
 
 		_tex[0] = out_tex;
+
+		_tex_height = out_tex;
 	}
 
 void NoiseGenerator::init() {
@@ -23,7 +26,14 @@ void NoiseGenerator::init() {
 		*_tex[2] = _framebuffer[2].init_texture();
 		_framebuffer[2].init(GL_R32F, GL_RED, GL_FLOAT);
 
+		_erosionbuffer[0].resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
+		_erosionbuffer[1].resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
+
+		_erosionbuffer[0].init();
+		_erosionbuffer[1].init();
+
 		_quad.init();
+		_erosion_quad.init();
 	}
 
 void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, float noise_amplitude) {
@@ -72,4 +82,34 @@ void NoiseGenerator::renderFractal() {
 
 	// Render created texture in out_texture with offset and amplitude
 	copyNoise(0, in, _noise_params);
+}
+
+void NoiseGenerator::erode() {
+	GLuint* tex_height;
+	GLuint* tex_water;
+	GLuint* tex_sediment;
+	GLuint* tex_pos;
+
+	_erosionbuffer[0].clear();
+	_erosionbuffer[1].clear();
+
+	int in = 0;
+	int out = 1;
+
+	for (int t = 0; t < _erosion_params->iterations; t++) {
+		tex_height		= (t == 0) ? _tex_height : _erosionbuffer[in].get_tex_height();
+		tex_water		= _erosionbuffer[in].get_tex_water();
+		tex_sediment	= _erosionbuffer[in].get_tex_sediment();
+		tex_pos			= _erosionbuffer[in].get_tex_pos();
+
+		_framebuffer[out].bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+			_erosion_quad.draw(tex_height, tex_water, tex_sediment, tex_pos, _erosion_params);
+		_framebuffer[out].unbind();
+
+		in = 1 - in;
+		out = 1 - out;
+	}
+
+	_tex_height = _erosionbuffer[in].get_tex_height();
 }

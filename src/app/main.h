@@ -13,6 +13,7 @@
 #include "../scene/box.h"
 #include "../app/constants.h"
 #include "../tw/io.h"
+#include "../buffers/erosionbuffer.h"
 
 using namespace std;
 
