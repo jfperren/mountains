@@ -33,7 +33,7 @@ public:
 	void init();
 	void copyTexture(GLuint* src, GLuint* dst);
 	void renderNoise(int out, int in, NoiseParams* noise_params, float noise_amplitude);
-	void copyNoise(int out, int in, NoiseParams* noise_params);
+	void copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset);
 	void renderFractal();
 	void erode();
 };

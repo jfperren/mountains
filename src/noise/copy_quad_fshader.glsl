@@ -5,7 +5,9 @@ out vec3 color;
 
 uniform sampler2D tex;
 
+uniform float amplitude;
+uniform float offset;
+
 void main() {
-	//color = texture(tex, uv);
-	color = vec3(0.5, 1, 1);
+	color = texture(tex, uv).xyz * vec3(amplitude) + vec3(offset);
 }

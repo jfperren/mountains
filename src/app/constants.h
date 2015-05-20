@@ -84,6 +84,7 @@ typedef struct NoiseParams {
 			fractal_type,
 			noise_effect,
 			fractal_effect,
+			resolution,
 			width,
 			height,
 			amplitude,

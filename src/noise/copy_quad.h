@@ -13,5 +13,5 @@ private:
 public:
 	void init();
 	void cleanup();
-	void drawTexture(GLuint* texture);
+	void drawTexture(GLuint* texture, float amplitude = 1, float offset = 0);
 };

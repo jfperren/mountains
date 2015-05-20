@@ -36,13 +36,6 @@ void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, flo
 	_framebuffer[out].unbind();
 }
 
-void NoiseGenerator::copyNoise(int out, int in, NoiseParams* noise_params) {
-	///--- Render random noise on quad in the framebuffer
-	_framebuffer[out].bind();
-		glClear(GL_COLOR_BUFFER_BIT);
-		_quad.copyNoise(noise_params, _framebuffer[in].get_tex());
-	_framebuffer[out].unbind();
-}
 
 void NoiseGenerator::renderFractal() {
 	_framebuffer[0].clear();
@@ -71,12 +64,11 @@ void NoiseGenerator::renderFractal() {
 		out = 1 - out;
 	}
 
-	copyTexture(_framebuffer[in].get_tex(), _tex_height);
-
+	copyNoise(_framebuffer[in].get_tex(), _tex_height, _noise_params->amplitude, _noise_params->offset);
 }
 
 void NoiseGenerator::erode() {
-	GLuint* tex_height;
+	/*GLuint* tex_height;
 	GLuint* tex_water;
 	GLuint* tex_sediment;
 	GLuint* tex_pos;
@@ -103,16 +95,25 @@ void NoiseGenerator::erode() {
 		out = 1 - out;
 	}
 
-	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
+	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);*/
 }
 
 
 void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
-	
 	_copybuffer.set_texture(dst);
 	_copybuffer.init(GL_R32F, GL_RED, GL_FLOAT);
 	_copybuffer.bind();
 		glClear(GL_COLOR_BUFFER_BIT);
 		_copy_quad.drawTexture(src);
+	_copybuffer.unbind();
+}
+
+void NoiseGenerator::copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset) {
+	///--- Render random noise on quad in the framebuffer
+	_copybuffer.set_texture(dst);
+	_copybuffer.init(GL_R32F, GL_RED, GL_FLOAT);
+	_copybuffer.bind();
+		glClear(GL_COLOR_BUFFER_BIT);
+		_copy_quad.drawTexture(src, amplitude, offset);
 	_copybuffer.unbind();
 }
