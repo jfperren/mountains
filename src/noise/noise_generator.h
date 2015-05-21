@@ -23,13 +23,14 @@ private:
 	NoiseQuad _quad;
 	ErosionQuad _erosion_quad;
 
-	NoiseParams* _noise_params;
-	ErosionParams* _erosion_params;
+	NoiseParams _noise_params;
+	DirtParams _dirt_params;
+	ErosionParams _erosion_params;
 
 public:
-	NoiseGenerator(GLuint* out_tex, NoiseParams* noise_params, ErosionParams* erosion_params);
+	NoiseGenerator(GLuint* out_tex);
 
-	void init();
+	void init(AppParams* app_params);
 	void copyTexture(GLuint* src, GLuint* dst);
 	void renderNoise(int out, int in, NoiseParams* noise_params, float noise_amplitude);
 	void copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset);

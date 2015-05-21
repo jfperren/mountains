@@ -11,8 +11,10 @@ private:
 	GLuint _vbo; ///< memory buffer
 	GLuint _tex; ///< Texture ID
 
+	DirtParams* _dirt_params;
+
 public:
-	void init();
+	void init(DirtParams* dirt_params);
 	void cleanup();
-	void draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos, ErosionParams* erosion_params);
+	void draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos);
 };

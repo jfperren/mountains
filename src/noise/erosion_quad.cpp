@@ -1,6 +1,8 @@
 #include "erosion_quad.h"
 
-void ErosionQuad::init(){
+void ErosionQuad::init(DirtParams* dirt_params){
+
+	_dirt_params = dirt_params;
 
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("noise/erosion_quad_vshader.glsl", "noise/erosion_quad_fshader.glsl");
@@ -40,13 +42,13 @@ void ErosionQuad::cleanup(){
 	// TODO cleanup
 }
 
-void ErosionQuad::draw(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos, ErosionParams* erosion_params){
+void ErosionQuad::draw(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos){
 
 	// Bind program & vertex array
 	glUseProgram(_pid);
 	glBindVertexArray(_vao);
 
-	erosion_params->setup(_pid);
+	_dirt_params->setup(_pid);
 
 	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0/2048);
 	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0/2048);

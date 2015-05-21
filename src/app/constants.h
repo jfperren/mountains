@@ -138,10 +138,22 @@ static NoiseParams FLAT_NOISE = {
 };
 
 typedef struct DirtParams {
+	bool enable;
 	float max_slope;
 	float max_height;
 
 	float amount;
+	int time;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "dirt_max_slope"), enable);
+		glUniform1f(glGetUniformLocation(pid, "dirt_max_slope"), max_slope);
+		glUniform1f(glGetUniformLocation(pid, "dirt_max_height"), max_height);
+		glUniform1f(glGetUniformLocation(pid, "dirt_amount"), amount);
+		glUniform1i(glGetUniformLocation(pid, "dirt_time"), time);
+	}
 };
 
 typedef struct ShadingParams {
