@@ -21,6 +21,11 @@ const float NEAR = 0.1f;
 const float FAR = 40.0f;
 
 typedef enum {
+	FREE,
+	BEZIER
+} NAVIGATION_MODE;
+
+typedef enum {
 	NO_NOISE,
 	RANDOM_NOISE,
 	PERLIN_NOISE,

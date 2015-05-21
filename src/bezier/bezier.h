@@ -1,3 +1,5 @@
+#pragma once
+
 #include "icg_common.h"
 
 const static Scalar H = .7;

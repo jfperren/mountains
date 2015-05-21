@@ -33,6 +33,24 @@ GLuint tex_normal_map;
 NoiseGenerator noise_generator(&tex_height, &noise_params);
 Camera camera(&window_params);
 
+// --- TODO: refactor and move bezier related code to a better location */
+
+NAVIGATION_MODE navmode;
+
+GLuint _pid_bezier;
+GLuint _pid_point;
+GLuint _pid_point_selection;
+
+BezierCurve cam_pos_curve;
+BezierCurve cam_look_curve;
+
+std::vector<ControlPoint> cam_pos_points;
+std::vector<ControlPoint> cam_look_points;
+int selected_point;
+
+const int travel_time = 20;
+int start_time;
+
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
     window_params.width = width;
@@ -55,17 +73,68 @@ void compute_height_map() {
 }
 
 void init(){
+
+	// TODO: refactor/move bezier related code
+
+	/// Compile the shaders here to avoid the duplication
+	_pid_bezier = opengp::load_shaders("bezier/bezier_vshader.glsl", "bezier/bezier_fshader.glsl");
+	if (!_pid_bezier) exit(EXIT_FAILURE);
+
+	_pid_point = opengp::load_shaders("point/point_vshader.glsl", "point/point_fshader.glsl");
+	if (!_pid_point) exit(EXIT_FAILURE);
+
+	_pid_point_selection = opengp::load_shaders("point/point_selection_vshader.glsl", "point/point_selection_fshader.glsl");
+	if (!_pid_point_selection) exit(EXIT_FAILURE);
+
     // Sets background color.
     glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
     
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
 
+
+
 	initParams();
 	initTextures();
 	initSceneObjects();
 
 	noise_generator.init();
+
+	//--- init cam_pos_curve
+	cam_pos_curve.init(_pid_bezier);
+
+	// Add points
+	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
+	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
+	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
+	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
+	cam_pos_points.push_back(ControlPoint(-0.11, -0.10, 0.45, 4));
+	cam_pos_points.push_back(ControlPoint(-0.16, 0.92, -0.11, 5));
+	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));
+
+	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
+		cam_pos_points[i].init(_pid_point, _pid_point_selection);
+	}
+
+	cam_pos_curve.set_points(cam_pos_points);
+
+	///--- init cam_look_curve
+	cam_look_curve.init(_pid_bezier);
+
+	// Add points
+	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
+	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
+	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
+	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));
+
+	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
+		cam_look_points[i].init(_pid_point, _pid_point_selection);
+	}
+
+	cam_look_curve.set_points(cam_look_points);
+
+	selected_point = -1;
+	navmode = FREE;
 	
 	compute_height_map();
 
@@ -82,25 +151,32 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	// Render the water reflect
-	fbw.bind();
+	if (navmode == FREE) {
+		// Render the water reflect
+		fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
-	fbw.unbind();
-	glViewport(0, 0, window_params.width, window_params.height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fbw.unbind();
+		glViewport(0, 0, window_params.width, window_params.height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	fb_water_depth.bind();
+		fb_water_depth.bind();
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-	fb_water_depth.unbind();
+		fb_water_depth.unbind();
 
-	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+		water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+		box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+		sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 
-	camera.move();
+		camera.move();
+	}
+
+	if (navmode == BEZIER) {
+		// TODO
+	}
+	
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
@@ -111,6 +187,9 @@ void cleanup(){
 #ifdef WITH_ANTTWEAKBAR
     TwTerminate();
 #endif
+	glDeleteProgram(_pid_bezier);
+	glDeleteProgram(_pid_point);
+	glDeleteProgram(_pid_point_selection);
 }
 
 int main(int, char**){
@@ -225,6 +304,11 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 	if (!TwEventMouseButtonGLFW(glfwButton, glfwAction))   // Send event to AntTweakBar
 	{
 #endif
+		if (navmode == BEZIER) {
+			std::cout << "No mouse interaction in Bezier mode.\n" << std::flush;
+			return;
+		}
+
 		// Event not handled by AntTweakBar, we handle it ourselves
 		camera.mouse_button(glfwButton, glfwAction);
 #ifdef WITH_ANTTWEAKBAR
@@ -240,6 +324,10 @@ void GLFWCALL OnMousePos(int mouseX, int mouseY)
 	if (!TwEventMousePosGLFW(mouseX, mouseY))  // Send event to AntTweakBar
 	{
 #endif
+		if (navmode == BEZIER) {
+			return;
+		}
+
 		camera.mouse_pos(mouseX, mouseY);
 #ifdef WITH_ANTTWEAKBAR
 	}
@@ -270,11 +358,26 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
 	{
 #endif
+
 		if (glfwKey == GLFW_KEY_ESC && glfwAction == GLFW_PRESS) // Want to quit?
 			glfwCloseWindow();
 		else
 		{
-			// Nothing for the moment
+			if (glfwAction != GLFW_RELEASE) return; ///< only act on release
+
+			switch (glfwKey){
+			case '1':
+				navmode = FREE;
+				std::cout << "Running in trackball mode\n" << std::flush;
+				break;
+			case '2':
+				navmode = BEZIER;
+				std::cout << "Running in bezier mode\n" << std::flush;
+				start_time = glfwGetTime();
+				break;
+			default:
+				break;
+			}
 		}
 #ifdef WITH_ANTTWEAKBAR
 	}
