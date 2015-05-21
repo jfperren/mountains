@@ -18,6 +18,7 @@ uniform float near;
 
 uniform int grid_enable;
 
+uniform int water_enable;
 uniform vec3 water_color;
 uniform	float water_height;
 uniform	float water_transparency;
@@ -35,7 +36,7 @@ const float time_factor = 0.05;
 
 void main() {
     
-	if (grid_enable == 0) {
+	if (grid_enable == 0 || water_enable == 0) {
 		discard;
 	}
 

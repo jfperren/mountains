@@ -145,6 +145,7 @@ typedef struct ShadingParams {
 
 typedef struct WaterParams {
 	/* Water*/
+	bool enable;
 	float height;
 	float transparency;
 	float depth_alpha_factor;
@@ -161,6 +162,7 @@ typedef struct WaterParams {
 		glUseProgram(pid);
 
 		/* Water */
+		glUniform1i(glGetUniformLocation(pid, "water_enable"), enable);
 		glUniform1f(glGetUniformLocation(pid, "water_height"), height);
 		glUniform1f(glGetUniformLocation(pid, "water_transparency"), transparency);
 		glUniform3f(glGetUniformLocation(pid, "water_color"), color[0], color[1], color[2]);

@@ -74,6 +74,7 @@ void initAntTwBar(AppParams* app_params) {
 
 	// Water 
 
+	TwAddVarCB(bar, "water_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &water_params->enable, " group=Water");
 	TwAddVarCB(bar, "water_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->height, " group=Water step=0.1");
 	TwAddVarCB(bar, "water_alpha", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->transparency, " group=Water step=0.1 min=0, max=1");
 	TwAddVarCB(bar, "water_depth_alpha_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->depth_alpha_factor, " group=Water step=0.05 min=0");

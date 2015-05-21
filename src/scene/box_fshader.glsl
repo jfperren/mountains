@@ -9,6 +9,7 @@ uniform sampler2D tex_height;
 
 uniform int grid_enable;
 
+uniform int water_enable;
 uniform vec3 water_color;
 uniform	float water_height;
 uniform	float water_transparency;
@@ -35,7 +36,11 @@ void main() {
 			color = vec4(0.1, 0.1, 0.1, 1.0);
 		} else if (fragment_pos[1] < water_height) {
 			// Water
-			color = vec4(water_color, water_transparency);
+			if (water_enable == 0) {
+				discard;
+			} else {
+				color = vec4(water_color, water_transparency);
+			}
 		} else {
 			// Air
 			discard;
