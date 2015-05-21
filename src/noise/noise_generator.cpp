@@ -8,25 +8,23 @@ NoiseGenerator::NoiseGenerator(GLuint* tex_height, NoiseParams* noise_params, Er
 	}
 
 void NoiseGenerator::init() {
-		_framebuffer[0].resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
-		_framebuffer[0].init_texture();
-		_framebuffer[0].init(GL_R32F, GL_RED, GL_FLOAT);
 
-		_framebuffer[1].resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
-		_framebuffer[1].init_texture();
-		_framebuffer[1].init(GL_R32F, GL_RED, GL_FLOAT);
+	_framebuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
+	_framebuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
 
-		_erosionbuffer[0].resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
-		_erosionbuffer[1].resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
-		_erosionbuffer[0].init();
-		_erosionbuffer[1].init();
+	_framebuffer[0].init();
+	_framebuffer[1].init();
+	_erosionbuffer[0].init();
+	_erosionbuffer[1].init();
 
-		_copybuffer.resize(PIXELS_PER_UNIT, PIXELS_PER_UNIT);
+	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
 
-		_quad.init();
-		_copy_quad.init();
-		_erosion_quad.init();
-	}
+	_quad.init();
+	_copy_quad.init();
+	_erosion_quad.init();
+}
 
 void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, float noise_amplitude) {
 	///--- Render random noise on quad in the framebuffer
@@ -38,8 +36,10 @@ void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, flo
 
 
 void NoiseGenerator::renderFractal() {
-	_framebuffer[0].clear();
-	_framebuffer[1].clear();
+	_framebuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
+	_framebuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
+	_framebuffer[0].init();
+	_framebuffer[1].init();
 		
 	NoiseParams noise_params_tmp = _noise_params->copy();
 	noise_params_tmp.amplitude = 1;
@@ -68,11 +68,15 @@ void NoiseGenerator::renderFractal() {
 }
 
 void NoiseGenerator::erode() {
-	GLuint* tex_height;
+	/*GLuint* tex_height;
 	GLuint* tex_water;
 	GLuint* tex_sediment;
 	GLuint* tex_pos;
 
+	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[0].init();
+	_erosionbuffer[1].init();
 	_erosionbuffer[0].clear();
 	_erosionbuffer[1].clear();
 
@@ -95,13 +99,12 @@ void NoiseGenerator::erode() {
 		out = 1 - out;
 	}
 
-	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
+	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);*/
 }
 
 
 void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
-	_copybuffer.set_texture(dst);
-	_copybuffer.init(GL_R32F, GL_RED, GL_FLOAT);
+	_copybuffer.init(dst);
 	_copybuffer.bind();
 		glClear(GL_COLOR_BUFFER_BIT);
 		_copy_quad.drawTexture(src);
@@ -110,8 +113,7 @@ void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
 
 void NoiseGenerator::copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset) {
 	///--- Render random noise on quad in the framebuffer
-	_copybuffer.set_texture(dst);
-	_copybuffer.init(GL_R32F, GL_RED, GL_FLOAT);
+	_copybuffer.init(dst);
 	_copybuffer.bind();
 		glClear(GL_COLOR_BUFFER_BIT);
 		_copy_quad.drawTexture(src, amplitude, offset);

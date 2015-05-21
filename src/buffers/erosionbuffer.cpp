@@ -6,7 +6,7 @@ void Erosionbuffer::bind() {
 	glViewport(0, 0, _width, _height);
 	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
 
-	const GLenum buffers[4] = {
+	const GLenum buffers[] = {
 		GL_COLOR_ATTACHMENT0,
 		GL_COLOR_ATTACHMENT1,
 		GL_COLOR_ATTACHMENT2,
@@ -16,24 +16,13 @@ void Erosionbuffer::bind() {
 	glDrawBuffers(4, buffers);
 }
 
-void Erosionbuffer::bind2() {
-	glViewport(0, 0, _width, _height);
-	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
-
-	const GLenum buffers[1] = {
-		GL_COLOR_ATTACHMENT0,
-	};
-
-	glDrawBuffers(1, buffers);
-}
-
 void Erosionbuffer::unbind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Erosionbuffer::clear() {
 	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
-		glClearColor(.0, .0, .0, 1.0);
+		glClearColor(.0, .0, .0, 0.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(.937, .937, .937, 1.0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -49,7 +38,7 @@ void Erosionbuffer::init() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
 
 		glGenTextures(1, &_tex_water);
 		glBindTexture(GL_TEXTURE_2D, _tex_water);
@@ -57,7 +46,7 @@ void Erosionbuffer::init() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
 
 		glGenTextures(1, &_tex_sediment);
 		glBindTexture(GL_TEXTURE_2D, _tex_sediment);
@@ -65,7 +54,7 @@ void Erosionbuffer::init() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
 
 		glGenTextures(1, &_tex_pos);
 		glBindTexture(GL_TEXTURE_2D, _tex_pos);
@@ -73,7 +62,7 @@ void Erosionbuffer::init() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
 	}
 
 	///--- Tie it all together
@@ -93,15 +82,16 @@ void Erosionbuffer::init() {
 }
 
 void Erosionbuffer::resize(float width, float height) {
+	cleanup();
 	_width = width;
 	_height = height;
+	init();
 }
 
 void Erosionbuffer::cleanup() {
 	glDeleteTextures(1, &_tex_height);
 	glDeleteTextures(1, &_tex_water);
 	glDeleteTextures(1, &_tex_sediment);
-	glDeleteTextures(1, &_tex_pos);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0 /*UNBIND*/);
 	glDeleteFramebuffers(1, &_fbo);
 }

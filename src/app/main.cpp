@@ -7,7 +7,6 @@ NoiseParams noise_params;
 ErosionParams erosion_params;
 ShadingParams shading_params;
 WaterParams water_params;
-LightParams light_params;
 TextureParams texture_params;
 GridParams grid_params;
 
@@ -18,7 +17,6 @@ AppParams app_params{
 	&erosion_params,
 	&texture_params,
 	&shading_params,
-	&light_params,
 	&water_params
 };
 
@@ -52,7 +50,7 @@ void resize_callback(int width, int height) {
 	window_params.height = height;
 
     glViewport(0, 0, width, height);
-	fbw.resize(width, height);
+	//fbw.resize(width, height);
 	fb_water_depth.resize(width, height);
 
 	camera.compute_projection_matrix();
@@ -157,6 +155,7 @@ void initParams() {
 	window_params.height				= HEIGHT;
 
 	// --- Grid ---
+	grid_params.enable					= false;
 	grid_params.resolution				= 100;
 	grid_params.length					= 2;
 	grid_params.width					= 2;
@@ -166,6 +165,7 @@ void initParams() {
 	noise_params.fractal_type			= FBM;
 	noise_params.noise_effect			= NO_EFFECT;
 	noise_params.fractal_effect			= NO_EFFECT;
+	noise_params.resolution				= 2048;
 	noise_params.height					= 1;
 	noise_params.width					= 1;
 	noise_params.offset					= 0.0f;
@@ -177,12 +177,12 @@ void initParams() {
 	noise_params.seed 				   -= floor(noise_params.seed);
 
 	// --- Erosion ---
-	erosion_params.deposition_rate		= 0.004;
-	erosion_params.erosion_rate			= 0.004;
-	erosion_params.rain_rate			= 0.005;
-	erosion_params.evaporation_rate		= 0.002;
+	erosion_params.deposition_rate		= 0.04;
+	erosion_params.erosion_rate			= 0.04;
+	erosion_params.rain_rate			= 0.05;
+	erosion_params.evaporation_rate		= 0.02;
 	
-	erosion_params.sediment_capacity	= 0.008;
+	erosion_params.sediment_capacity	= 0.08;
 	erosion_params.direction_inertia	= 0.4;
 
 	erosion_params.iterations			= 1;
@@ -200,12 +200,14 @@ void initParams() {
 	water_params.waves_amplitude = 1.0f;*/
 
 
-	// --- Light ---
-	light_params.Ia						= vec3(0.7f, 0.7f, 0.7f);
-	light_params.Id						= vec3(0.3f, 0.3f, 0.3f);
-	light_params.position				= vec3(2.0f, 2.0f, 2.0f);
+	// --- Shading ---
+	shading_params.enable				= true;
+	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
+	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
+	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);
 
 	// --- Texture ---
+	texture_params.texture_type			= SHADES;
 	texture_params.sand_min_height		= -1;
 	texture_params.sand_max_height		= 0.15f;
 	texture_params.grass_max_height		= 1.0f;

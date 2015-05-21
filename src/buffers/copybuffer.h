@@ -1,5 +1,3 @@
-#pragma once
-
 #include "icg_common.h"
 
 #ifdef WITH_OPENCV
@@ -9,7 +7,7 @@
 #include "opencv2/imgproc/types_c.h"   ///< CV_BGRA2RGBA
 #endif
 
-class Framebuffer{
+class Copybuffer{
 
 private:
 	bool _init;
@@ -24,18 +22,15 @@ private:
 	GLenum _type;
 
 public:
-	Framebuffer();
-	Framebuffer(int image_width, int image_height);
+	Copybuffer();
 
 	void bind();
+
 	void unbind();
 	void cleanup();
 
-	int init_texture(bool use_interpolation = false);
-	void set_texture(GLuint* texture, bool use_interpolation = false);
-	void init(GLint internal_format, GLenum format, GLenum type);
+	void init(GLuint* tex_out);
 
 	void resize(float width, float height);
 	void clear();
-
 };

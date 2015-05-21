@@ -22,11 +22,10 @@ class Grid {
 	string TEX_NAMES[5];
 
 private:
-	static const int grid_dim_ = 2048;
-
-	LightParams* _light_params;
+	NoiseParams* _noise_params;
 	GridParams* _grid_params;
 	TextureParams* _texture_params;
+	ShadingParams* _shading_params;
 
 	mat4 model = mat4::Identity();
 

@@ -15,7 +15,6 @@ void initAntTwBar(AppParams* app_params) {
 	ErosionParams* erosion_params	= app_params->erosion_params;
 	TextureParams* texture_params	= app_params->texture_params;
 	ShadingParams* shading_params	= app_params->shading_params;
-	LightParams* light_params		= app_params->light_params;
 	WaterParams* water_params		= app_params->water_params;
 
 	TwInit(TW_OPENGL_CORE, NULL);
@@ -31,7 +30,9 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "grid_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->width, " group=Grid step=1");
 	TwAddVarCB(bar, "grid_resolution", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->resolution, " group=Grid step=1");
 	
-	// Noise 
+	// Noise
+
+	TwAddVarCB(bar, "noise_resolution", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->resolution, " group=Noise step=1");
 
 	TwEnumVal noise_type_array[] = { { NO_NOISE, "NO_NOISE" }, { RANDOM_NOISE, "RANDOM_NOISE" }, { PERLIN_NOISE, "PERLIN_NOISE" }, { WORLEY_NOISE, "WORLEY_NOISE" } };
 	TwType noise_type_type = TwDefineEnum("NoiseType", noise_type_array, 4);
@@ -70,7 +71,7 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "sediment_capacity", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->sediment_capacity, " group=Erosion step=0.001 min=0 max=1");
 	TwAddVarCB(bar, "direction_intertia", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->direction_inertia, " group=Erosion step=0.001  min=0 max=1");
 
-	TwAddVarCB(bar, "iterations", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &erosion_params->iterations, " group=Erosion step=1 min=1");
+	TwAddVarCB(bar, "iterations", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &erosion_params->iterations, " group=Erosion step=5 min=0");
 
 	// Water 
 
@@ -101,6 +102,20 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "sand_h_transition", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &texture_params->sand_h_transition, " group=Texture step=1");
 	TwAddVarCB(bar, "sand_s_transition", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &texture_params->sand_s_transition, " group=Texture step=1");
 
+	// Shading
+
+	TwAddVarCB(bar, "shading_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &shading_params->enable, " group=Shading");
+	TwAddVarCB(bar, "shading_light_X", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->light_pos[0], " group=Shading step=0.1");
+	TwAddVarCB(bar, "shading_light_Y", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->light_pos[1], " group=Shading step=0.1");
+	TwAddVarCB(bar, "shading_light_Z", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->light_pos[2], " group=Shading step=0.1");
+	TwAddVarCB(bar, "shading_Ia_R", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Ia[0], " group=Shading step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "shading_Ia_G", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Ia[1], " group=Shading step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "shading_Ia_B", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Ia[2], " group=Shading step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "shading_Id_R", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Id[0], " group=Shading step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "shading_Id_G", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Id[1], " group=Shading step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "shading_Id_B", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Id[2], " group=Shading step=0.05 min=0 max=1");
+
+	
 	// I/O 
 
 	TwAddVarRW(bar, "save_file_name", TW_TYPE_STDSTRING, &g_file_name, " group='I/O' label='file_name (optional)' ");

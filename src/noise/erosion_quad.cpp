@@ -48,6 +48,10 @@ void ErosionQuad::draw(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sedime
 
 	erosion_params->setup(_pid);
 
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0/2048);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0/2048);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+
 	// Set texture input
 	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
 	glActiveTexture(GL_TEXTURE0);

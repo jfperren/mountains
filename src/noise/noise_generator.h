@@ -1,7 +1,8 @@
 #pragma once
 
 #include "icg_common.h"
-#include "../buffers/framebuffer.h"
+#include "../buffers/noisebuffer.h"
+#include "../buffers/copybuffer.h"
 #include "../buffers/erosionbuffer.h"
 #include "noise_quad.h"
 #include "erosion_quad.h"
@@ -12,9 +13,9 @@
 class NoiseGenerator {
 
 private:
-	Framebuffer _framebuffer[2];
+	Noisebuffer _framebuffer[2];
 	Erosionbuffer _erosionbuffer[2];
-	Framebuffer _copybuffer;
+	Copybuffer _copybuffer;
 
 	GLuint* _tex_height;
 
@@ -34,4 +35,6 @@ public:
 	void copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset);
 	void renderFractal();
 	void erode();
+
+	void resize();
 };

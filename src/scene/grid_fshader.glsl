@@ -21,12 +21,15 @@ layout(location = 5) uniform sampler2D tex_rock_underwater;
 // --- Uniforms --- //
 
 // light_params
-uniform vec3 light_pos;
-uniform vec3 Ia, Id;
+uniform int shading_enable;
+uniform vec3 shading_light_pos;
+uniform vec3 shading_Ia, shading_Id;
 
 // texture_params
 
 uniform int texture_type;
+
+
 
 uniform float sand_min_height;
 uniform float sand_max_height;
@@ -40,13 +43,15 @@ uniform int grass_s_transition;
 uniform int sand_h_transition;
 uniform int sand_s_transition;
 
+uniform float DX;
+uniform float DY;
+
 const int NONE = 0;
 const int SHADES = 1;
 const int TEXTURE = 2;
 
 // others
 uniform float water_height;
-const float pixel_unit = 1.0/2048.0;
 uniform int only_reflect;
 
 /** Computes the coefficient used as the 3rd arg of mix(3).
@@ -64,18 +69,6 @@ float compute_linear_interpolation(float height1, float height2, float x) {
 	return beta;
 }
 
-float clamp_height(float height) {
-	float height_to_texture = height; 
-	if (height >= 0.99){
-		height_to_texture = 0.99;
-	}
-	else if (height <= -0.99) {
-		height_to_texture = -0.99;
-	}
-
-	return height_to_texture;
-}
-
 float smooth_interpolate(float alpha, float factor, float threshold) {
 	if (alpha < threshold) 
 		return 1-exp(-factor * (threshold-alpha));
@@ -89,24 +82,24 @@ void main() {
 		discard;
 	}
 
-	if (texture_type == TEXTURE) {
+	vec3 derivative_x = vec3(1, 0, 1000*texture(tex_height, uv + vec2(DX, 0))[0] - 1000*texture(tex_height, uv - vec2(DX, 0)*2*DX)[0]);
+	vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, DX))[0] - 1000*texture(tex_height, uv - vec2(0, DX)*2*DY)[0]);
+	vec3 normal = normalize(cross(derivative_x, derivative_y));
+	
+	vec3 ambient;
+	vec3 diffuse;
 
-		float height_to_texture = clamp_height(height);
-		vec3 derivative_x = vec3(1, 0, 1000*texture(tex_height, uv + vec2(pixel_unit,0))[0] - 1000*texture(tex_height, uv - vec2(pixel_unit,0))[0]);
-		vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, pixel_unit))[0] - 1000*texture(tex_height, uv - vec2(0, pixel_unit))[0]);
-		vec3 normal = normalize(cross(derivative_x, derivative_y));
+	if (texture_type == TEXTURE) {
 
 		vec3 color_rock = texture(tex_rock, uv * vec2(20)).rgb;
 		vec3 color_sand = texture(tex_sand, uv * vec2(80)).rgb;
 		vec3 color_grass = texture(tex_grass, uv * vec2(20)).rgb;
 		vec3 color_rock_underwater = texture(tex_rock_underwater, uv * vec2(20)).rgb;
 
-
 		float slope = 1- dot(normal, vec3(0, 0, 1));
 
 		float alpha_sand = smooth_interpolate(slope, sand_s_transition, sand_max_slope);
 		float alpha_grass = smooth_interpolate(slope, grass_s_transition, grass_max_slope);
-
 
 		vec3 texture_color;
 
@@ -139,16 +132,19 @@ void main() {
 			texture_color = color_rock;
 		}
 
-   		vec3 ambient = Ia * texture_color;
-  		vec3 diffuse = Id * dot(normal, normalize(light_pos));
-
-		color = vec4(ambient + diffuse, 1.0);
+   		ambient = texture_color;
 
 	} else if (texture_type == NONE) {
-
-		color = vec4(1, 1, 1, 0);
-
+		ambient = vec3(1, 1, 1);
 	} else {
-		color = vec4(vec3((height + 0.5)), 1.0);
+		ambient = vec3(height + 0.5);
 	}
+
+	if (shading_enable != 0) {
+		ambient *= shading_Ia;
+		diffuse = shading_Id * dot(normal, normalize(shading_light_pos));
+	}
+
+	color = vec4(ambient + diffuse, 1.0);
+	
 }

@@ -46,8 +46,6 @@ typedef enum {
 	TEXTURE
 } TextureType;
 
-const static int PIXELS_PER_UNIT = 200;
-
 typedef struct WindowParams {
 	int width;
 	int height;
@@ -141,6 +139,17 @@ static NoiseParams FLAT_NOISE = {
 
 typedef struct ShadingParams {
 	bool enable;
+	vec3 light_pos;
+	vec3 Ia, Id;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "shading_enable"), enable);
+		glUniform3fv(glGetUniformLocation(pid, "shading_light_pos"), ONE, light_pos.data());
+		glUniform3fv(glGetUniformLocation(pid, "shading_Ia"), ONE, Ia.data());
+		glUniform3fv(glGetUniformLocation(pid, "shading_Id"), ONE, Id.data());
+	}
 };
 
 typedef struct WaterParams {
@@ -199,20 +208,6 @@ typedef struct ErosionParams {
 	}
 };
 
-typedef struct LightParams {
-	vec3 Ia;
-	vec3 Id;
-	vec3 position;
-
-	void setup(GLuint pid){
-		glUseProgram(pid);
-
-		glUniform3fv(glGetUniformLocation(pid, "light_pos"), ONE, position.data());
-		glUniform3fv(glGetUniformLocation(pid, "Ia"), ONE, Ia.data());
-		glUniform3fv(glGetUniformLocation(pid, "Id"), ONE, Id.data());
-	}
-};
-
 typedef struct TextureParams {
 	
 	TextureType texture_type;
@@ -253,6 +248,5 @@ typedef struct AppParams {
 	ErosionParams* erosion_params;
 	TextureParams* texture_params;
 	ShadingParams* shading_params;
-	LightParams* light_params;
 	WaterParams* water_params;
 };

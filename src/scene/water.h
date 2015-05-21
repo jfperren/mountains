@@ -10,7 +10,6 @@ private:
 	mat4 model = mat4::Identity();
 	GridParams* _grid_params;
 	WaterParams* _water_params;
-	LightParams* _light_params;
 
 	GLuint _vao;          ///< vertex array object
 	GLuint _vbo;
