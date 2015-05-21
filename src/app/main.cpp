@@ -194,20 +194,20 @@ void display(){
 		// Render the water reflect
 		fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
+		grid.draw(view_bezier, camera.get_projection_matrix(), true);
 		fbw.unbind();
 		glViewport(0, 0, window_params.width, window_params.height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		fb_water_depth.bind();
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+		grid.draw(view_bezier, camera.get_projection_matrix(), false);
 		fb_water_depth.unbind();
 
-		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-		water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-		box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-		sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+		grid.draw(view_bezier, camera.get_projection_matrix(), false);
+		water.draw(view_bezier, camera.get_projection_matrix());
+		box.draw(view_bezier, camera.get_projection_matrix());
+		sky.draw(view_bezier, camera.get_projection_matrix());
 	}
 	
 
@@ -403,15 +403,15 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 			switch (glfwKey){
 			case '1':
 				navmode = FREE;
-				std::cout << "Running in trackball mode\n" << std::flush;
+				std::cout << "[Info] Running in free mode\n" << std::flush;
 				break;
 			case '2':
 				navmode = BEZIER;
-				std::cout << "Running in bezier mode\n" << std::flush;
+				std::cout << "[Info] Running in bezier mode\n" << std::flush;
 				start_time = glfwGetTime();
 				break;
 			default:
-				std::cout << "[Warning] No keyboard interaction in Bezier mode.\n" << std::flush;
+				std::cout << "[Warning] No keyboard interaction in bezier mode.\n" << std::flush;
 				break;
 			}
 		}
