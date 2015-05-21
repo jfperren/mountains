@@ -7,7 +7,11 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(GridParams* grid_params, LightParams* light_params, TextureParams* texture_params){
+	void Grid::init(AppParams* app_params){
+
+		_light_params = app_params->light_params;
+		_grid_params = app_params->grid_params;
+		_texture_params = app_params->texture_params;
 
 		TEX_PATHS[0] = "textures/terrains/mountain/tex_grass.tga";
 		TEX_PATHS[1] = "textures/terrains/mountain/tex_sand.tga";
@@ -20,10 +24,6 @@ using namespace std;
 		TEX_NAMES[2] = "tex_rock";
 		TEX_NAMES[3] = "tex_snow";
 		TEX_NAMES[4] = "tex_rock_underwater";
-
-		_light_params = light_params;
-		_grid_params = grid_params;
-		_texture_params = texture_params;
 
 		// Compile the shaders
 		_pid = opengp::load_shaders("scene/grid_vshader.glsl", "scene/grid_fshader.glsl");

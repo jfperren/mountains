@@ -2,13 +2,25 @@
 
 // --- Params --- // 
 
+WindowParams window_params{ WIDTH, HEIGHT };
 NoiseParams noise_params;
 ErosionParams erosion_params;
+ShadingParams shading_params;
 WaterParams water_params;
 LightParams light_params;
 TextureParams texture_params;
-WindowParams window_params{ WIDTH, HEIGHT };
 GridParams grid_params;
+
+AppParams app_params{
+	&window_params,
+	&grid_params,
+	&noise_params,
+	&erosion_params,
+	&texture_params,
+	&shading_params,
+	&light_params,
+	&water_params
+};
 
 // --- Scene Objects --- // 
 
@@ -75,7 +87,7 @@ void init(){
 
 #ifdef WITH_ANTTWEAKBAR
 
-	initAntTwBar(&grid_params, &window_params, &noise_params, &erosion_params, &water_params, &texture_params);
+	initAntTwBar(&app_params);
 #endif
 	check_error_gl();
 }
@@ -141,28 +153,28 @@ int main(int, char**){
 void initParams() {
 
 	// --- Window ---
-	window_params.width = WIDTH;
-	window_params.height = HEIGHT;
+	window_params.width					= WIDTH;
+	window_params.height				= HEIGHT;
 
 	// --- Grid ---
-	grid_params.resolution = 100;
-	grid_params.length = 2;
-	grid_params.width = 2;
+	grid_params.resolution				= 100;
+	grid_params.length					= 2;
+	grid_params.width					= 2;
 
 	// --- Noise ---
-	noise_params.noise_type = PERLIN_NOISE;
-	noise_params.fractal_type = FBM;
-	noise_params.noise_effect = NO_EFFECT;
-	noise_params.fractal_effect = NO_EFFECT;
-	noise_params.height = 1;
-	noise_params.width = 1;
-	noise_params.offset = 0.0f;
-	noise_params.amplitude = 1.0f;
-	noise_params.H = 1.2f;
-	noise_params.lacunarity = 2;
-	noise_params.octaves = 12;
-	noise_params.seed = glfwGetTime();
-	noise_params.seed -= floor(noise_params.seed);
+	noise_params.noise_type				= PERLIN_NOISE;
+	noise_params.fractal_type			= FBM;
+	noise_params.noise_effect			= NO_EFFECT;
+	noise_params.fractal_effect			= NO_EFFECT;
+	noise_params.height					= 1;
+	noise_params.width					= 1;
+	noise_params.offset					= 0.0f;
+	noise_params.amplitude				= 1.0f;
+	noise_params.H						= 1.2f;
+	noise_params.lacunarity				= 2;
+	noise_params.octaves				= 12;
+	noise_params.seed					= glfwGetTime();
+	noise_params.seed 				   -= floor(noise_params.seed);
 
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.004;
@@ -207,14 +219,17 @@ void initParams() {
 }
 
 void initSceneObjects() {
-	box.init(&grid_params, &water_params, &noise_params);
-	grid.init(&grid_params, &light_params, &texture_params);
+
+	box.init(&app_params);
+	grid.init(&app_params);
+	water.init(&app_params);
+
 	tex_mirror = fbw.init_texture();
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
 
-	water.init(&grid_params, &water_params, &light_params);
+	
 	water.set_depth_texture(tex_water_depth);
 	sky.init();
 

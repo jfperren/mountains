@@ -68,7 +68,7 @@ void NoiseGenerator::renderFractal() {
 }
 
 void NoiseGenerator::erode() {
-	/*GLuint* tex_height;
+	GLuint* tex_height;
 	GLuint* tex_water;
 	GLuint* tex_sediment;
 	GLuint* tex_pos;
@@ -95,7 +95,7 @@ void NoiseGenerator::erode() {
 		out = 1 - out;
 	}
 
-	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);*/
+	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
 }
 
 

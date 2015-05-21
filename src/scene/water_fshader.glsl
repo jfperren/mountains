@@ -16,6 +16,8 @@ uniform vec3 Id;
 uniform float far;
 uniform float near;
 
+uniform int grid_enable;
+
 uniform vec3 water_color;
 uniform	float water_height;
 uniform	float water_transparency;
@@ -33,6 +35,10 @@ const float time_factor = 0.05;
 
 void main() {
     
+	if (grid_enable == 0) {
+		discard;
+	}
+
 	// Get the size of the screen (same as size of tex_mirror)
     ivec2 texture_size = textureSize(tex_mirror, 0);
 

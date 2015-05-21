@@ -3,8 +3,8 @@
 in vec2 uv;
 
 layout (location = 0) out vec3 tex_out_height;
-layout (location = 1) out vec3 tex_out_sediment;
-layout (location = 2) out vec3 tex_out_water;
+layout (location = 1) out vec3 tex_out_water;
+layout (location = 2) out vec3 tex_out_sediment;
 layout (location = 3) out vec3 tex_out_pos;
 
 // Input textures
@@ -103,7 +103,7 @@ void main() {
 
 		sediment_diff += sediment_ratio * water_diff * (1 - erosion_sediment_inertia);
 		next_sediment = sediment_diff;
-		sediment -= sediment_diff;
+		sediment -= sediment_diff; 
 	}
 
 	// 4. Evaporation
@@ -113,15 +113,14 @@ void main() {
 
 	if (sediment > max_sediment) {
 		float extra_sediment = sediment - max_sediment;
-		//height += extra_sediment;
+		height += extra_sediment;
 		sediment = max_sediment;
 	}
 
 	// 5. Write results
 
-	//gl_FragData[0] = vec4(height, 0 , 0, 0);
-	tex_out_height = vec3(height, 0, 0);
-	//gl_FragData[1] = vec4(water, next_water, 0, 0);
-	//gl_FragData[2] = vec4(sediment, next_sediment, 0, 0);
-	//gl_FragData[3] = vec4(lowest_i, lowest_j, 0, 0);
+	tex_out_height		= vec3(height, 0, 0);
+	tex_out_water		= vec3(water, next_water, 0);
+	tex_out_sediment	= vec3(sediment, next_sediment, 0);
+	tex_out_pos			= vec3(lowest_i, lowest_j, 0);
 }

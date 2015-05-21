@@ -23,7 +23,7 @@ private:
 	GLuint _num_indices;  ///< number of vertices to render
 
 public:
-	void init(GridParams* grid_params, WaterParams* water_params, LightParams* light_params);
+	void init(AppParams* app_params);
 	void cleanup();
 	void set_main_texture(GLuint tex_main);
 	void set_mirror_texture(GLuint tex_mirror);

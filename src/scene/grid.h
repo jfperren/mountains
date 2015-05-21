@@ -45,7 +45,7 @@ protected:
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
-	void init(GridParams* grid_params, LightParams* light_params, TextureParams* texture_params);
+	void init(AppParams* app_params);
 	void draw(const mat4& view, const mat4& projection, bool only_reflect = false);
 	void cleanup();
 

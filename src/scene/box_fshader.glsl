@@ -7,6 +7,8 @@ out vec4 color;
 
 uniform sampler2D tex_height;
 
+uniform int grid_enable;
+
 uniform vec3 water_color;
 uniform	float water_height;
 uniform	float water_transparency;
@@ -15,19 +17,29 @@ uniform float water_depth_color_factor;
 uniform float water_reflection_factor;
 
 void main() {
+
+	
     
-	float grid_height = texture(tex_height, uv)[0];
-	color = vec4(0.1f, 0.1f, 0.1f, 1.0f);
-	// Check if we need to take it into account
-	if (fragment_pos[1] < grid_height) {
-		// Solid base
-		color = vec4(0.1f, 0.1f, 0.1f, 1.0f);
-	} else if (fragment_pos[1] < water_height) {
-		// Water
-		color = vec4(water_color, water_transparency);
+	if (grid_enable == 0) {
+		if (fragment_pos[1] > 0) {
+			discard;
+		} else {
+			color = vec4(0.1, 0.1, 0.1, 1.0);
+		}
 	} else {
-		// Air
-		discard;
+		float grid_height = texture(tex_height, uv)[0];
+		
+		// Check if we need to take it into account
+		if (fragment_pos[1] < grid_height) {
+			// Solid base
+			color = vec4(0.1, 0.1, 0.1, 1.0);
+		} else if (fragment_pos[1] < water_height) {
+			// Water
+			color = vec4(water_color, water_transparency);
+		} else {
+			// Air
+			discard;
+		}
 	}
 
 	//texture_color = texture_color/(water_depth_color_factor * depth + 1);

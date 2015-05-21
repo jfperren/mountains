@@ -72,26 +72,5 @@ void NoiseQuad::drawNoise(NoiseParams* noise_params, float noise_amplitude, GLui
 	glUseProgram(0);
 }
 
-void NoiseQuad::copyNoise(NoiseParams* noise_params, GLuint* in_texture){
-	// Bind program & vertex array
-	glUseProgram(_pid);
-	glBindVertexArray(_vao);
 
-	// Tells shader we want to copy
-	glUniform1i(glGetUniformLocation(_pid, "draw_or_copy"), COPY_NOISE);
-
-	noise_params->setup_copy(_pid);
-
-	// Set texture input
-	glUniform1i(glGetUniformLocation(_pid, "tex"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, *in_texture);
-
-	// Draw
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	// Unbind
-	glBindVertexArray(0);
-	glUseProgram(0);
-}
 

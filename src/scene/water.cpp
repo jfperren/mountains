@@ -1,14 +1,15 @@
 #include "water.h"
 
-void Water::init(GridParams* grid_params, WaterParams* water_params, LightParams* light_params){
+void Water::init(AppParams* app_params){
+
+	_water_params = app_params->water_params;
+	_grid_params = app_params->grid_params;
+	_light_params = app_params->light_params;
+
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("scene/water_vshader.glsl", "scene/water_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
-
-	_water_params = water_params;
-	_grid_params = grid_params;
-	_light_params = light_params;
 
 	///--- Vertex one vertex Array
 	glGenVertexArrays(1, &_vao);

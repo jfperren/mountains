@@ -30,7 +30,7 @@ protected:
 	GLuint _num_indices;  ///< number of vertices to render
 
 public:
-	void init(GridParams* grid_params, WaterParams* water_params, NoiseParams* noise_params);
+	void init(AppParams* app_params);
 	void draw(const mat4& view, const mat4& projection);
 	void cleanup();
 

@@ -40,7 +40,13 @@ typedef enum {
 	DISCRETIZE // Step = 0.2
 } Effect;
 
-const static int PIXELS_PER_UNIT = 2048;
+typedef enum {
+	NO_TEXTURE,
+	SHADES,
+	TEXTURE
+} TextureType;
+
+const static int PIXELS_PER_UNIT = 200;
 
 typedef struct WindowParams {
 	int width;
@@ -48,11 +54,13 @@ typedef struct WindowParams {
 };
 
 typedef struct GridParams {
+	bool enable;
 	int length;
 	int width;
 	int resolution;
 
 	void setup(GLuint pid){
+		glUniform1i(glGetUniformLocation(pid, "grid_enable"), enable);
 		glUniform1i(glGetUniformLocation(pid, "grid_length"), length);
 		glUniform1i(glGetUniformLocation(pid, "grid_width"), width);
 		glUniform1i(glGetUniformLocation(pid, "grid_resolution"), resolution);
@@ -131,6 +139,10 @@ static NoiseParams FLAT_NOISE = {
 	0
 };
 
+typedef struct ShadingParams {
+	bool enable;
+};
+
 typedef struct WaterParams {
 	/* Water*/
 	float height;
@@ -200,6 +212,9 @@ typedef struct LightParams {
 };
 
 typedef struct TextureParams {
+	
+	TextureType texture_type;
+	
 	float sand_min_height;
 	float sand_max_height;
 	float grass_max_height;
@@ -213,6 +228,8 @@ typedef struct TextureParams {
 	int sand_s_transition;
 
 	void setup(GLuint pid) {
+		glUniform1i(glGetUniformLocation(pid, "texture_type"), texture_type);
+
 		glUniform1f(glGetUniformLocation(pid, "sand_min_height"), sand_min_height);
 		glUniform1f(glGetUniformLocation(pid, "sand_max_height"), sand_max_height);
 		glUniform1f(glGetUniformLocation(pid, "grass_max_height"), grass_max_height);
@@ -225,4 +242,15 @@ typedef struct TextureParams {
 		glUniform1i(glGetUniformLocation(pid, "sand_h_transition"), sand_h_transition);
 		glUniform1i(glGetUniformLocation(pid, "sand_s_transition"), sand_s_transition);
 	}
+};
+
+typedef struct AppParams {
+	WindowParams* window_params;
+	GridParams* grid_params;
+	NoiseParams* noise_params;
+	ErosionParams* erosion_params;
+	TextureParams* texture_params;
+	ShadingParams* shading_params;
+	LightParams* light_params;
+	WaterParams* water_params;
 };

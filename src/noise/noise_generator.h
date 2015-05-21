@@ -12,8 +12,6 @@
 class NoiseGenerator {
 
 private:
-
-
 	Framebuffer _framebuffer[2];
 	Erosionbuffer _erosionbuffer[2];
 	Framebuffer _copybuffer;

@@ -7,7 +7,16 @@ TwBar *bar;
 string g_file_name = "";
 string g_file_name_load = "";
 
-void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, ErosionParams* erosion_params, WaterParams* water_params, TextureParams* texture_params) {
+void initAntTwBar(AppParams* app_params) {
+
+	WindowParams* window_params		= app_params->window_params;
+	GridParams* grid_params			= app_params->grid_params;
+	NoiseParams* noise_params		= app_params->noise_params;
+	ErosionParams* erosion_params	= app_params->erosion_params;
+	TextureParams* texture_params	= app_params->texture_params;
+	ShadingParams* shading_params	= app_params->shading_params;
+	LightParams* light_params		= app_params->light_params;
+	WaterParams* water_params		= app_params->water_params;
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	// Needed to work with dynamic strings
@@ -17,6 +26,7 @@ void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoisePar
 
 	// Grid
 
+	TwAddVarCB(bar, "grid_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &grid_params->enable, " group=Grid");
 	TwAddVarCB(bar, "grid_length", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->length, " group=Grid step=1");
 	TwAddVarCB(bar, "grid_width", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->width, " group=Grid step=1");
 	TwAddVarCB(bar, "grid_resolution", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grid_params->resolution, " group=Grid step=1");
@@ -74,6 +84,10 @@ void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoisePar
 	TwAddVarCB(bar, "water_color_B", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->color[2], " group=Water step=0.05 min=0 max=1");
 
 	// Texture 
+
+	TwEnumVal texture_type_array[] = { { NO_TEXTURE, "NO_TEXTURE" }, { SHADES, "SHADES" }, { TEXTURE, "TEXTURE" } };
+	TwType texture_type_type = TwDefineEnum("TextureType", texture_type_array, 3);
+	TwAddVarCB(bar, "texture_type", texture_type_type, setIntParamCallback, getIntParamCallback, &texture_params->texture_type, " group=Texture ");
 
 	TwAddVarCB(bar, "sand_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->sand_min_height, " group=Texture step=0.05");
 	TwAddVarCB(bar, "sand_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->sand_max_height, " group=Texture step=0.05");
