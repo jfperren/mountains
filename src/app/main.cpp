@@ -87,7 +87,6 @@ void display(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
-	cout << "TEST" << endl;
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -216,36 +215,49 @@ void initTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
+
 // --- Callbacks --- //
 
 // Callback function called by GLFW when a mouse button is clicked
 void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 {
+#ifdef WITH_ANTTWEAKBAR
 	if (!TwEventMouseButtonGLFW(glfwButton, glfwAction))   // Send event to AntTweakBar
 	{
+#endif
 		// Event not handled by AntTweakBar, we handle it ourselves
 		camera.mouse_button(glfwButton, glfwAction);
+#ifdef WITH_ANTTWEAKBAR
 	}
+#endif
 }
 
 
 // Callback function called by GLFW when mouse has moved
 void GLFWCALL OnMousePos(int mouseX, int mouseY)
 {
+#ifdef WITH_ANTTWEAKBAR
 	if (!TwEventMousePosGLFW(mouseX, mouseY))  // Send event to AntTweakBar
 	{
+#endif
 		camera.mouse_pos(mouseX, mouseY);
+#ifdef WITH_ANTTWEAKBAR
 	}
+#endif
 }
 
 
 // Callback function called by GLFW on mouse wheel event
 void GLFWCALL OnMouseWheel(int pos)
 {
+#ifdef WITH_ANTTWEAKBAR
 	if (!TwEventMouseWheelGLFW(pos))   // Send event to AntTweakBar
 	{
+#endif
 		// Nothing for the moment
+#ifdef WITH_ANTTWEAKBAR
 	}
+#endif
 }
 
 
@@ -254,34 +266,43 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 {
 
 	camera.keyboard(glfwKey, glfwAction);
-
+#ifdef WITH_ANTTWEAKBAR
 	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
 	{
+#endif
 		if (glfwKey == GLFW_KEY_ESC && glfwAction == GLFW_PRESS) // Want to quit?
 			glfwCloseWindow();
 		else
 		{
 			// Nothing for the moment
 		}
+#ifdef WITH_ANTTWEAKBAR
 	}
+#endif
 }
 
 
 // Callback function called by GLFW on char event
 void GLFWCALL OnChar(int glfwChar, int glfwAction)
 {
+#ifdef WITH_ANTTWEAKBAR
 	if (!TwEventCharGLFW(glfwChar, glfwAction))    // Send event to AntTweakBar
 	{
+#endif
 		// Nothing for the moment
+#ifdef WITH_ANTTWEAKBAR
 	}
+#endif
 }
 
 
 // Callback function called by GLFW when window size changes
 void GLFWCALL OnWindowSize(int width, int height)
 {
+#ifdef WITH_ANTTWEAKBAR
 	// Send the new window size to AntTweakBar
 	TwWindowSize(width, height);
+#endif
 
 	resize_callback(width, height);
 }
