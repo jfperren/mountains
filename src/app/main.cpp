@@ -175,6 +175,39 @@ void display(){
 
 	if (navmode == BEZIER) {
 		// TODO
+		vec3 cam_pos(2.0f, 2.0f, 2.0f);
+		vec3 cam_look(0.0f, 0.0f, 0.0f);
+		vec3 cam_up(0.0f, 0.0f, 1.0f);
+
+		float t = (glfwGetTime() - start_time) / travel_time;
+
+		if (t >= 1) {
+			start_time = glfwGetTime();
+			t = t - 1;
+		}
+
+		cam_pos_curve.sample_point(t, cam_pos);
+		cam_look_curve.sample_point(t, cam_look);
+
+		mat4 view_bezier = Eigen::lookAt(cam_pos, cam_look, cam_up);
+
+		// Render the water reflect
+		fbw.bind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
+		fbw.unbind();
+		glViewport(0, 0, window_params.width, window_params.height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		fb_water_depth.bind();
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+		fb_water_depth.unbind();
+
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+		water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+		box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+		sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	}
 	
 
@@ -305,7 +338,7 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 	{
 #endif
 		if (navmode == BEZIER) {
-			std::cout << "No mouse interaction in Bezier mode.\n" << std::flush;
+			std::cout << "[Warning] No mouse interaction in Bezier mode.\n" << std::flush;
 			return;
 		}
 
@@ -353,7 +386,6 @@ void GLFWCALL OnMouseWheel(int pos)
 void GLFWCALL OnKey(int glfwKey, int glfwAction)
 {
 
-	camera.keyboard(glfwKey, glfwAction);
 #ifdef WITH_ANTTWEAKBAR
 	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
 	{
@@ -363,7 +395,10 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 			glfwCloseWindow();
 		else
 		{
+			camera.keyboard(glfwKey, glfwAction);
+
 			if (glfwAction != GLFW_RELEASE) return; ///< only act on release
+
 
 			switch (glfwKey){
 			case '1':
@@ -376,6 +411,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				start_time = glfwGetTime();
 				break;
 			default:
+				std::cout << "[Warning] No keyboard interaction in Bezier mode.\n" << std::flush;
 				break;
 			}
 		}
