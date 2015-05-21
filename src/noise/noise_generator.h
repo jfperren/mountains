@@ -35,6 +35,7 @@ public:
 	void copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset);
 	void renderFractal();
 	void erode();
+	void addDirt();
 
 	void resize();
 };

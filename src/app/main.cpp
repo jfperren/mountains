@@ -4,6 +4,7 @@
 
 WindowParams window_params{ WIDTH, HEIGHT };
 NoiseParams noise_params;
+DirtParams dirt_params;
 ErosionParams erosion_params;
 ShadingParams shading_params;
 WaterParams water_params;
@@ -14,6 +15,7 @@ AppParams app_params{
 	&window_params,
 	&grid_params,
 	&noise_params,
+	&dirt_params,
 	&erosion_params,
 	&texture_params,
 	&shading_params,

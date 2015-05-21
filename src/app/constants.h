@@ -137,6 +137,13 @@ static NoiseParams FLAT_NOISE = {
 	0
 };
 
+typedef struct DirtParams {
+	float max_slope;
+	float max_height;
+
+	float amount;
+};
+
 typedef struct ShadingParams {
 	bool enable;
 	vec3 light_pos;
@@ -245,6 +252,7 @@ typedef struct AppParams {
 	WindowParams* window_params;
 	GridParams* grid_params;
 	NoiseParams* noise_params;
+	DirtParams* dirt_params;
 	ErosionParams* erosion_params;
 	TextureParams* texture_params;
 	ShadingParams* shading_params;
