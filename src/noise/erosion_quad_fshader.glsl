@@ -27,7 +27,7 @@ const int ACTION_LOWER = 1;
 const int ACTION_SOLIDIFY = 2;
 const int ACTION_LEVEL = 3;
 
-const float DIRT_THRESHOLD = 0.2;
+uniform float dirt_threshold;
 
 void main() {
 
@@ -117,7 +117,7 @@ void main() {
 				}
 			}
 
-			if (dirt > DIRT_THRESHOLD * dirt_amount) {
+			if (dirt > dirt_threshold * dirt_amount) {
 				height += dirt;
 			}
 			tex_out_height = vec4(height, 0, 0, 1);
