@@ -33,13 +33,11 @@ Sky sky;
 
 Framebuffer fbw(WIDTH, HEIGHT);
 Depthbuffer fb_water_depth(WIDTH, HEIGHT);
-Depthbuffer db_shadow_map(WIDTH, HEIGHT);
 
 // --- Textures --- //
 
 GLuint _tex_height;
 GLuint _tex_dirt;
-GLuint _tex_shadow;
 GLuint tex_mirror;
 GLuint tex_water_depth;
 GLuint tex_normal_map;
@@ -100,14 +98,12 @@ void display(){
 
 	opengp::update_title_fps("Mountains");
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	mat4 light_view_matrix = lookAt(shading_params.light_pos, vec3(0, 0, 0), vec3(0, 1, 0));
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix_mirrored(), light_view_matrix, camera.get_projection_matrix(), true);
+		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
 
 	glViewport(0, 0, window_params.width, window_params.height);
@@ -115,15 +111,10 @@ void display(){
 
 	fb_water_depth.bind();
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), false);
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	fb_water_depth.unbind();
 
-	db_shadow_map.bind();
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(light_view_matrix, light_view_matrix, camera.get_projection_matrix(), false);
-	db_shadow_map.unbind();
-
-	grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), false);
+	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
@@ -221,8 +212,6 @@ void initParams() {
 
 	// --- Shading ---
 	shading_params.enable				= true;
-	shading_params.shadow_enable		= true;
-	shading_params.shadow_intensity		= 1.0;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
 	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);
@@ -244,15 +233,13 @@ void initParams() {
 void initSceneObjects() {
 
 	box.init(&app_params);
-	grid.init(&app_params, &_tex_height, &_tex_dirt, &_tex_shadow);
+	grid.init(&app_params, &_tex_height, &_tex_dirt);
 	water.init(&app_params);
 
 	tex_mirror = fbw.init_texture();
 	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
 	tex_water_depth = fb_water_depth.init_texture();
 	fb_water_depth.init();
-	_tex_shadow = db_shadow_map.init_texture();
-	db_shadow_map.init();
 
 	
 	water.set_depth_texture(tex_water_depth);
@@ -283,23 +270,6 @@ void initTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	GLuint FramebufferName = 0;
-	glGenFramebuffers(1, &FramebufferName);
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-	glGenTextures(1, &_tex_shadow);
-	glBindTexture(GL_TEXTURE_2D, _tex_shadow);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _tex_shadow, 0);
-
-	glDrawBuffer(GL_NONE); // No color buffer is drawn to.
 
 }
 

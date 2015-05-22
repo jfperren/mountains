@@ -3,8 +3,8 @@
 in vec3 vertex_pos;
 out vec2 uv;
 
-uniform float noise_width;
-uniform float noise_height;
+uniform int noise_width;
+uniform int noise_height;
 
 void main() {
     gl_Position = vec4(vertex_pos, 1.0);

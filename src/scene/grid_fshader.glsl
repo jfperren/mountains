@@ -1,9 +1,8 @@
-#version 430 core
+#version 330 core
 
 // --- Inputs --- //
 
 in vec2 uv;
-in vec4 position;
 
 // --- Outputs --- //
 
@@ -13,7 +12,6 @@ out vec4 color;
 
 layout(location = 0) uniform sampler2D tex_height;
 layout(location = 1) uniform sampler2D tex_dirt;
-layout(location = 2) uniform sampler2D tex_shadow;
 /*layout(location = 1) uniform sampler2D tex_grass;
 layout(location = 2) uniform sampler2D tex_sand;
 layout(location = 3) uniform sampler2D tex_rock;
@@ -23,14 +21,15 @@ layout(location = 5) uniform sampler2D tex_rock_underwater;*/
 // --- Uniforms --- //
 
 // light_params
-uniform int shading_enable, shading_shadow_enable;
-uniform float shading_shadow_intensity;
+uniform int shading_enable;
 uniform vec3 shading_light_pos;
 uniform vec3 shading_Ia, shading_Id;
 
 // texture_params
 
 uniform int texture_type;
+
+
 
 uniform float sand_min_height;
 uniform float sand_max_height;
@@ -141,7 +140,7 @@ void main() {
 	} else if (texture_type == NONE) {
 		ambient = vec3(1, 1, 1);
 	} else {
-		if (dirt == 0){
+		if (dirt == 0 ){
 			ambient = vec3(height + 0.5);
 		} else {
 			ambient = vec3(dirt + 0.5, 0, 0);
@@ -151,18 +150,6 @@ void main() {
 	if (shading_enable != 0) {
 		ambient *= shading_Ia;
 		diffuse = shading_Id * dot(normal, normalize(shading_light_pos));
-	}
-
-	if (shading_shadow_enable != 0) {
-		vec2 uv_light = vec2((position.x + 1) / 2, (position.y + 1) / 2);
-		float bias = 0.0005;
-		float visibility = 1.0;
-		if ( texture( tex_shadow, position.xy ).z  <  position.z-bias){
-			visibility = 0.5;
-		}
-
-		ambient *= shading_Ia;
-		diffuse = visibility * shading_Id * dot(normal, normalize(shading_light_pos));
 	}
 
 	color = vec4(ambient + diffuse, 1.0);
