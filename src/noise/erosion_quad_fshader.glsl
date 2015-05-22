@@ -35,12 +35,12 @@ uniform float dirt_threshold;
 void main() {
 
 	float height = texture(tex_in_height, uv)[0];
-	if (height < dirt_max_height) {
+	if (height > dirt_max_height) {
 		if (action == ACTION_CREATE) {
 			float height = texture(tex_in_height, uv)[0];
 			float diff = dirt_max_height - height;
 
-			float dirt = min(diff * 0.5, dirt_amount);
+			float dirt = min(-diff, dirt_amount);
 			//height -= dirt;
 
 			tex_out_height = vec4(height, 0, 0, 1);
@@ -140,21 +140,27 @@ void main() {
 		else if (action == ACTION_LEVEL) {
 			float height = texture(tex_in_height, uv)[0];
 			float dirt = texture(tex_in_dirt, uv)[0];
-			
+
 			if (dirt > dirt_threshold) {
 				float sum = height;
+				int count = 0;
 				for(int i = -1; i <= 1; i++) {
 					for(int j = -1; j <= 1; j++) {
 						if (i != 0 || j != 0) { 
 							vec2 uv_ij = uv + vec2(i, j) * vec2(DX, DY);
 							float height_ij = texture(tex_in_height, uv_ij)[0];
+							float dirt_ij = texture(tex_in_dirt, uv_ij)[0];
 
 							sum += height_ij;
+							if (dirt_ij > dirt_threshold){
+								count++;
+							}	
 						}
 					}
 				}
 
 				height = sum / 9.0;
+				if (count < 3) dirt = 0;
 			} else {
 				dirt = 0;
 			}
