@@ -3,11 +3,20 @@
 #define SWAP_BUFFERS "in = 1 - in;out = 1 - out;"
 #define SWAP_TEXTURES "tex_height = _erosionbuffer[in].get_tex_height();tex_dirt = _erosionbuffer[in].get_tex_water();tex_pos = _erosionbuffer[in].get_tex_sediment(); "
 
-NoiseGenerator::NoiseGenerator(GLuint* tex_height)
+NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_dirt)
 	{
 		_tex_height = tex_height;
+		_tex_dirt = tex_dirt;
+
 		glGenTextures(1, _tex_height);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glGenTextures(1, _tex_dirt);
+		glBindTexture(GL_TEXTURE_2D, *_tex_dirt);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -190,6 +199,7 @@ void NoiseGenerator::addDirt() {
 
 		cout << "Copy " << out << endl; 
 		copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
+		copyTexture(_erosionbuffer[in].get_tex_water(), _tex_dirt);
 	}
 }
 

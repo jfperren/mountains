@@ -18,6 +18,7 @@ private:
 	Copybuffer _copybuffer;
 
 	GLuint* _tex_height;
+	GLuint* _tex_dirt;
 
 	CopyQuad _copy_quad;
 	NoiseQuad _quad;
@@ -28,7 +29,7 @@ private:
 	ErosionParams* _erosion_params;
 
 public:
-	NoiseGenerator(GLuint* out_tex);
+	NoiseGenerator(GLuint* tex_height, GLuint* tex_dirt);
 
 	void init(AppParams* app_params);
 	void copyTexture(GLuint* src, GLuint* dst);
