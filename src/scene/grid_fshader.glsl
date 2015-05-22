@@ -29,7 +29,7 @@ uniform vec3 shading_Ia, shading_Id;
 
 uniform int texture_type;
 
-
+uniform float dirt_amount;
 
 uniform float sand_min_height;
 uniform float sand_max_height;
@@ -140,7 +140,7 @@ void main() {
 	} else if (texture_type == NONE) {
 		ambient = vec3(1, 1, 1);
 	} else {
-		if (dirt == 0 ){
+		if (dirt < 0.04 * dirt_amount){
 			ambient = vec3(height + 0.5);
 		} else {
 			ambient = vec3(dirt + 0.5, 0, 0);

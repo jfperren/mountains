@@ -24,6 +24,7 @@ class Grid {
 private:
 	NoiseParams* _noise_params;
 	GridParams* _grid_params;
+	DirtParams* _dirt_params;
 	TextureParams* _texture_params;
 	ShadingParams* _shading_params;
 
