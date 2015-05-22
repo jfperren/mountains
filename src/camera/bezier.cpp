@@ -43,8 +43,10 @@ void Bezier::draw_cam_look_points(const mat4& view, const mat4& projection) {
 	}
 }
 
-void Bezier::init(int travel_time){
-	
+void Bezier::init(int width, int height, int travel_time){
+
+	this->width = width;
+	this->height = height;
 	this->travel_time = travel_time;
 
 	/// Compile the shaders here to avoid the duplication
@@ -97,4 +99,98 @@ void Bezier::cleanup() {
 	glDeleteProgram(_pid_bezier);
 	glDeleteProgram(_pid_point);
 	glDeleteProgram(_pid_point_selection);
+}
+
+void Bezier::render_selection(const mat4 &view, const mat4 &projection) {
+	glViewport(0, 0, width, height);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
+		cam_pos_points[i].draw_selection(model, view, projection);
+	}
+
+	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
+		cam_look_points[i].draw_selection(model, view, projection);
+	}
+}
+
+vec2 Bezier::transform_xy_screen(int x, int y) {
+	return vec2(2.0f * (float)x / width - 1.0f,
+		1.0f - 2.0f * (float)y / height);
+}
+
+bool Bezier::unproject(int mouse_x, int mouse_y, vec3 &p, const mat4 &view, const mat4 &projection) {
+	// Compute MVP and MVP_inv
+	mat4 MVP = projection * view * model;
+	mat4 MVP_inv = MVP.inverse();
+	// Get point in space
+	vec4 p_camera = MVP * vec4(p.x(), p.y(), p.z(), 1.0);
+	p_camera = p_camera / p_camera.w();
+	// Get current depth of the point
+	float depth = p_camera.z();
+	// Get mouse coordinates in screen coordinates
+	vec2 xy_screen = transform_xy_screen(mouse_x, mouse_y);
+	// Get point in scene and re-normalize w to 1
+	vec4 p_xyzw = MVP_inv * vec4(xy_screen.x(), xy_screen.y(), depth, 1.0);
+	p_xyzw = p_xyzw / p_xyzw.w();
+	// Get 3 components
+	p = vec3(p_xyzw.x(), p_xyzw.y(), p_xyzw.z());
+
+	return true;
+}
+
+void Bezier::selection_button(int button, int action, const mat4 &view, const mat4 &projection) {
+	static int x_pressed = 0, y_pressed = 0;
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		int x = 0, y = 0;
+		glfwGetMousePos(&x, &y);
+		x_pressed = x; y_pressed = y;
+
+		render_selection(view, projection);
+
+		glFlush();
+		glFinish();
+
+		unsigned char res[4];
+		glReadPixels(x, height - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
+		selected_point = res[0];
+
+		if (selected_point >= 0 && selected_point < cam_pos_points.size())
+			cam_pos_points[selected_point].selected() = true;
+
+		if (selected_point >= cam_pos_points.size() && selected_point < cam_pos_points.size() + cam_look_points.size())
+			cam_look_points[selected_point - cam_pos_points.size()].selected() = true;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+		if (selected_point >= 0 && selected_point < cam_pos_points.size()) {
+			cam_pos_points[selected_point].selected() = false;
+		}
+
+		if (selected_point >= cam_pos_points.size() && selected_point < cam_pos_points.size() + cam_look_points.size()) {
+			cam_look_points[selected_point - cam_pos_points.size()].selected() = false;
+		}
+
+		int x = 0, y = 0;
+		glfwGetMousePos(&x, &y);
+		if (x == x_pressed && y == y_pressed) {
+			return;
+		}
+
+		if (selected_point >= 0 && selected_point < cam_pos_points.size()) {
+			unproject(x, y, cam_pos_points[selected_point].position(), view, projection);
+
+			cam_pos_curve.set_points(cam_pos_points);
+			cout << "cam_pos " << selected_point << " value : " << cam_pos_points[selected_point].position() << endl;
+		}
+
+		if (selected_point >= cam_pos_points.size() && selected_point < cam_pos_points.size() + cam_look_points.size()) {
+			unproject(x, y, cam_look_points[selected_point - cam_pos_points.size()].position(), view, projection);
+
+			cam_look_curve.set_points(cam_look_points);
+			cout << "cam_look " << selected_point + cam_pos_points.size() << " value : " << cam_look_points[selected_point - cam_pos_points.size()].position() << endl;
+		}
+	}
 }

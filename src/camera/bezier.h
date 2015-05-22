@@ -21,11 +21,13 @@ private:
 	std::vector<ControlPoint> cam_look_points;
 	int selected_point;
 
+	int width;
+	int height;
 	int travel_time;
 	int start_time;
 
 public:
-	void init(int travel_time=20);
+	void init(int width, int height, int travel_time=20);
 	void cleanup();
 	void set_start_time(int start_time);
 	int get_start_time();
@@ -37,4 +39,8 @@ public:
 	void cam_look_draw(const mat4& view, const mat4& projection);
 	void draw_cam_pos_points(const mat4& view, const mat4& projection);
 	void draw_cam_look_points(const mat4& view, const mat4& projection);
+	void selection_button(int button, int action, const mat4 &view, const mat4 &projection);
+	bool unproject(int mouse_x, int mouse_y, vec3 &p, const mat4 &view, const mat4 &projection);
+	void render_selection(const mat4 &view, const mat4 &projection);
+	vec2 transform_xy_screen(int x, int y);
 };
