@@ -66,6 +66,7 @@ void init(){
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
 
+	// Possible to specify the travel time to init(1?). Note: the bigger the slower.
 	bezier.init();
 
 	initParams();

@@ -8,6 +8,10 @@ int Bezier::get_start_time() {
 	return this->start_time;
 }
 
+void Bezier::set_travel_time(int travel_time) {
+	this->travel_time = travel_time;
+}
+
 int Bezier::get_travel_time() {
 	return this->travel_time;
 }
@@ -20,8 +24,9 @@ void Bezier::cam_look_sample_point(double t, vec3 &sample) {
 	cam_look_curve.sample_point(t, sample);
 }
 
-void Bezier::init(){
-	// TODO: refactor/move bezier related code
+void Bezier::init(int travel_time){
+	
+	this->travel_time = travel_time;
 
 	/// Compile the shaders here to avoid the duplication
 	_pid_bezier = opengp::load_shaders("camera/bezier_vshader.glsl", "camera/bezier_fshader.glsl");

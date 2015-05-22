@@ -19,15 +19,16 @@ private:
 	std::vector<ControlPoint> cam_look_points;
 	int selected_point;
 
-	const int travel_time = 20;
+	int travel_time;
 	int start_time;
 
 public:
-	void init();
+	void init(int travel_time=20);
 	void cleanup();
 	void display();
 	void set_start_time(int start_time);
 	int get_start_time();
+	void set_travel_time(int travel_time);
 	int get_travel_time();
 	void pos_curve_sample_point(double t, vec3 &sample);
 	void cam_look_sample_point(double t, vec3 &sample);
