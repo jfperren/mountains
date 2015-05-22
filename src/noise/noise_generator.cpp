@@ -171,6 +171,16 @@ void NoiseGenerator::addDirt() {
 			in = 1 - in;
 			out = 1 - out;
 		}
+
+		tex_dirt = _erosionbuffer[in].get_tex_water();
+		tex_height = _erosionbuffer[in].get_tex_height();
+		tex_pos = _erosionbuffer[in].get_tex_sediment();
+
+		cout << "Solidify " << in << " -> " << out << endl;
+		_erosionbuffer[out].bind();
+		glClear(GL_COLOR_BUFFER_BIT);
+		_erosion_quad.solidifyDirt(tex_height, tex_dirt, tex_pos);
+		_erosionbuffer[out].unbind();
 		
 		for (int t = 0; t < _dirt_params->smoothness; t++) {
 			tex_dirt = _erosionbuffer[in].get_tex_water();
@@ -186,15 +196,7 @@ void NoiseGenerator::addDirt() {
 			out = 1 - out;
 		}
 
-		tex_dirt = _erosionbuffer[in].get_tex_water();
-		tex_height = _erosionbuffer[in].get_tex_height();
-		tex_pos = _erosionbuffer[in].get_tex_sediment();
-
-		cout << "Solidify " << in << " -> " << out << endl;
-		_erosionbuffer[out].bind();
-		glClear(GL_COLOR_BUFFER_BIT);
-		_erosion_quad.solidifyDirt(tex_height, tex_dirt, tex_pos);
-		_erosionbuffer[out].unbind();
+		
 
 		in = 1 - in;
 		out = 1 - out;

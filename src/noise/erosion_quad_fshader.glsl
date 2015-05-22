@@ -129,12 +129,9 @@ void main() {
 				}
 			}
 
-			if (dirt > dirt_threshold) {
-				height += dirt;
-			}
-
 			dirt = min(dirt, dirt_max_amount);
 			dirt = max(dirt, 0);
+			height += dirt;
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, 0, 0, 1);
 			tex_out_pos = vec4(0, 0, 0, 1);
@@ -151,23 +148,17 @@ void main() {
 						if (i != 0 || j != 0) { 
 							vec2 uv_ij = uv + vec2(i, j) * vec2(DX, DY);
 							float height_ij = texture(tex_in_height, uv_ij)[0];
-							float dirt_ij = texture(tex_in_height, uv_ij)[0];
-							float level_ij = height_ij + dirt_ij;
 
-							sum += level_ij;
+							sum += height_ij;
 						}
 					}
 				}
 
-				float average_level = sum / 9.0;
-				float diff = height - average_level;
-				if (diff > 0){
-					dirt -= min(dirt, diff);
-				} 
+				height = sum / 9.0;
+			} else {
+				dirt = 0;
 			}
 
-			dirt = min(dirt, dirt_max_amount);
-			dirt = max(dirt, 0);
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, 0, 0, 1);
 		}
