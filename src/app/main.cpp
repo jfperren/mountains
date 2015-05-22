@@ -112,7 +112,7 @@ void display(){
 
 		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
 	} else {
-		// FREE/default mode
+		// FREE or default mode
 		camera.move();
 	}
 
@@ -133,6 +133,11 @@ void display(){
 	water.draw(view_matrix, camera.get_projection_matrix());
 	box.draw(view_matrix, camera.get_projection_matrix());
 	sky.draw(view_matrix, camera.get_projection_matrix());
+
+	if (navmode == CAMERA_PATH) {
+		bezier.pos_curve_draw(view_matrix, camera.get_projection_matrix());
+		bezier.cam_look_draw(view_matrix, camera.get_projection_matrix());
+	}
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
@@ -332,13 +337,18 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 			case '1':
 				navmode = FREE;
 				std::cout << "[Info] Running in free mode\n" << std::flush;
-				isVisible(true);
+				twBarVisible(true);
 				break;
 			case '2':
 				navmode = BEZIER;
 				std::cout << "[Info] Running in bezier mode\n" << std::flush;
 				bezier.set_start_time(glfwGetTime());
-				isVisible(false);
+				twBarVisible(false);
+				break;
+			case '3':
+				navmode = CAMERA_PATH;
+				std::cout << "[Info] Running in camera path editing mode\n" << std::flush;
+				twBarVisible(false);
 				break;
 			default:
 				std::cout << "[Warning] No keyboard interaction in bezier mode.\n" << std::flush;

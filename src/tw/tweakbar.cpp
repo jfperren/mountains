@@ -83,7 +83,7 @@ void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoisePar
 }
 
 // Hide/Show the TwBar and the HelpBar (the small icon in the bottom left corner)
-void isVisible(bool b) {
+void twBarVisible(bool b) {
 	if (b) {
 		TwDefine(" Settings visible=true ");
 		TwDefine(" TW_HELP visible=true ");

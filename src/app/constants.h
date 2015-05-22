@@ -22,7 +22,8 @@ const float FAR = 40.0f;
 
 typedef enum {
 	FREE,
-	BEZIER
+	BEZIER,
+	CAMERA_PATH
 } NAVIGATION_MODE;
 
 typedef enum {

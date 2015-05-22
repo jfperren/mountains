@@ -24,6 +24,13 @@ void Bezier::cam_look_sample_point(double t, vec3 &sample) {
 	cam_look_curve.sample_point(t, sample);
 }
 
+void Bezier::pos_curve_draw(const mat4& view, const mat4& projection) {
+	cam_pos_curve.draw(model, view, projection);
+}
+void Bezier::cam_look_draw(const mat4& view, const mat4& projection) {
+	cam_look_curve.draw(model, view, projection);
+}
+
 void Bezier::init(int travel_time){
 	
 	this->travel_time = travel_time;

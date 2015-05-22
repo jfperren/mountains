@@ -8,6 +8,8 @@
 class Bezier {
 
 private:
+	mat4 model = mat4::Identity();
+
 	GLuint _pid_bezier;
 	GLuint _pid_point;
 	GLuint _pid_point_selection;
@@ -32,4 +34,6 @@ public:
 	int get_travel_time();
 	void pos_curve_sample_point(double t, vec3 &sample);
 	void cam_look_sample_point(double t, vec3 &sample);
+	void pos_curve_draw(const mat4& view, const mat4& projection);
+	void cam_look_draw(const mat4& view, const mat4& projection);
 };
