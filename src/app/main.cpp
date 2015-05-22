@@ -28,16 +28,14 @@ GLuint tex_mirror;
 GLuint tex_water_depth;
 GLuint tex_normal_map;
 
+// --- Camera --- //
+Camera camera(&window_params);
+NAVIGATION_MODE navmode;
+Bezier bezier;
+
 // --- Other --- //
 
 NoiseGenerator noise_generator(&tex_height, &noise_params);
-Camera camera(&window_params);
-
-// --- TODO: refactor and move bezier related code to a better location */
-
-NAVIGATION_MODE navmode;
-
-Bezier bezier;
 
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
@@ -81,7 +79,6 @@ void init(){
 	compute_height_map();
 
 #ifdef WITH_ANTTWEAKBAR
-
 	initAntTwBar(&grid_params, &window_params, &noise_params, &water_params, &texture_params);
 #endif
 	check_error_gl();
