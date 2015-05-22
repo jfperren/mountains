@@ -92,31 +92,11 @@ void display(){
 	opengp::update_title_fps("Terrain");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	if (navmode == FREE) {
-		// Render the water reflect
-		fbw.bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
-		fbw.unbind();
-		glViewport(0, 0, window_params.width, window_params.height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		fb_water_depth.bind();
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-		fb_water_depth.unbind();
-
-		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-		water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-		box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-		sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-
-		camera.move();
-	}
+	mat4 view_matrix = camera.get_view_matrix();
+	mat4 view_matrix_mirrored = camera.get_view_matrix_mirrored(); // for water reflections
 
 	if (navmode == BEZIER) {
-		// TODO
 		vec3 cam_pos(2.0f, 2.0f, 2.0f);
 		vec3 cam_look(0.0f, 0.0f, 0.0f);
 		vec3 cam_up(0.0f, 0.0f, 1.0f);
@@ -131,27 +111,29 @@ void display(){
 		bezier.pos_curve_sample_point(t, cam_pos);
 		bezier.cam_look_sample_point(t, cam_look);
 
-		mat4 view_bezier = Eigen::lookAt(cam_pos, cam_look, cam_up);
-
-		// Render the water reflect
-		fbw.bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
-		fbw.unbind();
-		glViewport(0, 0, window_params.width, window_params.height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		fb_water_depth.bind();
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(view_bezier, camera.get_projection_matrix(), false);
-		fb_water_depth.unbind();
-
-		grid.draw(view_bezier, camera.get_projection_matrix(), false);
-		water.draw(view_bezier, camera.get_projection_matrix());
-		box.draw(view_bezier, camera.get_projection_matrix());
-		sky.draw(view_bezier, camera.get_projection_matrix());
+		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
+	} else {
+		// FREE/default mode
+		camera.move();
 	}
-	
+
+	// Render the water reflect
+	fbw.bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	grid.draw(view_matrix_mirrored, camera.get_projection_matrix(), true);
+	fbw.unbind();
+	glViewport(0, 0, window_params.width, window_params.height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	fb_water_depth.bind();
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	grid.draw(view_matrix, camera.get_projection_matrix(), false);
+	fb_water_depth.unbind();
+
+	grid.draw(view_matrix, camera.get_projection_matrix(), false);
+	water.draw(view_matrix, camera.get_projection_matrix());
+	box.draw(view_matrix, camera.get_projection_matrix());
+	sky.draw(view_matrix, camera.get_projection_matrix());
 
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
