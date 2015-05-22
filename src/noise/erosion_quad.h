@@ -14,7 +14,11 @@ private:
 	DirtParams* _dirt_params;
 
 public:
-	void init(DirtParams* dirt_params);
+	void init(AppParams* app_params);
 	void cleanup();
 	void draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos);
+
+	void createDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
+	void lowerDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
+	void solidifyDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
 };

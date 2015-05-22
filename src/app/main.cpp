@@ -43,7 +43,7 @@ GLuint tex_normal_map;
 
 // --- Other --- //
 
-NoiseGenerator noise_generator(&tex_height, &noise_params, &erosion_params);
+NoiseGenerator noise_generator(&tex_height);
 Camera camera(&window_params);
 
 // Gets called when the windows is resized.
@@ -61,7 +61,8 @@ void resize_callback(int width, int height) {
 void compute_height_map() {
 
 	noise_generator.renderFractal();
-	noise_generator.erode();
+	//noise_generator.erode();
+	//noise_generator.addDirt();
 
 	box.set_height_texture(tex_height);
 	grid.set_height_texture(tex_height);
@@ -81,7 +82,7 @@ void init(){
 	initTextures();
 	initSceneObjects();
 
-	noise_generator.init();
+	noise_generator.init(&app_params);
 	
 	compute_height_map();
 
@@ -94,6 +95,7 @@ void init(){
 
 // Gets called for every frame.
 void display(){
+
 	opengp::update_title_fps("Mountains");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -103,7 +105,7 @@ void display(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 	fbw.unbind();
-	
+
 	glViewport(0, 0, window_params.width, window_params.height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -111,14 +113,13 @@ void display(){
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	fb_water_depth.unbind();
-	cout << "TEST" << endl;
+
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	cout << "TEST" << endl;
 	camera.move();
-
+	
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
 #endif
@@ -177,6 +178,13 @@ void initParams() {
 	noise_params.octaves				= 12;
 	noise_params.seed					= glfwGetTime();
 	noise_params.seed 				   -= floor(noise_params.seed);
+
+	// --- Dirt ---
+	dirt_params.enable = true;
+	dirt_params.amount = 0.2;
+	dirt_params.max_height = 0.5;
+	dirt_params.max_slope = 1;
+	dirt_params.time = 0;
 
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;

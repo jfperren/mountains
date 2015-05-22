@@ -23,9 +23,9 @@ private:
 	NoiseQuad _quad;
 	ErosionQuad _erosion_quad;
 
-	NoiseParams _noise_params;
-	DirtParams _dirt_params;
-	ErosionParams _erosion_params;
+	NoiseParams* _noise_params;
+	DirtParams* _dirt_params;
+	ErosionParams* _erosion_params;
 
 public:
 	NoiseGenerator(GLuint* out_tex);
@@ -37,6 +37,7 @@ public:
 	void renderFractal();
 	void erode();
 	void addDirt();
+	GLuint* get_tex_height();
 
 	void resize();
 };

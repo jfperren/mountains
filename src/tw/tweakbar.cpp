@@ -12,6 +12,7 @@ void initAntTwBar(AppParams* app_params) {
 	WindowParams* window_params		= app_params->window_params;
 	GridParams* grid_params			= app_params->grid_params;
 	NoiseParams* noise_params		= app_params->noise_params;
+	DirtParams* dirt_params			= app_params->dirt_params;
 	ErosionParams* erosion_params	= app_params->erosion_params;
 	TextureParams* texture_params	= app_params->texture_params;
 	ShadingParams* shading_params	= app_params->shading_params;
@@ -22,7 +23,7 @@ void initAntTwBar(AppParams* app_params) {
 	TwCopyStdStringToClientFunc(CopyStdStringToClient);
 	TwWindowSize(window_params->width, window_params->height);
 	bar = TwNewBar("Settings");
-
+	
 	// Grid
 
 	TwAddVarCB(bar, "grid_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &grid_params->enable, " group=Grid");
@@ -60,6 +61,14 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "noise_octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->octaves, " group=Noise step=1 min=1");
 
 	TwAddVarCB(bar, "noise_seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->seed, " group=Noise step=0.001 min=0 max=1");
+
+	// Dirt
+
+	TwAddVarCB(bar, "dirt_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &dirt_params->enable, " group=Dirt");
+	TwAddVarCB(bar, "dirt_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->amount, " group=Dirt step=0.05 min=0");
+	TwAddVarCB(bar, "dirt_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_slope, " group=Dirt step=0.05 min=0.05");
+	TwAddVarCB(bar, "dirt_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_height, " group=Dirt step=0.05");
+	TwAddVarCB(bar, "dirt_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &dirt_params->time, " group=Dirt step=1 min=0");
 
 	// Erosion
 

@@ -1,13 +1,21 @@
 ﻿#include "noise_generator.h"
 
-NoiseGenerator::NoiseGenerator(GLuint* tex_height, NoiseParams* noise_params, ErosionParams* erosion_params) :
-		_noise_params(noise_params),
-		_erosion_params(erosion_params)
+NoiseGenerator::NoiseGenerator(GLuint* tex_height)
 	{
 		_tex_height = tex_height;
+		glGenTextures(1, _tex_height);
+		glBindTexture(GL_TEXTURE_2D, *_tex_height);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
-void NoiseGenerator::init() {
+void NoiseGenerator::init(AppParams* app_params) {
+
+	_noise_params = app_params->noise_params;
+	_dirt_params = app_params->dirt_params;
+	_erosion_params = app_params->erosion_params;
 
 	_framebuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
 	_framebuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
@@ -23,7 +31,7 @@ void NoiseGenerator::init() {
 
 	_quad.init();
 	_copy_quad.init();
-	_erosion_quad.init();
+	_erosion_quad.init(app_params);
 }
 
 void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, float noise_amplitude) {
@@ -67,6 +75,10 @@ void NoiseGenerator::renderFractal() {
 	copyNoise(_framebuffer[in].get_tex(), _tex_height, _noise_params->amplitude, _noise_params->offset);
 }
 
+GLuint* NoiseGenerator::get_tex_height() {
+	return _tex_height;
+}
+
 void NoiseGenerator::erode() {
 	/*GLuint* tex_height;
 	GLuint* tex_water;
@@ -103,11 +115,67 @@ void NoiseGenerator::erode() {
 }
 
 void NoiseGenerator::addDirt() {
+	
 
+	GLuint* tex_dirt;
+	GLuint* tex_height;
+	GLuint* tex_pos;
+
+	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[0].init();
+	_erosionbuffer[1].init();
+	_erosionbuffer[0].clear();
+	_erosionbuffer[1].clear();
+
+	int in = 0;
+	int out = 1;
+
+	tex_dirt = _erosionbuffer[in].get_tex_water();
+	tex_height = _erosionbuffer[in].get_tex_height();
+	tex_pos = _erosionbuffer[in].get_tex_sediment();
+
+	if (_dirt_params->enable) {
+		_erosionbuffer[out].bind();
+		glClear(GL_COLOR_BUFFER_BIT);
+		_erosion_quad.createDirt(_tex_height, tex_dirt, tex_pos);
+		_erosionbuffer[out].unbind();
+
+		in = 1 - in;
+		out = 1 - out;
+
+		for (int t = 0; t < _dirt_params->time; t++) {
+
+			tex_dirt = _erosionbuffer[in].get_tex_water();
+			tex_height = _erosionbuffer[in].get_tex_height();
+			tex_pos = _erosionbuffer[in].get_tex_sediment();
+
+			_erosionbuffer[out].bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+			_erosion_quad.lowerDirt(_tex_height, tex_dirt, tex_pos);
+			_erosionbuffer[out].unbind();
+
+			in = 1 - in;
+			out = 1 - out;
+		}
+	
+		tex_dirt = _erosionbuffer[in].get_tex_water();
+		tex_height = _erosionbuffer[in].get_tex_height();
+		tex_pos = _erosionbuffer[in].get_tex_sediment();
+
+		_erosionbuffer[out].bind();
+		glClear(GL_COLOR_BUFFER_BIT);
+		_erosion_quad.solidifyDirt(_tex_height, tex_dirt, tex_pos);
+		_erosionbuffer[out].unbind();
+	}
+
+	copyTexture(tex_height, _tex_height);
 }
 
 void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
+	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
 	_copybuffer.init(dst);
+	cout << "COPY WITH RESOLUTION " << _noise_params->resolution << endl;
 	_copybuffer.bind();
 		glClear(GL_COLOR_BUFFER_BIT);
 		_copy_quad.drawTexture(src);
@@ -116,7 +184,10 @@ void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
 
 void NoiseGenerator::copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset) {
 	///--- Render random noise on quad in the framebuffer
+	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
 	_copybuffer.init(dst);
+	_copybuffer.clear();
+
 	_copybuffer.bind();
 		glClear(GL_COLOR_BUFFER_BIT);
 		_copy_quad.drawTexture(src, amplitude, offset);

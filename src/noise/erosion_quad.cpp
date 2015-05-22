@@ -1,8 +1,8 @@
 #include "erosion_quad.h"
 
-void ErosionQuad::init(DirtParams* dirt_params){
+void ErosionQuad::init(AppParams* app_params){
 
-	_dirt_params = dirt_params;
+	_dirt_params = app_params->dirt_params;
 
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("noise/erosion_quad_vshader.glsl", "noise/erosion_quad_fshader.glsl");
@@ -78,3 +78,106 @@ void ErosionQuad::draw(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sedime
 	glBindVertexArray(0);
 	glUseProgram(0);
 }
+
+void ErosionQuad::createDirt(GLuint* tex_height, GLuint* tex_dirt, GLuint* tex_pos) {
+	// Bind program & vertex array
+	glUseProgram(_pid);
+	glBindVertexArray(_vao);
+
+	glUniform1i(glGetUniformLocation(_pid, "action"), 0);
+
+	_dirt_params->setup(_pid);
+
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / 2048);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / 2048);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+
+	// Set texture input
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, *tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_dirt"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, *tex_dirt);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_pos"), 1);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, *tex_pos);
+
+	// Draw
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbind
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void ErosionQuad::lowerDirt(GLuint* tex_height, GLuint* tex_dirt, GLuint* tex_pos) {
+	// Bind program & vertex array
+	glUseProgram(_pid);
+	glBindVertexArray(_vao);
+
+	glUniform1i(glGetUniformLocation(_pid, "action"), 1);
+
+	_dirt_params->setup(_pid);
+
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / 2048);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / 2048);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+
+	// Set texture input
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, *tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_dirt"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, *tex_dirt);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_pos"), 1);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, *tex_pos);
+
+	// Draw
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbind
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void ErosionQuad::solidifyDirt(GLuint* tex_height, GLuint* tex_dirt, GLuint* tex_pos) {
+	// Bind program & vertex array
+	glUseProgram(_pid);
+	glBindVertexArray(_vao);
+
+	glUniform1i(glGetUniformLocation(_pid, "action"), 2);
+
+	_dirt_params->setup(_pid);
+
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / 2048);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / 2048);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+
+	// Set texture input
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, *tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_dirt"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, *tex_dirt);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_pos"), 1);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, *tex_pos);
+
+	// Draw
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbind
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
