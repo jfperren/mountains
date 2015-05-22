@@ -9,13 +9,12 @@ uniform int grid_width;
 
 in vec2 vertex_pos;
 
-out float height;
 out vec2 uv;
 
 void main() {
     uv = vertex_pos + vec2(0.5, 0.5);
 
-	height = texture(tex_height, uv).rgb[0];
+	float height = texture(tex_height, uv).rgb[0];
 
 	vec3 vertex_pos_3d;
 	if (grid_enable == 1) {

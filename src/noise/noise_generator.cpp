@@ -169,7 +169,7 @@ void NoiseGenerator::addDirt() {
 		_erosionbuffer[out].unbind();
 	}
 
-	copyTexture(tex_height, _tex_height);
+	copyTexture(tex_dirt, _tex_height);
 }
 
 void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {

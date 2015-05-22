@@ -35,7 +35,7 @@ protected:
     GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
-    GLuint _tex_height;    ///< HeightMap Texture ID
+    GLuint* _tex_height;    ///< HeightMap Texture ID
 
 	GLuint _tex_main;
 
@@ -44,10 +44,9 @@ protected:
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
-	void init(AppParams* app_params);
+	void init(AppParams* app_params, GLuint* tex_height);
 	void draw(const mat4& view, const mat4& projection, bool only_reflect = false);
 	void cleanup();
 
-	void set_height_texture(GLuint tex_height);
 	int get_vertex_index(int i, int j);
 };

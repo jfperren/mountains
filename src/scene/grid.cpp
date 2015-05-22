@@ -7,7 +7,9 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(AppParams* app_params){
+	void Grid::init(AppParams* app_params, GLuint* tex_height){
+
+		_tex_height = tex_height;
 
 		_noise_params = app_params->noise_params;
 		_grid_params = app_params->grid_params;
@@ -125,17 +127,6 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
-	void Grid::set_height_texture(GLuint tex_height) {
-		_tex_height = tex_height;
-		glGenTextures(1, &tex_height);
-		glBindTexture(GL_TEXTURE_2D, tex_height);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	}
-
-
 	void Grid::draw(const mat4& view, const mat4& projection, bool only_reflect){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
@@ -156,7 +147,7 @@ using namespace std;
 
 		// Bind textures
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _tex_height);
+		glBindTexture(GL_TEXTURE_2D, *_tex_height);
 
 		for (int i = 0; i < TEXTURES_COUNT; i++){
 

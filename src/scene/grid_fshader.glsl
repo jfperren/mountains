@@ -2,7 +2,6 @@
 
 // --- Inputs --- //
 
-in float height;
 in vec2 uv;
 
 // --- Outputs --- //
@@ -77,6 +76,8 @@ float smooth_interpolate(float alpha, float factor, float threshold) {
 }
 
 void main() {
+
+	float height = texture(tex_height, uv).rgb[0];
 
 	if (only_reflect == 1 && height < 0) {
 		discard;

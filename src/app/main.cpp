@@ -36,14 +36,14 @@ Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 
 // --- Textures --- //
 
-GLuint tex_height;
+GLuint _tex_height;
 GLuint tex_mirror;
 GLuint tex_water_depth;
 GLuint tex_normal_map;
 
 // --- Other --- //
 
-NoiseGenerator noise_generator(&tex_height);
+NoiseGenerator noise_generator(&_tex_height);
 Camera camera(&window_params);
 
 // Gets called when the windows is resized.
@@ -62,11 +62,10 @@ void compute_height_map() {
 
 	noise_generator.renderFractal();
 	//noise_generator.erode();
-	//noise_generator.addDirt();
+	noise_generator.addDirt();
 
-	box.set_height_texture(tex_height);
-	grid.set_height_texture(tex_height);
-	water.set_height_texture(tex_height);
+	box.set_height_texture(_tex_height);
+	water.set_height_texture(_tex_height);
 	water.set_mirror_texture(tex_mirror);
 	water.set_normal_map(tex_normal_map);
 }
@@ -99,7 +98,7 @@ void display(){
 	opengp::update_title_fps("Mountains");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -211,7 +210,7 @@ void initParams() {
 
 
 	// --- Shading ---
-	shading_params.enable				= true;
+	shading_params.enable				= false;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
 	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);
@@ -233,7 +232,7 @@ void initParams() {
 void initSceneObjects() {
 
 	box.init(&app_params);
-	grid.init(&app_params);
+	grid.init(&app_params, &_tex_height);
 	water.init(&app_params);
 
 	tex_mirror = fbw.init_texture();
@@ -256,6 +255,14 @@ void initTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenTextures(1, &_tex_height);
+	glBindTexture(GL_TEXTURE_2D, _tex_height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 }
 
 // --- Callbacks --- //
