@@ -4,7 +4,7 @@
 #include "../camera/camera.h"
 #include "../scene/grid.h"
 #include "../camera/point.h"
-#include "../camera/bezier.h"
+#include "../camera/bezier_curve.h"
 #include "../noise/noise_quad.h"
 #include "../noise/noise_generator.h"
 #include "../buffers/framebuffer.h"
