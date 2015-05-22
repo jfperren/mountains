@@ -27,7 +27,6 @@ private:
 public:
 	void init(int travel_time=20);
 	void cleanup();
-	void display();
 	void set_start_time(int start_time);
 	int get_start_time();
 	void set_travel_time(int travel_time);

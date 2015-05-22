@@ -98,7 +98,3 @@ void Bezier::cleanup() {
 	glDeleteProgram(_pid_point);
 	glDeleteProgram(_pid_point_selection);
 }
-
-void Bezier::display() {
-	
-}

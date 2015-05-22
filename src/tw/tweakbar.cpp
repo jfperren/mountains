@@ -94,6 +94,11 @@ void twBarVisible(bool b) {
 	}
 }
 
+void refreshTwBar() {
+	TwDeleteBar(bar);
+	TwDraw();
+}
+
 // --- Value Callbacks --- //
 
 void TW_CALL setIntParamCallback(const void* value, void* clientData) {

@@ -24,6 +24,7 @@
 
 void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params);
 void twBarVisible(bool b);
+void refreshTwBar();
 
 // --- Value Callbacks --- //
 

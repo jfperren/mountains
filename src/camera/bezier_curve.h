@@ -169,6 +169,7 @@ public:
 		glVertexAttribPointer(position, 3, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 
 		///--- vertices
+		// !!! TODO: This line causes the AntTweakBat to fuck up hard. !!!
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vec3)*_vertices.size(), &_vertices[0], GL_STATIC_DRAW);
 
 		///--- setup view matrices        
