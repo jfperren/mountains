@@ -82,6 +82,18 @@ void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoisePar
 	TwAddButton(bar, "Load", LoadCB, NULL, " group='I/O' ");
 }
 
+// Hide/Show the TwBar and the HelpBar (the small icon in the bottom left corner)
+void isVisible(bool b) {
+	if (b) {
+		TwDefine(" Settings visible=true ");
+		TwDefine(" TW_HELP visible=true ");
+	}
+	else {
+		TwDefine(" Settings visible=false ");
+		TwDefine(" TW_HELP visible=false ");
+	}
+}
+
 // --- Value Callbacks --- //
 
 void TW_CALL setIntParamCallback(const void* value, void* clientData) {

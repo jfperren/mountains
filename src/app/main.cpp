@@ -404,11 +404,13 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 			case '1':
 				navmode = FREE;
 				std::cout << "[Info] Running in free mode\n" << std::flush;
+				isVisible(true);
 				break;
 			case '2':
 				navmode = BEZIER;
 				std::cout << "[Info] Running in bezier mode\n" << std::flush;
 				start_time = glfwGetTime();
+				isVisible(false);
 				break;
 			default:
 				std::cout << "[Warning] No keyboard interaction in bezier mode.\n" << std::flush;
