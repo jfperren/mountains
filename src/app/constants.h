@@ -148,7 +148,7 @@ typedef struct DirtParams {
 	void setup(GLuint pid) {
 		glUseProgram(pid);
 
-		glUniform1i(glGetUniformLocation(pid, "dirt_max_slope"), enable);
+		glUniform1i(glGetUniformLocation(pid, "dirt_enable"), enable);
 		glUniform1f(glGetUniformLocation(pid, "dirt_max_slope"), max_slope);
 		glUniform1f(glGetUniformLocation(pid, "dirt_max_height"), max_height);
 		glUniform1f(glGetUniformLocation(pid, "dirt_amount"), amount);

@@ -157,7 +157,7 @@ void initParams() {
 	window_params.height				= HEIGHT;
 
 	// --- Grid ---
-	grid_params.enable					= false;
+	grid_params.enable					= true;
 	grid_params.resolution				= 100;
 	grid_params.length					= 2;
 	grid_params.width					= 2;
@@ -180,10 +180,10 @@ void initParams() {
 
 	// --- Dirt ---
 	dirt_params.enable = true;
-	dirt_params.amount = 0.2;
-	dirt_params.max_height = 0.5;
+	dirt_params.amount = 0.01;
+	dirt_params.max_height = 0.3;
 	dirt_params.max_slope = 1;
-	dirt_params.time = 0;
+	dirt_params.time = 20;
 
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;
@@ -210,7 +210,7 @@ void initParams() {
 
 
 	// --- Shading ---
-	shading_params.enable				= false;
+	shading_params.enable				= true;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
 	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);

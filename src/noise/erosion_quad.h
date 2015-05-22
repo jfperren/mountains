@@ -21,4 +21,5 @@ public:
 	void createDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
 	void lowerDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
 	void solidifyDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
+	void levelDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
 };
