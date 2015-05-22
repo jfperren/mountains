@@ -13,6 +13,7 @@ layout (location = 2) uniform sampler2D tex_in_pos;
 
 uniform float dirt_max_slope;
 uniform float dirt_max_height;
+uniform float dirt_max_amount;
 uniform float dirt_amount;
 uniform float dirt_time;
 
@@ -38,7 +39,10 @@ void main() {
 		if (action == ACTION_CREATE) {
 			float height = texture(tex_in_height, uv)[0];
 			float diff = dirt_max_height - height;
-			float dirt = min(dirt_amount, diff * diff* dirt_max_slope);
+
+			float dirt = min(diff * 0.5, dirt_amount);
+			//height -= dirt;
+
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, 0, 0, 1);
 		}
@@ -98,7 +102,8 @@ void main() {
 				}
 			}
 
-			dirt = min(dirt, MAX_DIRT);
+			dirt = min(dirt, dirt_max_amount);
+			dirt = max(dirt, 0);
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, next_dirt, 0, 1);
 			tex_out_pos = vec4(min_i, min_j, 0, 1);
@@ -124,11 +129,12 @@ void main() {
 				}
 			}
 
-			if (dirt > dirt_threshold * dirt_amount) {
+			if (dirt > dirt_threshold) {
 				height += dirt;
 			}
 
-			dirt = min(dirt, MAX_DIRT);
+			dirt = min(dirt, dirt_max_amount);
+			dirt = max(dirt, 0);
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, 0, 0, 1);
 			tex_out_pos = vec4(0, 0, 0, 1);
@@ -136,26 +142,34 @@ void main() {
 
 		else if (action == ACTION_LEVEL) {
 			float height = texture(tex_in_height, uv)[0];
-			vec4 dirt = texture(tex_in_dirt, uv);
+			float dirt = texture(tex_in_dirt, uv)[0];
 			
-			if (dirt[0] > dirt_amount * dirt_threshold) {
+			if (dirt > dirt_threshold) {
 				float sum = height;
 				for(int i = -1; i <= 1; i++) {
 					for(int j = -1; j <= 1; j++) {
 						if (i != 0 || j != 0) { 
 							vec2 uv_ij = uv + vec2(i, j) * vec2(DX, DY);
 							float height_ij = texture(tex_in_height, uv_ij)[0];
+							float dirt_ij = texture(tex_in_height, uv_ij)[0];
+							float level_ij = height_ij + dirt_ij;
 
-							sum += height_ij;
+							sum += level_ij;
 						}
 					}
 				}
 
-				height = sum / 9.0;
+				float average_level = sum / 9.0;
+				float diff = height - average_level;
+				if (diff > 0){
+					dirt -= min(dirt, diff);
+				} 
 			}
-			
+
+			dirt = min(dirt, dirt_max_amount);
+			dirt = max(dirt, 0);
 			tex_out_height = vec4(height, 0, 0, 1);
-			tex_out_dirt = dirt;
+			tex_out_dirt = vec4(dirt, 0, 0, 1);
 		}
 	} else {
 		float height = texture(tex_in_height, uv)[0];

@@ -181,11 +181,13 @@ void initParams() {
 
 	// --- Dirt ---
 	dirt_params.enable					= true;
-	dirt_params.amount					= 0.26;
-	dirt_params.max_height				= 0.2;
-	dirt_params.max_slope				= 1.8;
+	dirt_params.amount					= 0.01;
+	dirt_params.max_height				= 0.3;
+	dirt_params.max_slope				= 2.9;
+	dirt_params.max_amount				= 0.02;
 	dirt_params.time					= 25;
-	dirt_params.threshold				= 0.00;
+	dirt_params.threshold				= 0.01;
+	dirt_params.smoothness				= 10;
 
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;

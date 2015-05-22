@@ -141,8 +141,9 @@ typedef struct DirtParams {
 	bool enable;
 	float max_slope;
 	float max_height;
+	float max_amount;
 	float threshold;
-	float smoothness;
+	int smoothness;
 
 	float amount;
 	int time;
@@ -153,6 +154,7 @@ typedef struct DirtParams {
 		glUniform1i(glGetUniformLocation(pid, "dirt_enable"), enable);
 		glUniform1f(glGetUniformLocation(pid, "dirt_max_slope"), max_slope);
 		glUniform1f(glGetUniformLocation(pid, "dirt_max_height"), max_height);
+		glUniform1f(glGetUniformLocation(pid, "dirt_max_amount"), max_amount);
 		glUniform1f(glGetUniformLocation(pid, "dirt_amount"), amount);
 		glUniform1f(glGetUniformLocation(pid, "dirt_threshold"), threshold);
 		glUniform1i(glGetUniformLocation(pid, "dirt_time"), time);

@@ -66,10 +66,12 @@ void initAntTwBar(AppParams* app_params) {
 
 	TwAddVarCB(bar, "dirt_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &dirt_params->enable, " group=Dirt");
 	TwAddVarCB(bar, "dirt_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->amount, " group=Dirt step=0.05 min=0");
+	TwAddVarCB(bar, "dirt_max_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_amount, " group=Dirt step=0.05 min=0");
 	TwAddVarCB(bar, "dirt_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_slope, " group=Dirt step=0.05 min=0.05");
 	TwAddVarCB(bar, "dirt_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_height, " group=Dirt step=0.05");
-	TwAddVarCB(bar, "dirt_threshold", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->threshold, " group=Dirt step=0.01");
+	TwAddVarCB(bar, "dirt_threshold", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->threshold, " group=Dirt step=0.001");
 	TwAddVarCB(bar, "dirt_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &dirt_params->time, " group=Dirt step=1 min=0");
+	TwAddVarCB(bar, "dirt_smoothness", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &dirt_params->smoothness, " group=Dirt step=1 min=0");
 
 	// Erosion
 

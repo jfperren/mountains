@@ -92,7 +92,7 @@ GLuint* NoiseGenerator::get_tex_height() {
 }
 
 void NoiseGenerator::erode() {
-	/*GLuint* tex_height;
+/*	GLuint* tex_height;
 	GLuint* tex_water;
 	GLuint* tex_sediment;
 	GLuint* tex_pos;
@@ -172,32 +172,33 @@ void NoiseGenerator::addDirt() {
 			out = 1 - out;
 		}
 		
-		tex_dirt = _erosionbuffer[in].get_tex_water();
-		tex_height = _erosionbuffer[in].get_tex_height();
-		tex_pos = _erosionbuffer[in].get_tex_sediment();
-		
-		cout << "Solidify " << in << " -> " << out << endl;
-		_erosionbuffer[out].bind();
-			glClear(GL_COLOR_BUFFER_BIT);
-			_erosion_quad.solidifyDirt(tex_height, tex_dirt, tex_pos);
-		_erosionbuffer[out].unbind();
-		
-		in = 1 - in;
-		out = 1 - out;
-		
-		tex_dirt = _erosionbuffer[in].get_tex_water();
-		tex_height = _erosionbuffer[in].get_tex_height();
-		tex_pos = _erosionbuffer[in].get_tex_sediment();
-		cout << "Level " << in << " -> " << out << endl;
-		_erosionbuffer[out].bind();
+		for (int t = 0; t < _dirt_params->smoothness; t++) {
+			tex_dirt = _erosionbuffer[in].get_tex_water();
+			tex_height = _erosionbuffer[in].get_tex_height();
+			tex_pos = _erosionbuffer[in].get_tex_sediment();
+
+			_erosionbuffer[out].bind();
 			glClear(GL_COLOR_BUFFER_BIT);
 			_erosion_quad.levelDirt(tex_height, tex_dirt, tex_pos);
+			_erosionbuffer[out].unbind();
+
+			in = 1 - in;
+			out = 1 - out;
+		}
+
+		tex_dirt = _erosionbuffer[in].get_tex_water();
+		tex_height = _erosionbuffer[in].get_tex_height();
+		tex_pos = _erosionbuffer[in].get_tex_sediment();
+
+		cout << "Solidify " << in << " -> " << out << endl;
+		_erosionbuffer[out].bind();
+		glClear(GL_COLOR_BUFFER_BIT);
+		_erosion_quad.solidifyDirt(tex_height, tex_dirt, tex_pos);
 		_erosionbuffer[out].unbind();
 
 		in = 1 - in;
 		out = 1 - out;
 
-		cout << "Copy " << out << endl; 
 		copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
 		copyTexture(_erosionbuffer[in].get_tex_water(), _tex_dirt);
 	}
