@@ -77,13 +77,13 @@ void init(){
 	// TODO: refactor/move bezier related code
 
 	/// Compile the shaders here to avoid the duplication
-	_pid_bezier = opengp::load_shaders("bezier/bezier_vshader.glsl", "bezier/bezier_fshader.glsl");
+	_pid_bezier = opengp::load_shaders("camera/bezier_vshader.glsl", "camera/bezier_fshader.glsl");
 	if (!_pid_bezier) exit(EXIT_FAILURE);
 
-	_pid_point = opengp::load_shaders("point/point_vshader.glsl", "point/point_fshader.glsl");
+	_pid_point = opengp::load_shaders("camera/point_vshader.glsl", "camera/point_fshader.glsl");
 	if (!_pid_point) exit(EXIT_FAILURE);
 
-	_pid_point_selection = opengp::load_shaders("point/point_selection_vshader.glsl", "point/point_selection_fshader.glsl");
+	_pid_point_selection = opengp::load_shaders("camera/point_selection_vshader.glsl", "camera/point_selection_fshader.glsl");
 	if (!_pid_point_selection) exit(EXIT_FAILURE);
 
     // Sets background color.
@@ -194,7 +194,7 @@ void display(){
 		// Render the water reflect
 		fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(view_bezier, camera.get_projection_matrix(), true);
+		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
 		fbw.unbind();
 		glViewport(0, 0, window_params.width, window_params.height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
