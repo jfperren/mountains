@@ -7,10 +7,11 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt){
+	void Grid::init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt, GLuint* tex_shadow){
 
 		_tex_height = tex_height;
 		_tex_dirt = tex_dirt;
+		_tex_shadow = tex_shadow;
 
 		_noise_params = app_params->noise_params;
 		_grid_params = app_params->grid_params;
@@ -128,7 +129,7 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
-	void Grid::draw(const mat4& view, const mat4& projection, bool only_reflect){
+	void Grid::draw(const mat4& view, const mat4& light_view, const mat4& projection, bool only_reflect){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 
@@ -155,6 +156,10 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, *_tex_dirt);
 
+		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 1);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, *_tex_shadow);
+
 		/*for (int i = 0; i < TEXTURES_COUNT; i++){
 
 			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
@@ -167,6 +172,18 @@ using namespace std;
 		mat4 MVP = projection*view*model;
 		GLuint MVP_id = glGetUniformLocation(_pid, "mvp");
 		glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
+
+		// Setup MVP_light
+		/*mat4 biasMatrix = mat4(
+					{ 0.5, 0.0, 0.0, 0.0 },
+					{ 0.0, 0.5, 0.0, 0.0 },
+					{ 0.0, 0.0, 0.5, 0.0 },
+					{ 0.5, 0.5, 0.5, 1.0 }
+		);*/
+
+		mat4 MVP_light = (projection * light_view * model);
+		GLuint MVP_shadow_id = glGetUniformLocation(_pid, "mvp_light");
+		glUniformMatrix4fv(MVP_shadow_id, 1, GL_FALSE, MVP_light.data());
 
 		// Draw
 		glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);

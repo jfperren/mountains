@@ -36,6 +36,7 @@ protected:
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
     GLuint* _tex_height;    ///< HeightMap Texture ID
+	GLuint* _tex_shadow;	///< ShadowMap Texture ID
 	GLuint* _tex_dirt;
 
 	GLuint _tex_main;
@@ -45,8 +46,8 @@ protected:
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
-	void init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt);
-	void draw(const mat4& view, const mat4& projection, bool only_reflect = false);
+	void init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt, GLuint* tex_shadow);
+	void draw(const mat4& view, const mat4& light_view, const mat4& projection, bool only_reflect = false);
 	void cleanup();
 
 	int get_vertex_index(int i, int j);

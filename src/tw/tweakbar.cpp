@@ -123,6 +123,8 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "shading_Id_R", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Id[0], " group=Shading step=0.05 min=0 max=1");
 	TwAddVarCB(bar, "shading_Id_G", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Id[1], " group=Shading step=0.05 min=0 max=1");
 	TwAddVarCB(bar, "shading_Id_B", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->Id[2], " group=Shading step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "shading_shadow_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &shading_params->shadow_enable, " group=Shading");
+	TwAddVarCB(bar, "shading_shadow_intensity", TW_TYPE_FLOAT, setBoolParamCallback, getBoolParamCallback, &shading_params->shadow_intensity, " group=Shading");
 
 	
 	// I/O 

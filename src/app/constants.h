@@ -157,7 +157,8 @@ typedef struct DirtParams {
 };
 
 typedef struct ShadingParams {
-	bool enable;
+	bool enable, shadow_enable;
+	float shadow_intensity;
 	vec3 light_pos;
 	vec3 Ia, Id;
 
@@ -165,6 +166,8 @@ typedef struct ShadingParams {
 		glUseProgram(pid);
 
 		glUniform1i(glGetUniformLocation(pid, "shading_enable"), enable);
+		glUniform1i(glGetUniformLocation(pid, "shading_shadow_enable"), shadow_enable);
+		glUniform1f(glGetUniformLocation(pid, "shading_shadow_intensity"), shadow_intensity);
 		glUniform3fv(glGetUniformLocation(pid, "shading_light_pos"), ONE, light_pos.data());
 		glUniform3fv(glGetUniformLocation(pid, "shading_Ia"), ONE, Ia.data());
 		glUniform3fv(glGetUniformLocation(pid, "shading_Id"), ONE, Id.data());
