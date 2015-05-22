@@ -269,13 +269,25 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 	if (!TwEventMouseButtonGLFW(glfwButton, glfwAction))   // Send event to AntTweakBar
 	{
 #endif
+		// Event not handled by AntTweakBar, we handle it ourselves
+
 		if (navmode == BEZIER) {
 			std::cout << "[Warning] No mouse interaction in Bezier mode.\n" << std::flush;
 			return;
 		}
-
-		// Event not handled by AntTweakBar, we handle it ourselves
-		camera.mouse_button(glfwButton, glfwAction);
+		
+		if (navmode == CAMERA_PATH) {
+			if (glfwGetKey(GLFW_KEY_LSHIFT) == GLFW_PRESS) {
+				camera.mouse_button(glfwButton, glfwAction);
+			}
+			else {
+				bezier.selection_button(glfwButton, glfwAction, camera.get_view_matrix(), camera.get_projection_matrix());
+			}
+		}
+		else {
+			// FREE mode or default
+			camera.mouse_button(glfwButton, glfwAction);
+		}
 #ifdef WITH_ANTTWEAKBAR
 	}
 #endif
