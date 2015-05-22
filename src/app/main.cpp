@@ -36,6 +36,7 @@ Bezier bezier;
 // --- Other --- //
 
 NoiseGenerator noise_generator(&tex_height, &noise_params);
+bool ant_tw_entering_value = false;
 
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
@@ -305,8 +306,15 @@ void GLFWCALL OnMouseWheel(int pos)
 // Callback function called by GLFW on key event
 void GLFWCALL OnKey(int glfwKey, int glfwAction)
 {
-
 #ifdef WITH_ANTTWEAKBAR
+	// The following lines fix the unwanted behavior where bezier mode is loaded when typing a '2' in any field of the AntTwBar.
+	if (TwKeyTest(2, 0) || TwKeyTest(1, 0)) {
+		ant_tw_entering_value = true;
+	}
+	if (ant_tw_entering_value && glfwKey != 294 /* enter */ && glfwKey != 295 /* delete */) {
+		ant_tw_entering_value = false;
+		return;
+	}
 	if (!TwEventKeyGLFW(glfwKey, glfwAction))  // Send event to AntTweakBar
 	{
 #endif
