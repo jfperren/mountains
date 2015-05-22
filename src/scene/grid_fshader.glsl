@@ -3,11 +3,12 @@
 // --- Inputs --- //
 
 in vec2 uv;
-in vec4 position;
+in vec4 pos_to_light;
 
 // --- Outputs --- //
 
 out vec4 color;
+out float fragment_depth;
 
 // --- Textures --- //
 
@@ -47,9 +48,18 @@ uniform int sand_s_transition;
 uniform float DX;
 uniform float DY;
 
+uniform float far;
+uniform float near;
+
 const int NONE = 0;
 const int SHADES = 1;
 const int TEXTURE = 2;
+
+uniform int mode;
+
+const int NORMAL = 0;
+const int ONLY_REFLECT = 1;
+const int ILLUMINATE = 2;
 
 // others
 uniform float water_height;
@@ -153,18 +163,27 @@ void main() {
 		diffuse = shading_Id * dot(normal, normalize(shading_light_pos));
 	}
 
-	if (shading_shadow_enable != 0) {
-		vec2 uv_light = vec2((position.x + 1) / 2, (position.y + 1) / 2);
-		float bias = 0.0005;
+	vec3 color_unshadowed = ambient + diffuse;
+
+	if (shading_shadow_enable != 0 && mode != ILLUMINATE) {
+		vec2 uv_light = vec2((pos_to_light.x + 1) / 2, (pos_to_light.y + 1) / 2);
+		float bias = 0.100;
 		float visibility = 1.0;
-		if ( texture( tex_shadow, position.xy ).z  <  position.z-bias){
-			visibility = 0.5;
+
+		float shadow_z = texture(tex_shadow, uv_light)[0];
+
+		float shadow_depth = (-2*far*near)/(far -near)/(shadow_z - ((far-near)/(far+near)));
+		float grid_depth = (-2*far*near)/(far -near)/(pos_to_light.z - ((far-near)/(far+near)));
+
+		float depth = grid_depth - shadow_depth;
+
+		//vec3 texture_color = color_unshadowed / (1 + depth * color_unshadowed * shading_shadow_intensity);
+		if(1 - (shadow_z - pos_to_light.z) < bias){
+			visibility = 0.0;
 		}
-
-		ambient *= shading_Ia;
-		diffuse = visibility * shading_Id * dot(normal, normalize(shading_light_pos));
+		
+		color = vec4(vec3(visibility) * color_unshadowed, 1.0);
+	} else {
+		color = vec4(color_unshadowed, 1.0);
 	}
-
-	color = vec4(ambient + diffuse, 1.0);
-	
 }

@@ -103,11 +103,17 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	mat4 light_view_matrix = lookAt(shading_params.light_pos, vec3(0, 0, 0), vec3(0, 1, 0));
+	mat4 light_projection_matrix = Eigen::ortho(-3.0f, 3.0f, -3.0f, 3.0f, NEAR, FAR);
+
+	db_shadow_map.bind();
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), light_projection_matrix, ILLUMINATE);
+	db_shadow_map.unbind();
 
 	// Render the water reflect
 	fbw.bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix_mirrored(), light_view_matrix, camera.get_projection_matrix(), true);
+		grid.draw(camera.get_view_matrix_mirrored(), light_view_matrix, camera.get_projection_matrix(), light_projection_matrix, ONLY_REFLECT);
 	fbw.unbind();
 
 	glViewport(0, 0, window_params.width, window_params.height);
@@ -115,15 +121,10 @@ void display(){
 
 	fb_water_depth.bind();
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), false);
+		grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), light_projection_matrix, NORMAL);
 	fb_water_depth.unbind();
 
-	db_shadow_map.bind();
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		grid.draw(light_view_matrix, light_view_matrix, camera.get_projection_matrix(), false);
-	db_shadow_map.unbind();
-
-	grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), false);
+	grid.draw(camera.get_view_matrix(), light_view_matrix, camera.get_projection_matrix(), light_projection_matrix, NORMAL);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
@@ -189,7 +190,7 @@ void initParams() {
 	noise_params.seed 				   -= floor(noise_params.seed);
 
 	// --- Dirt ---
-	dirt_params.enable = true;
+	dirt_params.enable = false;
 	dirt_params.amount = 0.01;
 	dirt_params.max_height = 0.3;
 	dirt_params.max_slope = 1;
@@ -220,7 +221,7 @@ void initParams() {
 
 
 	// --- Shading ---
-	shading_params.enable				= true;
+	shading_params.enable				= false;
 	shading_params.shadow_enable		= true;
 	shading_params.shadow_intensity		= 1.0;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
@@ -228,7 +229,7 @@ void initParams() {
 	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);
 
 	// --- Texture ---
-	texture_params.texture_type			= SHADES;
+	texture_params.texture_type			= NO_TEXTURE;
 	texture_params.sand_min_height		= -1;
 	texture_params.sand_max_height		= 0.15f;
 	texture_params.grass_max_height		= 1.0f;
@@ -284,22 +285,12 @@ void initTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	GLuint FramebufferName = 0;
-	glGenFramebuffers(1, &FramebufferName);
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 	glGenTextures(1, &_tex_shadow);
 	glBindTexture(GL_TEXTURE_2D, _tex_shadow);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, _tex_shadow, 0);
-
-	glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 }
 

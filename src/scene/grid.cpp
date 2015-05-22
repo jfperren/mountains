@@ -129,7 +129,7 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
-	void Grid::draw(const mat4& view, const mat4& light_view, const mat4& projection, bool only_reflect){
+	void Grid::draw(const mat4& view, const mat4& light_view, const mat4& projection, const mat4& light_projection, int mode){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 
@@ -139,13 +139,10 @@ using namespace std;
 
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
 		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
+		glUniform1f(glGetUniformLocation(_pid, "near"), NEAR);
+		glUniform1f(glGetUniformLocation(_pid, "far"), FAR);
 
-		if (only_reflect){
-			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
-		}
-		else {
-			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 0);
-		}
+		glUniform1i(glGetUniformLocation(_pid, "mode"), mode);
 
 		// Bind textures
 		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
@@ -156,7 +153,7 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, *_tex_dirt);
 
-		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 1);
+		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 2);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, *_tex_shadow);
 
@@ -173,15 +170,7 @@ using namespace std;
 		GLuint MVP_id = glGetUniformLocation(_pid, "mvp");
 		glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
 
-		// Setup MVP_light
-		/*mat4 biasMatrix = mat4(
-					{ 0.5, 0.0, 0.0, 0.0 },
-					{ 0.0, 0.5, 0.0, 0.0 },
-					{ 0.0, 0.0, 0.5, 0.0 },
-					{ 0.5, 0.5, 0.5, 1.0 }
-		);*/
-
-		mat4 MVP_light = (projection * light_view * model);
+		mat4 MVP_light = light_projection * light_view * model;
 		GLuint MVP_shadow_id = glGetUniformLocation(_pid, "mvp_light");
 		glUniformMatrix4fv(MVP_shadow_id, 1, GL_FALSE, MVP_light.data());
 

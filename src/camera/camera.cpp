@@ -49,6 +49,7 @@ void Camera::compute_view_matrix(){
 void Camera::compute_projection_matrix(){
 	if (_window_params->width != 0 && _window_params->height != 0) {
 		_projection_matrix = Eigen::perspective(45.0f, _window_params->width / (float)_window_params->height, NEAR, FAR);
+		//_projection_matrix = Eigen::ortho(-3.0f, 3.0f, -3.0f, 3.0f, NEAR, FAR);
 	}
 }
 

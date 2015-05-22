@@ -47,7 +47,7 @@ protected:
     
 public:    
 	void init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt, GLuint* tex_shadow);
-	void draw(const mat4& view, const mat4& light_view, const mat4& projection, bool only_reflect = false);
+	void draw(const mat4& view, const mat4& light_view, const mat4& projection, const mat4& light_projection, int mode);
 	void cleanup();
 
 	int get_vertex_index(int i, int j);

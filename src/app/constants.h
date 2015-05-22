@@ -17,8 +17,12 @@ const float MAX_Y_CAM_DIR = 0.9;
 const float DX = 0.01f;
 const float DPHI = 1.0f;
 
-const float NEAR = 0.1f;
+const float NEAR = 0.2f;
 const float FAR = 40.0f;
+
+const int NORMAL = 0;
+const int ONLY_REFLECT = 1;
+const int ILLUMINATE = 2;
 
 typedef enum {
 	NO_NOISE,
