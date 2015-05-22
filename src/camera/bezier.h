@@ -36,4 +36,6 @@ public:
 	void cam_look_sample_point(double t, vec3 &sample);
 	void pos_curve_draw(const mat4& view, const mat4& projection);
 	void cam_look_draw(const mat4& view, const mat4& projection);
+	void draw_cam_pos_points(const mat4& view, const mat4& projection);
+	void draw_cam_look_points(const mat4& view, const mat4& projection);
 };

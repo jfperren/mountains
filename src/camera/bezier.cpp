@@ -31,6 +31,18 @@ void Bezier::cam_look_draw(const mat4& view, const mat4& projection) {
 	cam_look_curve.draw(model, view, projection);
 }
 
+void Bezier::draw_cam_pos_points(const mat4& view, const mat4& projection) {
+	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
+		cam_pos_points[i].draw(model, view, projection);
+	}
+}
+
+void Bezier::draw_cam_look_points(const mat4& view, const mat4& projection) {
+	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
+		cam_look_points[i].draw(model, view, projection);
+	}
+}
+
 void Bezier::init(int travel_time){
 	
 	this->travel_time = travel_time;

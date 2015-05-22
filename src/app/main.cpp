@@ -112,7 +112,7 @@ void display(){
 
 		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
 	} else {
-		// FREE or default mode
+		// Allow minecraft like mouvements for all other modes
 		camera.move();
 	}
 
@@ -135,6 +135,12 @@ void display(){
 	sky.draw(view_matrix, camera.get_projection_matrix());
 
 	if (navmode == CAMERA_PATH) {
+
+		// Display points
+		bezier.draw_cam_pos_points(view_matrix, camera.get_projection_matrix());
+		bezier.draw_cam_look_points(view_matrix, camera.get_projection_matrix());
+
+		// Display bezier curves
 		bezier.pos_curve_draw(view_matrix, camera.get_projection_matrix());
 		bezier.cam_look_draw(view_matrix, camera.get_projection_matrix());
 	}
