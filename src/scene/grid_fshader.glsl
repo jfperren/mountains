@@ -11,7 +11,7 @@ out vec4 color;
 // --- Textures --- //
 
 layout(location = 0) uniform sampler2D tex_height;
-layout(location = 1) uniform sampler2D tex_dirt;
+layout(location = 1) uniform sampler2D tex_snow;
 /*layout(location = 1) uniform sampler2D tex_grass;
 layout(location = 2) uniform sampler2D tex_sand;
 layout(location = 3) uniform sampler2D tex_rock;
@@ -29,8 +29,7 @@ uniform vec3 shading_Ia, shading_Id;
 
 uniform int texture_type;
 
-uniform float dirt_amount;
-uniform float dirt_threshold;
+uniform float snow_threshold;
 
 uniform float sand_min_height;
 uniform float sand_max_height;
@@ -80,7 +79,7 @@ float smooth_interpolate(float alpha, float factor, float threshold) {
 void main() {
 
 	float height = texture(tex_height, uv).rgb[0];
-	float dirt = texture(tex_dirt, uv)[0];
+	float snow = texture(tex_snow, uv)[0];
 
 	if (only_reflect == 1 && height < 0) {
 		discard;
@@ -141,10 +140,10 @@ void main() {
 	} else if (texture_type == NONE) {
 		ambient = vec3(1, 1, 1);
 	} else {
-		if (dirt <dirt_threshold * dirt_amount){
+		if (snow < snow_threshold){
 			ambient = vec3(height + 0.5);
 		} else {
-			ambient = vec3(dirt + 0.5, 0, 0);
+			ambient = vec3(snow + 0.5, 0, 0);
 		}
 	}
 

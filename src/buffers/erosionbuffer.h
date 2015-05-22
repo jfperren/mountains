@@ -18,8 +18,7 @@ private:
 	GLuint _fbo;
 	
 	GLuint _tex_height;
-	GLuint _tex_water;
-	GLuint _tex_sediment;
+	GLuint _tex_snow;
 	GLuint _tex_pos;
 
 public:
@@ -32,8 +31,7 @@ public:
 	void cleanup();
 
 	GLuint* get_tex_height();
-	GLuint* get_tex_water();
-	GLuint* get_tex_sediment();
+	GLuint* get_tex_snow();
 	GLuint* get_tex_pos();
 
 	void resize(float width, float height);

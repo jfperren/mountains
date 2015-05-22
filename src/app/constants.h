@@ -20,6 +20,11 @@ const float DPHI = 1.0f;
 const float NEAR = 0.1f;
 const float FAR = 40.0f;
 
+const int FALL = 0;
+const int SLIDE = 1;
+const int MELT = 2;
+const int SMOOTH = 3;
+
 typedef enum {
 	NO_NOISE,
 	RANDOM_NOISE,
@@ -137,27 +142,33 @@ static NoiseParams FLAT_NOISE = {
 	0
 };
 
-typedef struct DirtParams {
+typedef struct SnowParams {
 	bool enable;
-	float max_slope;
-	float max_height;
-	float max_amount;
-	float threshold;
-	int smoothness;
 
 	float amount;
-	int time;
+	float max_amount;
+	float max_slope;
+	float min_height;
+	float threshold;
+	
+	int slide_time;
+	int melt_time;
+	int smooth_time;
 
 	void setup(GLuint pid) {
 		glUseProgram(pid);
 
-		glUniform1i(glGetUniformLocation(pid, "dirt_enable"), enable);
-		glUniform1f(glGetUniformLocation(pid, "dirt_max_slope"), max_slope);
-		glUniform1f(glGetUniformLocation(pid, "dirt_max_height"), max_height);
-		glUniform1f(glGetUniformLocation(pid, "dirt_max_amount"), max_amount);
-		glUniform1f(glGetUniformLocation(pid, "dirt_amount"), amount);
-		glUniform1f(glGetUniformLocation(pid, "dirt_threshold"), threshold);
-		glUniform1i(glGetUniformLocation(pid, "dirt_time"), time);
+		glUniform1i(glGetUniformLocation(pid, "snow_enable"), enable);
+
+		glUniform1f(glGetUniformLocation(pid, "snow_amount"), amount);
+		glUniform1f(glGetUniformLocation(pid, "snow_max_slope"), max_slope);
+		glUniform1f(glGetUniformLocation(pid, "snow_min_height"), min_height);
+		glUniform1f(glGetUniformLocation(pid, "snow_max_amount"), max_amount);
+		glUniform1f(glGetUniformLocation(pid, "snow_threshold"), threshold);
+
+		glUniform1i(glGetUniformLocation(pid, "snow_slide_time"), slide_time);
+		glUniform1i(glGetUniformLocation(pid, "snow_melt_time"), melt_time);
+		glUniform1i(glGetUniformLocation(pid, "snow_smooth_time"), smooth_time);
 	}
 };
 
@@ -269,7 +280,7 @@ typedef struct AppParams {
 	WindowParams* window_params;
 	GridParams* grid_params;
 	NoiseParams* noise_params;
-	DirtParams* dirt_params;
+	SnowParams* snow_params;
 	ErosionParams* erosion_params;
 	TextureParams* texture_params;
 	ShadingParams* shading_params;

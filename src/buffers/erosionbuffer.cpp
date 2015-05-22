@@ -9,11 +9,10 @@ void Erosionbuffer::bind() {
 	const GLenum buffers[] = {
 		GL_COLOR_ATTACHMENT0,
 		GL_COLOR_ATTACHMENT1,
-		GL_COLOR_ATTACHMENT2,
-		GL_COLOR_ATTACHMENT3
+		GL_COLOR_ATTACHMENT2
 	};
 
-	glDrawBuffers(4, buffers);
+	glDrawBuffers(3, buffers);
 }
 
 void Erosionbuffer::unbind() {
@@ -40,16 +39,8 @@ void Erosionbuffer::init() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
 
-		glGenTextures(1, &_tex_water);
-		glBindTexture(GL_TEXTURE_2D, _tex_water);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, _width, _height, 0, GL_RED, GL_FLOAT, NULL);
-
-		glGenTextures(1, &_tex_sediment);
-		glBindTexture(GL_TEXTURE_2D, _tex_sediment);
+		glGenTextures(1, &_tex_snow);
+		glBindTexture(GL_TEXTURE_2D, _tex_snow);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -71,9 +62,8 @@ void Erosionbuffer::init() {
 		glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _tex_height, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, _tex_water, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, _tex_sediment, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, _tex_pos, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, _tex_snow, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, _tex_pos, 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cerr << "!!!ERROR: Framebuffer not OK :(" << std::endl;
@@ -90,8 +80,8 @@ void Erosionbuffer::resize(float width, float height) {
 
 void Erosionbuffer::cleanup() {
 	glDeleteTextures(1, &_tex_height);
-	glDeleteTextures(1, &_tex_water);
-	glDeleteTextures(1, &_tex_sediment);
+	glDeleteTextures(1, &_tex_snow);
+	glDeleteTextures(1, &_tex_pos);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0 /*UNBIND*/);
 	glDeleteFramebuffers(1, &_fbo);
 }
@@ -100,12 +90,8 @@ GLuint* Erosionbuffer::get_tex_height() {
 	return &_tex_height;
 }
 
-GLuint* Erosionbuffer::get_tex_water() {
-	return &_tex_water;
-}
-
-GLuint* Erosionbuffer::get_tex_sediment() {
-	return &_tex_sediment;
+GLuint* Erosionbuffer::get_tex_snow() {
+	return &_tex_snow;
 }
 
 GLuint* Erosionbuffer::get_tex_pos() {

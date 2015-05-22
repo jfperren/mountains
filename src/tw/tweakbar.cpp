@@ -12,7 +12,7 @@ void initAntTwBar(AppParams* app_params) {
 	WindowParams* window_params		= app_params->window_params;
 	GridParams* grid_params			= app_params->grid_params;
 	NoiseParams* noise_params		= app_params->noise_params;
-	DirtParams* dirt_params			= app_params->dirt_params;
+	SnowParams* snow_params			= app_params->snow_params;
 	ErosionParams* erosion_params	= app_params->erosion_params;
 	TextureParams* texture_params	= app_params->texture_params;
 	ShadingParams* shading_params	= app_params->shading_params;
@@ -62,16 +62,17 @@ void initAntTwBar(AppParams* app_params) {
 
 	TwAddVarCB(bar, "noise_seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->seed, " group=Noise step=0.001 min=0 max=1");
 
-	// Dirt
+	// Snow
 
-	TwAddVarCB(bar, "dirt_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &dirt_params->enable, " group=Dirt");
-	TwAddVarCB(bar, "dirt_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->amount, " group=Dirt step=0.05 min=0");
-	TwAddVarCB(bar, "dirt_max_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_amount, " group=Dirt step=0.05 min=0");
-	TwAddVarCB(bar, "dirt_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_slope, " group=Dirt step=0.05 min=0.05");
-	TwAddVarCB(bar, "dirt_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->max_height, " group=Dirt step=0.05");
-	TwAddVarCB(bar, "dirt_threshold", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &dirt_params->threshold, " group=Dirt step=0.001");
-	TwAddVarCB(bar, "dirt_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &dirt_params->time, " group=Dirt step=1 min=0");
-	TwAddVarCB(bar, "dirt_smoothness", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &dirt_params->smoothness, " group=Dirt step=1 min=0");
+	TwAddVarCB(bar, "snow_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &snow_params->enable, " group=Snow");
+	TwAddVarCB(bar, "snow_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &snow_params->amount, " group=Snow step=0.01 min=0");
+	TwAddVarCB(bar, "snow_max_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &snow_params->max_amount, " group=Snow step=0.01 min=0");
+	TwAddVarCB(bar, "snow_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &snow_params->max_slope, " group=Snow step=0.01 min=0.01");
+	TwAddVarCB(bar, "snow_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &snow_params->min_height, " group=Snow step=0.01");
+	TwAddVarCB(bar, "snow_threshold", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &snow_params->threshold, " group=Snow step=0.001");
+	TwAddVarCB(bar, "snow_slide_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &snow_params->slide_time, " group=Snow step=1 min=0");
+	TwAddVarCB(bar, "snow_melt_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &snow_params->melt_time, " group=Snow step=1 min=0");
+	TwAddVarCB(bar, "snow_smooth_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &snow_params->smooth_time, " group=Snow step=1 min=0");
 
 	// Erosion
 

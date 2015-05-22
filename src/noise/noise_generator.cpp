@@ -3,10 +3,10 @@
 #define SWAP_BUFFERS "in = 1 - in;out = 1 - out;"
 #define SWAP_TEXTURES "tex_height = _erosionbuffer[in].get_tex_height();tex_dirt = _erosionbuffer[in].get_tex_water();tex_pos = _erosionbuffer[in].get_tex_sediment(); "
 
-NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_dirt)
+NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_snow)
 	{
 		_tex_height = tex_height;
-		_tex_dirt = tex_dirt;
+		_tex_snow = tex_snow;
 
 		glGenTextures(1, _tex_height);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
@@ -15,8 +15,8 @@ NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_dirt)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glGenTextures(1, _tex_dirt);
-		glBindTexture(GL_TEXTURE_2D, *_tex_dirt);
+		glGenTextures(1, _tex_snow);
+		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -26,7 +26,7 @@ NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_dirt)
 void NoiseGenerator::init(AppParams* app_params) {
 
 	_noise_params = app_params->noise_params;
-	_dirt_params = app_params->dirt_params;
+	_snow_params = app_params->snow_params;
 	_erosion_params = app_params->erosion_params;
 
 	_framebuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
@@ -126,83 +126,82 @@ void NoiseGenerator::erode() {
 	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);*/
 }
 
-void NoiseGenerator::addDirt() {
-	if (_dirt_params->enable) {
-		GLuint* tex_dirt;
-		GLuint* tex_height;
-		GLuint* tex_pos;
+void NoiseGenerator::addSnow() {
+	GLuint* tex_snow;
+	GLuint* tex_height;
+	GLuint* tex_pos;
 
-		_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
-		_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
-		_erosionbuffer[0].init();
-		_erosionbuffer[1].init();
-		_erosionbuffer[0].clear();
-		_erosionbuffer[1].clear();
+	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
+	_erosionbuffer[0].init();
+	_erosionbuffer[1].init();
+	_erosionbuffer[0].clear();
+	_erosionbuffer[1].clear();
 
+	if (_snow_params->enable) {
 		int in = 0;
 		int out = 1;
 
 		tex_height = _tex_height;
-		tex_dirt = _erosionbuffer[in].get_tex_water();
-		tex_pos = _erosionbuffer[in].get_tex_sediment();
+		tex_snow = _erosionbuffer[in].get_tex_snow();
+		tex_pos = _erosionbuffer[in].get_tex_pos();
 
-		cout << "Create " << in << " -> " << out << endl;
 		_erosionbuffer[out].bind();
 			glClear(GL_COLOR_BUFFER_BIT);
-			_erosion_quad.createDirt(tex_height, tex_dirt, tex_pos);
+			_erosion_quad.fall(tex_height, tex_snow, tex_pos);
 		_erosionbuffer[out].unbind();
 
 		in = 1 - in;
 		out = 1 - out;
-
 		
-		for (int t = 0; t < _dirt_params->time; t++) {
-
+		for (int t = 0; t < _snow_params->slide_time; t++) {
+			cout << "SNOW" << endl;
 			tex_height = _erosionbuffer[in].get_tex_height();
-			tex_dirt = _erosionbuffer[in].get_tex_water();
-			tex_pos = _erosionbuffer[in].get_tex_sediment();
+			tex_snow = _erosionbuffer[in].get_tex_snow();
+			tex_pos = _erosionbuffer[in].get_tex_pos();
 
-			cout << "Lower " << in << " -> " << out << endl;
 			_erosionbuffer[out].bind();
 				glClear(GL_COLOR_BUFFER_BIT);
-				_erosion_quad.lowerDirt(tex_height, tex_dirt, tex_pos);
+				_erosion_quad.slide(tex_height, tex_snow, tex_pos);
 			_erosionbuffer[out].unbind();
 
 			in = 1 - in;
 			out = 1 - out;
 		}
 
-		tex_dirt = _erosionbuffer[in].get_tex_water();
-		tex_height = _erosionbuffer[in].get_tex_height();
-		tex_pos = _erosionbuffer[in].get_tex_sediment();
-
-		cout << "Solidify " << in << " -> " << out << endl;
-		_erosionbuffer[out].bind();
-		glClear(GL_COLOR_BUFFER_BIT);
-		_erosion_quad.solidifyDirt(tex_height, tex_dirt, tex_pos);
-		_erosionbuffer[out].unbind();
-		
-		for (int t = 0; t < _dirt_params->smoothness; t++) {
-			tex_dirt = _erosionbuffer[in].get_tex_water();
+		for (int t = 0; t < _snow_params->melt_time; t++) {
 			tex_height = _erosionbuffer[in].get_tex_height();
-			tex_pos = _erosionbuffer[in].get_tex_sediment();
+			tex_snow = _erosionbuffer[in].get_tex_snow();
+			tex_pos = _erosionbuffer[in].get_tex_pos();
 
 			_erosionbuffer[out].bind();
 			glClear(GL_COLOR_BUFFER_BIT);
-			_erosion_quad.levelDirt(tex_height, tex_dirt, tex_pos);
+			_erosion_quad.melt(tex_height, tex_snow, tex_pos);
+			_erosionbuffer[out].unbind();
+
+			in = 1 - in;
+			out = 1 - out;
+		}
+		
+		for (int t = 0; t < _snow_params->smooth_time; t++) {
+			tex_height = _erosionbuffer[in].get_tex_height();
+			tex_snow = _erosionbuffer[in].get_tex_snow();
+			tex_pos = _erosionbuffer[in].get_tex_pos();
+
+			_erosionbuffer[out].bind();
+				glClear(GL_COLOR_BUFFER_BIT);
+				_erosion_quad.smooth(tex_height, tex_snow, tex_pos);
 			_erosionbuffer[out].unbind();
 
 			in = 1 - in;
 			out = 1 - out;
 		}
 
-		
+		tex_height = _erosionbuffer[in].get_tex_height();
+		tex_snow = _erosionbuffer[in].get_tex_snow();
 
-		in = 1 - in;
-		out = 1 - out;
-
-		copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);
-		copyTexture(_erosionbuffer[in].get_tex_water(), _tex_dirt);
+		copyTexture(tex_height, _tex_height);
+		copyTexture(tex_snow, _tex_snow);
 	}
 }
 

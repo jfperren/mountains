@@ -18,18 +18,18 @@ private:
 	Copybuffer _copybuffer;
 
 	GLuint* _tex_height;
-	GLuint* _tex_dirt;
+	GLuint* _tex_snow;
 
 	CopyQuad _copy_quad;
 	NoiseQuad _quad;
 	ErosionQuad _erosion_quad;
 
 	NoiseParams* _noise_params;
-	DirtParams* _dirt_params;
+	SnowParams* _snow_params;
 	ErosionParams* _erosion_params;
 
 public:
-	NoiseGenerator(GLuint* tex_height, GLuint* tex_dirt);
+	NoiseGenerator(GLuint* tex_height, GLuint* tex_snow);
 
 	void init(AppParams* app_params);
 	void copyTexture(GLuint* src, GLuint* dst);
@@ -37,7 +37,7 @@ public:
 	void copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset);
 	void renderFractal();
 	void erode();
-	void addDirt();
+	void addSnow();
 	GLuint* get_tex_height();
 
 	void resize();

@@ -24,7 +24,7 @@ class Grid {
 private:
 	NoiseParams* _noise_params;
 	GridParams* _grid_params;
-	DirtParams* _dirt_params;
+	SnowParams* _snow_params;
 	TextureParams* _texture_params;
 	ShadingParams* _shading_params;
 
@@ -37,7 +37,7 @@ protected:
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
     GLuint* _tex_height;    ///< HeightMap Texture ID
-	GLuint* _tex_dirt;
+	GLuint* _tex_snow;
 
 	GLuint _tex_main;
 

@@ -11,15 +11,16 @@ private:
 	GLuint _vbo; ///< memory buffer
 	GLuint _tex; ///< Texture ID
 
-	DirtParams* _dirt_params;
+	SnowParams* _snow_params;
 
 public:
 	void init(AppParams* app_params);
 	void cleanup();
-	void draw(GLuint* tex_noise, GLuint* tex_water, GLuint* tex_sediment, GLuint* tex_pos);
 
-	void createDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
-	void lowerDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
-	void solidifyDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
-	void levelDirt(GLuint* tex_noise, GLuint* tex_dirt, GLuint* tex_pos);
+	void fall(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
+	void slide(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
+	void melt(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
+	void smooth(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
+
+	void draw(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos, int mode);
 };

@@ -4,7 +4,7 @@
 
 WindowParams window_params{ WIDTH, HEIGHT };
 NoiseParams noise_params;
-DirtParams dirt_params;
+SnowParams snow_params;
 ErosionParams erosion_params;
 ShadingParams shading_params;
 WaterParams water_params;
@@ -15,7 +15,7 @@ AppParams app_params{
 	&window_params,
 	&grid_params,
 	&noise_params,
-	&dirt_params,
+	&snow_params,
 	&erosion_params,
 	&texture_params,
 	&shading_params,
@@ -37,14 +37,14 @@ Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 // --- Textures --- //
 
 GLuint _tex_height;
-GLuint _tex_dirt;
+GLuint _tex_snow;
 GLuint tex_mirror;
 GLuint tex_water_depth;
 GLuint tex_normal_map;
 
 // --- Other --- //
 
-NoiseGenerator noise_generator(&_tex_height, &_tex_dirt);
+NoiseGenerator noise_generator(&_tex_height, &_tex_snow);
 Camera camera(&window_params);
 
 // Gets called when the windows is resized.
@@ -63,7 +63,7 @@ void compute_height_map() {
 
 	noise_generator.renderFractal();
 	//noise_generator.erode();
-	noise_generator.addDirt();
+	noise_generator.addSnow();
 
 	box.set_height_texture(_tex_height);
 	water.set_height_texture(_tex_height);
@@ -179,15 +179,16 @@ void initParams() {
 	noise_params.seed					= glfwGetTime();
 	noise_params.seed 				   -= floor(noise_params.seed);
 
-	// --- Dirt ---
-	dirt_params.enable					= true;
-	dirt_params.amount					= 0.01;
-	dirt_params.max_height				= 0.3;
-	dirt_params.max_slope				= 2.9;
-	dirt_params.max_amount				= 0.02;
-	dirt_params.time					= 25;
-	dirt_params.threshold				= 0.01;
-	dirt_params.smoothness				= 10;
+	// --- snow ---
+	snow_params.enable					= true;
+	snow_params.amount					= 0.02;
+	snow_params.max_amount				= 2;
+	snow_params.min_height				= 0.3;
+	snow_params.max_slope				= 2;
+	snow_params.threshold				= 0.001;
+	snow_params.slide_time				= 25;
+	snow_params.melt_time				= 10;
+	snow_params.smooth_time				= 10;
 
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;
@@ -236,7 +237,7 @@ void initParams() {
 void initSceneObjects() {
 
 	box.init(&app_params);
-	grid.init(&app_params, &_tex_height, &_tex_dirt);
+	grid.init(&app_params, &_tex_height, &_tex_snow);
 	water.init(&app_params);
 
 	tex_mirror = fbw.init_texture();
@@ -267,8 +268,8 @@ void initTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glGenTextures(1, &_tex_dirt);
-	glBindTexture(GL_TEXTURE_2D, _tex_dirt);
+	glGenTextures(1, &_tex_snow);
+	glBindTexture(GL_TEXTURE_2D, _tex_snow);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -7,16 +7,16 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt){
+	void Grid::init(AppParams* app_params, GLuint* tex_height, GLuint* tex_snow){
 
 		_tex_height = tex_height;
-		_tex_dirt = tex_dirt;
+		_tex_snow = tex_snow;
 
 		_noise_params = app_params->noise_params;
 		_grid_params = app_params->grid_params;
 		_texture_params = app_params->texture_params;
 		_shading_params = app_params->shading_params;
-		_dirt_params = app_params->dirt_params;
+		_snow_params = app_params->snow_params;
 
 		TEX_PATHS[0] = "textures/terrains/mountain/tex_grass.tga";
 		TEX_PATHS[1] = "textures/terrains/mountain/tex_sand.tga";
@@ -136,7 +136,7 @@ using namespace std;
 		_grid_params->setup(_pid);
 		_texture_params->setup(_pid);
 		_shading_params->setup(_pid);
-		_dirt_params->setup(_pid);
+		_snow_params->setup(_pid);
 
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
 		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
@@ -153,9 +153,9 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
 
-		glUniform1i(glGetUniformLocation(_pid, "tex_dirt"), 1);
+		glUniform1i(glGetUniformLocation(_pid, "tex_snow"), 1);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, *_tex_dirt);
+		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
 
 		/*for (int i = 0; i < TEXTURES_COUNT; i++){
 
