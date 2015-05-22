@@ -7,9 +7,10 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(AppParams* app_params, GLuint* tex_height){
+	void Grid::init(AppParams* app_params, GLuint* tex_height, GLuint* tex_dirt){
 
 		_tex_height = tex_height;
+		_tex_dirt = tex_dirt;
 
 		_noise_params = app_params->noise_params;
 		_grid_params = app_params->grid_params;
@@ -146,16 +147,21 @@ using namespace std;
 		}
 
 		// Bind textures
+		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
 
-		for (int i = 0; i < TEXTURES_COUNT; i++){
+		glUniform1i(glGetUniformLocation(_pid, "tex_dirt"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, *_tex_dirt);
+
+		/*for (int i = 0; i < TEXTURES_COUNT; i++){
 
 			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
 			glUniform1i(tex_snow_id, 1 + i);
 			glActiveTexture(GL_TEXTURE1 + i);
 			glBindTexture(GL_TEXTURE_2D, _texs[i]);
-		}
+		}*/
 
 		// Setup MVP
 		mat4 MVP = projection*view*model;

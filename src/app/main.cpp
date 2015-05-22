@@ -37,13 +37,14 @@ Depthbuffer fb_water_depth(WIDTH, HEIGHT);
 // --- Textures --- //
 
 GLuint _tex_height;
+GLuint _tex_dirt;
 GLuint tex_mirror;
 GLuint tex_water_depth;
 GLuint tex_normal_map;
 
 // --- Other --- //
 
-NoiseGenerator noise_generator(&_tex_height);
+NoiseGenerator noise_generator(&_tex_height, &_tex_dirt);
 Camera camera(&window_params);
 
 // Gets called when the windows is resized.
@@ -232,7 +233,7 @@ void initParams() {
 void initSceneObjects() {
 
 	box.init(&app_params);
-	grid.init(&app_params, &_tex_height);
+	grid.init(&app_params, &_tex_height, &_tex_dirt);
 	water.init(&app_params);
 
 	tex_mirror = fbw.init_texture();
@@ -258,6 +259,13 @@ void initTextures() {
 
 	glGenTextures(1, &_tex_height);
 	glBindTexture(GL_TEXTURE_2D, _tex_height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glGenTextures(1, &_tex_dirt);
+	glBindTexture(GL_TEXTURE_2D, _tex_dirt);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

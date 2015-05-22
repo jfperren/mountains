@@ -11,11 +11,12 @@ out vec4 color;
 // --- Textures --- //
 
 layout(location = 0) uniform sampler2D tex_height;
-layout(location = 1) uniform sampler2D tex_grass;
+layout(location = 1) uniform sampler2D tex_dirt;
+/*layout(location = 1) uniform sampler2D tex_grass;
 layout(location = 2) uniform sampler2D tex_sand;
 layout(location = 3) uniform sampler2D tex_rock;
 layout(location = 4) uniform sampler2D tex_snow;
-layout(location = 5) uniform sampler2D tex_rock_underwater;
+layout(location = 5) uniform sampler2D tex_rock_underwater;*/
 
 // --- Uniforms --- //
 
@@ -78,6 +79,7 @@ float smooth_interpolate(float alpha, float factor, float threshold) {
 void main() {
 
 	float height = texture(tex_height, uv).rgb[0];
+	float dirt = texture(tex_dirt, uv)[0];
 
 	if (only_reflect == 1 && height < 0) {
 		discard;
@@ -91,7 +93,7 @@ void main() {
 	vec3 diffuse;
 
 	if (texture_type == TEXTURE) {
-
+	/*
 		vec3 color_rock = texture(tex_rock, uv * vec2(20)).rgb;
 		vec3 color_sand = texture(tex_sand, uv * vec2(80)).rgb;
 		vec3 color_grass = texture(tex_grass, uv * vec2(20)).rgb;
@@ -105,11 +107,11 @@ void main() {
 		vec3 texture_color;
 
 		// Sand vs rock
-		/*if (slope < sand_max_slope) {
+		if (slope < sand_max_slope) {
 			alpha_sand = smooth_interpolate(slope, 80, sand_max_slope);
 		} else {
 			alpha_sand = 1;
-		}*/
+		}
 
 		vec3 sand_and_rock = alpha_sand * color_sand + (1-alpha_sand) * color_rock;
 		vec3 grass_and_rock = alpha_grass * color_grass + (1-alpha_grass) * color_rock;
@@ -134,11 +136,15 @@ void main() {
 		}
 
    		ambient = texture_color;
-
+		*/
 	} else if (texture_type == NONE) {
 		ambient = vec3(1, 1, 1);
 	} else {
-		ambient = vec3(height + 0.5);
+		if (dirt == 0 ){
+			ambient = vec3(height + 0.5);
+		} else {
+			ambient = vec3(dirt + 0.5, 0, 0);
+		}
 	}
 
 	if (shading_enable != 0) {
