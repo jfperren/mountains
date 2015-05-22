@@ -168,7 +168,7 @@ void initParams() {
 	noise_params.fractal_type			= FBM;
 	noise_params.noise_effect			= NO_EFFECT;
 	noise_params.fractal_effect			= NO_EFFECT;
-	noise_params.resolution				= 1024;
+	noise_params.resolution				= 2048;
 	noise_params.height					= 1;
 	noise_params.width					= 1;
 	noise_params.offset					= 0.0f;
@@ -180,12 +180,12 @@ void initParams() {
 	noise_params.seed 				   -= floor(noise_params.seed);
 
 	// --- Dirt ---
-	dirt_params.enable = true;
-	dirt_params.amount = 0.01;
-	dirt_params.max_height = 0.3;
-	dirt_params.max_slope = 1;
-	dirt_params.time = 20;
-	dirt_params.threshold = 0.01;
+	dirt_params.enable					= true;
+	dirt_params.amount					= 0.26;
+	dirt_params.max_height				= 0.2;
+	dirt_params.max_slope				= 1.8;
+	dirt_params.time					= 25;
+	dirt_params.threshold				= 0.00;
 
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;

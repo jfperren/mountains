@@ -27,6 +27,8 @@ const int ACTION_LOWER = 1;
 const int ACTION_SOLIDIFY = 2;
 const int ACTION_LEVEL = 3;
 
+const float MAX_DIRT = 0.01;
+
 uniform float dirt_threshold;
 
 void main() {
@@ -76,22 +78,27 @@ void main() {
 
 			float next_dirt;
 			if (min_i != 0 && min_j != 0){
-				if ((level - min_level) > DZ * dirt_max_slope) {
+
+				float slope = (level - min_level) / DZ;
+				if (slope > dirt_max_slope) {
 					float diff = (level - min_level) - DZ * dirt_max_slope;
-					float extra = min(diff/2.0, dirt);
+					float extra = min(diff, dirt);
 			
 					dirt = dirt - extra;
 					next_dirt = extra;
 				}
 			} else if (min_i != 0 || min_j != 0){
-				if ((level - min_level) > DX * dirt_max_slope) {
+
+				float slope = (level - min_level) / DX;
+				if (slope > dirt_max_slope) {
 					float diff = (level - min_level) - DX * dirt_max_slope;
-					float extra = min(diff/2.0, dirt);
+					float extra = min(diff, dirt);
 					dirt -= extra;
 					next_dirt = extra;
 				}
 			}
 
+			dirt = min(dirt, MAX_DIRT);
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, next_dirt, 0, 1);
 			tex_out_pos = vec4(min_i, min_j, 0, 1);
@@ -120,6 +127,8 @@ void main() {
 			if (dirt > dirt_threshold * dirt_amount) {
 				height += dirt;
 			}
+
+			dirt = min(dirt, MAX_DIRT);
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = vec4(dirt, 0, 0, 1);
 			tex_out_pos = vec4(0, 0, 0, 1);
@@ -128,8 +137,8 @@ void main() {
 		else if (action == ACTION_LEVEL) {
 			float height = texture(tex_in_height, uv)[0];
 			vec4 dirt = texture(tex_in_dirt, uv);
-			/*
-			if (dirt[0] > dirt_amount * DIRT_THRESHOLD) {
+			
+			if (dirt[0] > dirt_amount * dirt_threshold) {
 				float sum = height;
 				for(int i = -1; i <= 1; i++) {
 					for(int j = -1; j <= 1; j++) {
@@ -143,8 +152,7 @@ void main() {
 				}
 
 				height = sum / 9.0;
-			}*/
-
+			}
 			
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_dirt = dirt;

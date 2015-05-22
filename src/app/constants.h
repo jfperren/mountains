@@ -142,6 +142,7 @@ typedef struct DirtParams {
 	float max_slope;
 	float max_height;
 	float threshold;
+	float smoothness;
 
 	float amount;
 	int time;
