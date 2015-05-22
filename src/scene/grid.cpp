@@ -24,11 +24,11 @@ using namespace std;
 		TEX_PATHS[3] = "textures/terrains/mountain/tex_snow.tga";
 		TEX_PATHS[4] = "textures/terrains/mountain/tex_rock_underwater.tga";
 
-		TEX_NAMES[0] = "tex_grass";
-		TEX_NAMES[1] = "tex_sand";
-		TEX_NAMES[2] = "tex_rock";
-		TEX_NAMES[3] = "tex_snow";
-		TEX_NAMES[4] = "tex_rock_underwater";
+		TEX_NAMES[0] = "tex_grass_";
+		TEX_NAMES[1] = "tex_sand_";
+		TEX_NAMES[2] = "tex_rock_";
+		TEX_NAMES[3] = "tex_snow_";
+		TEX_NAMES[4] = "tex_rock_underwater_";
 
 		// Compile the shaders
 		_pid = opengp::load_shaders("scene/grid_vshader.glsl", "scene/grid_fshader.glsl");
@@ -110,7 +110,7 @@ using namespace std;
 
 				GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
 				glUniform1i(tex_snow_id, 11 + i);
-				glActiveTexture(GL_TEXTURE11 + i);
+				glActiveTexture(GL_TEXTURE10 + i);
 				glBindTexture(GL_TEXTURE_2D, tex);
 
 				_texs.push_back(tex);
@@ -157,13 +157,13 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
 
-		/*for (int i = 0; i < TEXTURES_COUNT; i++){
+		for (int i = 0; i < TEXTURES_COUNT; i++){
 
 			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
-			glUniform1i(tex_snow_id, 1 + i);
-			glActiveTexture(GL_TEXTURE1 + i);
+			glUniform1i(tex_snow_id, 10 + i);
+			glActiveTexture(GL_TEXTURE10 + i);
 			glBindTexture(GL_TEXTURE_2D, _texs[i]);
-		}*/
+		}
 
 		// Setup MVP
 		mat4 MVP = projection*view*model;

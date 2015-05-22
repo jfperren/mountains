@@ -12,11 +12,12 @@ out vec4 color;
 
 layout(location = 0) uniform sampler2D tex_height;
 layout(location = 1) uniform sampler2D tex_snow;
-/*layout(location = 1) uniform sampler2D tex_grass;
-layout(location = 2) uniform sampler2D tex_sand;
-layout(location = 3) uniform sampler2D tex_rock;
-layout(location = 4) uniform sampler2D tex_snow;
-layout(location = 5) uniform sampler2D tex_rock_underwater;*/
+
+layout(location = 10) uniform sampler2D tex_grass_;
+layout(location = 11) uniform sampler2D tex_sand_;
+layout(location = 12) uniform sampler2D tex_rock_;
+layout(location = 13) uniform sampler2D tex_snow_;
+layout(location = 14) uniform sampler2D tex_rock_underwater_;
 
 // --- Uniforms --- //
 
@@ -93,50 +94,19 @@ void main() {
 	vec3 diffuse;
 
 	if (texture_type == TEXTURE) {
-	/*
-		vec3 color_rock = texture(tex_rock, uv * vec2(20)).rgb;
-		vec3 color_sand = texture(tex_sand, uv * vec2(80)).rgb;
-		vec3 color_grass = texture(tex_grass, uv * vec2(20)).rgb;
-		vec3 color_rock_underwater = texture(tex_rock_underwater, uv * vec2(20)).rgb;
+	
+		vec3 color_rock = texture(tex_rock_, uv * vec2(20)).rgb;
+		vec3 color_sand = texture(tex_sand_, uv * vec2(80)).rgb;
+		vec3 color_snow = texture(tex_snow_, uv * vec2(20)).rgb;
+		vec3 color_grass = texture(tex_grass_, uv * vec2(20)).rgb;
+		vec3 color_rock_underwater = texture(tex_rock_underwater_, uv * vec2(20)).rgb;
 
-		float slope = 1- dot(normal, vec3(0, 0, 1));
-
-		float alpha_sand = smooth_interpolate(slope, sand_s_transition, sand_max_slope);
-		float alpha_grass = smooth_interpolate(slope, grass_s_transition, grass_max_slope);
-
-		vec3 texture_color;
-
-		// Sand vs rock
-		if (slope < sand_max_slope) {
-			alpha_sand = smooth_interpolate(slope, 80, sand_max_slope);
+		if (snow > 0) {
+			ambient = color_snow;
 		} else {
-			alpha_sand = 1;
+   			ambient = color_rock;
 		}
-
-		vec3 sand_and_rock = alpha_sand * color_sand + (1-alpha_sand) * color_rock;
-		vec3 grass_and_rock = alpha_grass * color_grass + (1-alpha_grass) * color_rock;
-
-		if (height < sand_min_height) {
-
-			float gamma = smooth_interpolate(height, 40, sand_min_height);
-			texture_color = gamma * color_rock_underwater + (1-gamma) * sand_and_rock;
-
-		} else if (height < sand_max_height) {
-
-			float gamma = smooth_interpolate(height, sand_h_transition, sand_max_height);
-			texture_color = gamma * sand_and_rock + (1-gamma) * grass_and_rock;
-
-		} else if (height < grass_max_height) {
-
-			float gamma = smooth_interpolate(height, grass_h_transition, grass_max_height);
-			texture_color = gamma * grass_and_rock + (1-gamma) * color_rock;
-
-		} else {
-			texture_color = color_rock;
-		}
-
-   		ambient = texture_color;
-		*/
+		
 	} else if (texture_type == NONE) {
 		ambient = vec3(1, 1, 1);
 	} else {

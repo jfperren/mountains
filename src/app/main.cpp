@@ -221,7 +221,7 @@ void initParams() {
 	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);
 
 	// --- Texture ---
-	texture_params.texture_type			= SHADES;
+	texture_params.texture_type			= TEXTURE;
 	texture_params.sand_min_height		= -1;
 	texture_params.sand_max_height		= 0.15f;
 	texture_params.grass_max_height		= 1.0f;
