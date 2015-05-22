@@ -37,19 +37,7 @@ Camera camera(&window_params);
 
 NAVIGATION_MODE navmode;
 
-GLuint _pid_bezier;
-GLuint _pid_point;
-GLuint _pid_point_selection;
-
-BezierCurve cam_pos_curve;
-BezierCurve cam_look_curve;
-
-std::vector<ControlPoint> cam_pos_points;
-std::vector<ControlPoint> cam_look_points;
-int selected_point;
-
-const int travel_time = 20;
-int start_time;
+Bezier bezier;
 
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
@@ -74,25 +62,13 @@ void compute_height_map() {
 
 void init(){
 
-	// TODO: refactor/move bezier related code
-
-	/// Compile the shaders here to avoid the duplication
-	_pid_bezier = opengp::load_shaders("camera/bezier_vshader.glsl", "camera/bezier_fshader.glsl");
-	if (!_pid_bezier) exit(EXIT_FAILURE);
-
-	_pid_point = opengp::load_shaders("camera/point_vshader.glsl", "camera/point_fshader.glsl");
-	if (!_pid_point) exit(EXIT_FAILURE);
-
-	_pid_point_selection = opengp::load_shaders("camera/point_selection_vshader.glsl", "camera/point_selection_fshader.glsl");
-	if (!_pid_point_selection) exit(EXIT_FAILURE);
-
     // Sets background color.
     glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
     
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
 
-
+	bezier.init();
 
 	initParams();
 	initTextures();
@@ -100,40 +76,6 @@ void init(){
 
 	noise_generator.init();
 
-	//--- init cam_pos_curve
-	cam_pos_curve.init(_pid_bezier);
-
-	// Add points
-	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
-	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
-	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
-	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
-	cam_pos_points.push_back(ControlPoint(-0.11, -0.10, 0.45, 4));
-	cam_pos_points.push_back(ControlPoint(-0.16, 0.92, -0.11, 5));
-	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));
-
-	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
-		cam_pos_points[i].init(_pid_point, _pid_point_selection);
-	}
-
-	cam_pos_curve.set_points(cam_pos_points);
-
-	///--- init cam_look_curve
-	cam_look_curve.init(_pid_bezier);
-
-	// Add points
-	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
-	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
-	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
-	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));
-
-	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
-		cam_look_points[i].init(_pid_point, _pid_point_selection);
-	}
-
-	cam_look_curve.set_points(cam_look_points);
-
-	selected_point = -1;
 	navmode = FREE;
 	
 	compute_height_map();
@@ -179,15 +121,15 @@ void display(){
 		vec3 cam_look(0.0f, 0.0f, 0.0f);
 		vec3 cam_up(0.0f, 0.0f, 1.0f);
 
-		float t = (glfwGetTime() - start_time) / travel_time;
+		float t = (glfwGetTime() - bezier.get_start_time()) / bezier.get_travel_time();
 
 		if (t >= 1) {
-			start_time = glfwGetTime();
+			bezier.set_start_time(glfwGetTime());
 			t = t - 1;
 		}
 
-		cam_pos_curve.sample_point(t, cam_pos);
-		cam_look_curve.sample_point(t, cam_look);
+		bezier.pos_curve_sample_point(t, cam_pos);
+		bezier.cam_look_sample_point(t, cam_look);
 
 		mat4 view_bezier = Eigen::lookAt(cam_pos, cam_look, cam_up);
 
@@ -220,9 +162,7 @@ void cleanup(){
 #ifdef WITH_ANTTWEAKBAR
     TwTerminate();
 #endif
-	glDeleteProgram(_pid_bezier);
-	glDeleteProgram(_pid_point);
-	glDeleteProgram(_pid_point_selection);
+	bezier.cleanup();
 }
 
 int main(int, char**){
@@ -409,7 +349,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 			case '2':
 				navmode = BEZIER;
 				std::cout << "[Info] Running in bezier mode\n" << std::flush;
-				start_time = glfwGetTime();
+				bezier.set_start_time(glfwGetTime());
 				isVisible(false);
 				break;
 			default:

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "icg_common.h"
+#include "../app/constants.h"
+#include "../camera/point.h"
 
 const static Scalar H = .7;
 const static Scalar R = 2;
