@@ -15,7 +15,8 @@ private:
 	Noisebuffer _framebuffer[2];
 	Erosionbuffer _erosionbuffer[2];
 
-	Generalbuffer _generalbuffer[2];
+	Generalbuffer _snowbuffer[2];
+	Generalbuffer _noisebuffer[2];
 
 	Copybuffer _copybuffer;
 
