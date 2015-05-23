@@ -98,7 +98,7 @@ void display(){
 	if (navmode == BEZIER) {
 		vec3 cam_pos(2.0f, 2.0f, 2.0f);
 		vec3 cam_look(0.0f, 0.0f, 0.0f);
-		vec3 cam_up(0.0f, 0.0f, 1.0f);
+		vec3 cam_up(0.0f, 1.0f, 0.0f);
 
 		float t = (glfwGetTime() - bezier.get_start_time()) / bezier.get_travel_time();
 
@@ -277,12 +277,8 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 		}
 		
 		if (navmode == CAMERA_PATH) {
-			if (glfwGetKey(GLFW_KEY_LSHIFT) == GLFW_PRESS) {
-				camera.mouse_button(glfwButton, glfwAction);
-			}
-			else {
-				bezier.selection_button(glfwButton, glfwAction, camera.get_view_matrix(), camera.get_projection_matrix());
-			}
+			camera.mouse_button(glfwButton, glfwAction);
+			bezier.selection_button(glfwButton, glfwAction, camera.get_view_matrix(), camera.get_projection_matrix());
 		}
 		else {
 			// FREE mode or default
