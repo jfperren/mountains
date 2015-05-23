@@ -7,10 +7,7 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(AppParams* app_params, GLuint* tex_height, GLuint* tex_snow){
-
-		_tex_height = tex_height;
-		_tex_snow = tex_snow;
+	void Grid::init(AppParams* app_params){
 
 		_noise_params = app_params->noise_params;
 		_grid_params = app_params->grid_params;
@@ -120,6 +117,22 @@ using namespace std;
 		// to avoid the current object being polluted
 		glBindVertexArray(0);
 		check_error_gl();
+	}
+
+	void Grid::setTexHeight(GLuint* tex_height){
+		_tex_height = tex_height;
+	}
+
+	void Grid::setTexSnow(GLuint* tex_snow){
+		_tex_snow = tex_snow;
+	}
+
+	void Grid::setTexDirt(GLuint* tex_dirt){
+		_tex_dirt = tex_dirt;
+	}
+
+	void Grid::setTexShadow(GLuint* tex_shadow){
+		_tex_shadow = tex_shadow;
 	}
 
 	void Grid::cleanup(){

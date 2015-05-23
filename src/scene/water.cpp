@@ -34,13 +34,6 @@ void Water::init(AppParams* app_params){
 		glVertexAttribPointer(vertex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 	}
 
-	///--- Load texture
-	glGenTextures(1, &_tex_main);
-	glBindTexture(GL_TEXTURE_2D, _tex_main);
-	glfwLoadTexture2D("_floor/Floor_texture.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
 	// Enable blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -57,27 +50,20 @@ void Water::cleanup(){
 	glDeleteProgram(_pid);
 }
 
-void Water::set_main_texture(GLuint tex_main){
-	// Pass texture to instance
-	_tex_main = tex_main;
-}
-
-void Water::set_mirror_texture(GLuint tex_mirror){
-	// Pass texture to instance
+void Water::setMirrorTexture(GLuint* tex_mirror){
 	_tex_mirror = tex_mirror;
 }
 
-void Water::set_height_texture(GLuint tex_height) {
-	// Pass texture to instance
+void Water::setHeightTexture(GLuint* tex_height) {
 	_tex_height = tex_height;
 }
 
-void Water::set_depth_texture(GLuint tex_depth) {
+void Water::setDepthTexture(GLuint* tex_depth) {
 	_tex_depth = tex_depth;
 }
 
-void Water::set_normal_map(GLuint tex_normal_map) {
-	_tex_normal_map = tex_normal_map;
+void Water::setNormalTexture(GLuint* tex_normal) {
+	_tex_normal = tex_normal;
 }
 
 void Water::draw(const mat4& view, const mat4& projection){
@@ -92,29 +78,23 @@ void Water::draw(const mat4& view, const mat4& projection){
 
 	glUniform1f(glGetUniformLocation(_pid, "time"), glfwGetTime());
 
-	///--- Texture uniforms
-	GLuint tex_id = glGetUniformLocation(_pid, "tex_main");
-	glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-	GLuint tex_mirror_id = glGetUniformLocation(_pid, "tex_mirror");
-	glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
-	GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
-	glUniform1i(tex_height_id, 2 /*GL_TEXTURE2*/);
-	GLuint tex_depth_id = glGetUniformLocation(_pid, "tex_depth");
-	glUniform1i(tex_depth_id, 3 /*GL_TEXTURE3*/);
-	GLuint tex_normal_map_id = glGetUniformLocation(_pid, "tex_normal_map");
-	glUniform1i(tex_normal_map_id, 4 /*GL_TEXTURE4*/);
+	// Pass textures
 
-	///--- Bind textures
+	glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _tex_main);
+	glBindTexture(GL_TEXTURE_2D, *_tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_mirror"), 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, _tex_mirror);
+	glBindTexture(GL_TEXTURE_2D, *_tex_mirror);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_depth"), 2);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, _tex_height);
+	glBindTexture(GL_TEXTURE_2D, *_tex_depth);
+	/*
+	glUniform1i(glGetUniformLocation(_pid, "tex_normal"), 3);
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, _tex_depth);
-	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, _tex_normal_map);
+	glBindTexture(GL_TEXTURE_2D, *_tex_normal);*/
 
 	// Setup MVP
 	mat4 MVP = projection*view*model;

@@ -4,11 +4,10 @@ in vec2 uv;
 
 out vec4 color;
 
-uniform sampler2D tex_main;
-uniform sampler2D tex_mirror;
-uniform sampler2D tex_height;
-uniform sampler2D tex_depth;
-uniform sampler2D tex_normal_map;
+layout (location = 0) uniform sampler2D tex_mirror;
+layout (location = 1) uniform sampler2D tex_height;
+layout (location = 2) uniform sampler2D tex_depth;
+layout (location = 3) uniform sampler2D tex_normal;
 
 uniform vec3 light_pos;
 uniform vec3 Id;
@@ -56,11 +55,11 @@ void main() {
 	float water_depth = (-2*far*near)/(far -near)/(gl_FragCoord.z - ((far-near)/(far+near)));
 
 	float depth = grid_depth - water_depth;
-
+	/*
 	// Check if we need to take it into account
-	if (depth <= 0) {
+	if (depth <= 0 || grid_depth == 0) {
 		discard;
-	}
+	}*/
     
 	// Compute ambiant color according to depth & mirror color
 	vec3 texture_color = water_color / (1 + depth * water_depth_color_factor);
@@ -72,7 +71,7 @@ void main() {
     // Compute ambiant & diffuse color
     vec3 ambiant_color = vec3(mix(texture_color, mirror_color, vec3(water_reflection_factor)));
 
-	vec3 normal = vec3(texture(tex_normal_map,  uv * vec2(waves_tile_factor)  + vec2(time * waves_speed))).rgb;
+	vec3 normal = vec3(texture(tex_normal,  uv * vec2(waves_tile_factor)  + vec2(time * waves_speed))).rgb;
 	normal[1] = 1;
 	vec3 diffuse_color =  waves_amplitude * Id * (dot(normalize(normal), normalize(light_pos)));
 

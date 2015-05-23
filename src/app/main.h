@@ -4,9 +4,10 @@
 #include "../camera/camera.h"
 #include "../scene/grid.h"
 #include "../noise/quad.h"
-#include "../noise/noise_generator.h"
+#include "../noise/terrain.h"
 #include "../buffers/framebuffer.h"
 #include "../buffers/depthbuffer.h"
+#include "../buffers/generalbuffer.h"
 #include "../scene/water.h"
 #include "../scene/sky.h"
 #include "../tw/tweakbar.h"
@@ -30,3 +31,4 @@ void resize_callback(int width, int height);
 void initTextures();
 void initSceneObjects();
 void initParams();
+void initBuffers();

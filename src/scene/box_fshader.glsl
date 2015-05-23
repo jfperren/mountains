@@ -5,7 +5,8 @@ in vec2 uv;
 
 out vec4 color;
 
-uniform sampler2D tex_height;
+layout (location = 0) uniform sampler2D tex_height;
+layout (location = 1) uniform sampler2D tex_water_depth;
 
 uniform int grid_enable;
 
@@ -19,8 +20,6 @@ uniform float water_reflection_factor;
 
 void main() {
 
-	
-    
 	if (grid_enable == 0) {
 		if (fragment_pos[1] > 0) {
 			discard;

@@ -1,4 +1,4 @@
-﻿#include "noise_generator.h"
+﻿#include "terrain.h"
 
 #define INIT(in, out) int in = 0; int out = 1;
 #define SWAP(in, out) in = 1 - in; out = 1 - out;
@@ -6,61 +6,59 @@
 #define CLEAR_BUFFERS(buffer) buffer[0].clear(); buffer[1].clear();
 #define SET_MODE(mode) _quad.setShaders(mode);_quad.genVertexArray();
 
-NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_snow)
+Terrain::Terrain()
 	{
-		_tex_height = tex_height;
-		_tex_snow = tex_snow;
+		glGenTextures(1, &_tex_height);
+		glBindTexture(GL_TEXTURE_2D, _tex_height);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glGenTextures(1, &_tex_dirt);
+		glBindTexture(GL_TEXTURE_2D, _tex_dirt);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glGenTextures(1, &_tex_snow);
+		glBindTexture(GL_TEXTURE_2D, _tex_snow);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
-void NoiseGenerator::init(AppParams* app_params) {
+void Terrain::init(AppParams* app_params) {
 
 	_noise_params = app_params->noise_params;
 	_snow_params = app_params->snow_params;
 	_erosion_params = app_params->erosion_params;
-
-	_framebuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
-	_framebuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
-	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
-	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
-
 	_snowbuffer[0].init(3);
 	_snowbuffer[0].genTextures();
 	_snowbuffer[0].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
-
+	
 	_snowbuffer[1].init(3);
 	_snowbuffer[1].genTextures();
 	_snowbuffer[1].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
-
+	
 	_noisebuffer[0].init(1);
 	_noisebuffer[0].genTextures();
 	_noisebuffer[0].setFormat(GL_R32F, GL_RED, GL_FLOAT);
-
+	
 	_noisebuffer[1].init(1);
 	_noisebuffer[1].genTextures();
 	_noisebuffer[1].setFormat(GL_R32F, GL_RED, GL_FLOAT);
-
-	_framebuffer[0].init();
-	_framebuffer[1].init();
-	_erosionbuffer[0].init();
-	_erosionbuffer[1].init();
-
+	
 	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
-
+	
 	resize();
-
+	check_error_gl();
 	_quad.init(app_params);
 }
 
-void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, float noise_amplitude) {
-	///--- Render random noise on quad in the framebuffer
-	_framebuffer[out].bind();
-		glClear(GL_COLOR_BUFFER_BIT);
-		_quad.drawNoise(noise_params, noise_amplitude, _framebuffer[in].get_tex());
-	_framebuffer[out].unbind();
-}
-
-
-void NoiseGenerator::renderFractal() {
+void Terrain::renderFractal() {
 
 	GLuint* tex_height;
 
@@ -102,14 +100,22 @@ void NoiseGenerator::renderFractal() {
 		SWAP_TEXTURE(tex_height, _noisebuffer, TEX_HEIGHT_INDEX);
 	}
 
-	copyNoise(tex_height, _tex_height, _noise_params->amplitude, _noise_params->offset);
+	copyNoise(tex_height, &_tex_height, _noise_params->amplitude, _noise_params->offset);
 }
 
-GLuint* NoiseGenerator::get_tex_height() {
-	return _tex_height;
+GLuint* Terrain::getHeightTexture() {
+	return &_tex_height;
 }
 
-void NoiseGenerator::erode() {
+GLuint* Terrain::getDirtTexture() {
+	return &_tex_dirt;
+}
+
+GLuint* Terrain::getSnowTexture() {
+	return &_tex_snow;
+}
+
+void Terrain::erode() {
 /*	GLuint* tex_height;
 	GLuint* tex_water;
 	GLuint* tex_sediment;
@@ -144,7 +150,7 @@ void NoiseGenerator::erode() {
 	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);*/
 }
 
-void NoiseGenerator::resize() {
+void Terrain::resize() {
 	_snowbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
 	_snowbuffer[0].genTextureImages();
 	_snowbuffer[0].wrap(BUFFER_ATTACHMENT_2, 3);
@@ -167,7 +173,7 @@ void NoiseGenerator::resize() {
 
 }
 
-void NoiseGenerator::addSnow() {
+void Terrain::addSnow() {
 	GLuint* tex_snow;
 	GLuint* tex_height;
 	GLuint* tex_pos;
@@ -183,7 +189,7 @@ void NoiseGenerator::addSnow() {
 
 		INIT(in, out);
 
-		tex_height = _tex_height;
+		tex_height = &_tex_height;
 		SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
 		SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 
@@ -236,12 +242,12 @@ void NoiseGenerator::addSnow() {
 			SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 		}
 
-		copyTexture(tex_height, _tex_height);
-		copyTexture(tex_snow, _tex_snow);
+		copyTexture(tex_height, &_tex_height);
+		copyTexture(tex_snow, &_tex_snow);
 	}
 }
 
-void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
+void Terrain::copyTexture(GLuint* src, GLuint* dst) {
 	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
 	_copybuffer.init(dst);
 
@@ -253,7 +259,7 @@ void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
 	_copybuffer.unbind();
 }
 
-void NoiseGenerator::copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset) {
+void Terrain::copyNoise(GLuint* src, GLuint* dst, float amplitude, float offset) {
 	///--- Render random noise on quad in the framebuffer
 	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
 	_copybuffer.init(dst);

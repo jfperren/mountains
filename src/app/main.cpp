@@ -31,61 +31,89 @@ Sky sky;
 
 // --- Buffers --- // 
 
-Framebuffer fbw(WIDTH, HEIGHT);
-Depthbuffer fb_water_depth(WIDTH, HEIGHT);
+Generalbuffer fb_mirror = Generalbuffer();
+Generalbuffer fb_water_depth;
 
 // --- Textures --- //
 
-GLuint _tex_height;
-GLuint _tex_snow;
-GLuint tex_mirror;
-GLuint tex_water_depth;
-GLuint tex_normal_map;
+GLuint* _tex_height;
+GLuint* _tex_snow;
+GLuint* _tex_dirt;
+
+GLuint* _tex_mirror;
+GLuint* _tex_water_depth;
 
 // --- Other --- //
 
-NoiseGenerator noise_generator(&_tex_height, &_tex_snow);
+Terrain terrain;
 Camera camera(&window_params);
+
+void initBuffers() {
+	
+	fb_mirror.init(1);
+	fb_mirror.genTextures();
+	fb_mirror.setFormat(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
+	
+	fb_mirror.setSize(WIDTH, HEIGHT);
+	fb_mirror.genTextureImages();
+	fb_mirror.wrap(BUFFER_ATTACHMENT_0, 1);
+	
+	fb_water_depth.init(1);
+	fb_water_depth.genTextures();
+	fb_water_depth.setFormat(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+
+	fb_water_depth.setSize(WIDTH, HEIGHT);
+	fb_water_depth.genTextureImages();
+	fb_water_depth.wrap(BUFFER_ATTACHMENT_0, 1);
+
+	check_error_gl();
+}
 
 // Gets called when the windows is resized.
 void resize_callback(int width, int height) {
-    window_params.width = width;
+	
+	window_params.width = width;
 	window_params.height = height;
+	/*
+	fb_mirror.setSize(width, height);
+	fb_mirror.genTextureImages();
+	fb_mirror.wrap(BUFFER_ATTACHMENT_0, 1);
 
-    glViewport(0, 0, width, height);
-	//fbw.resize(width, height);
-	fb_water_depth.resize(width, height);
+	fb_water_depth.setSize(width, height);
+	fb_water_depth.genTextureImages();
+	fb_water_depth.wrap(BUFFER_ATTACHMENT_0, 1);*/
 
 	camera.compute_projection_matrix();
+
+	glViewport(0, 0, width, height);
 }
 
 void compute_height_map() {
+	
+	terrain.resize();
+	terrain.renderFractal();
+	terrain.addSnow();
 
-	noise_generator.resize();
-	noise_generator.renderFractal();
-	//noise_generator.erode();
-	noise_generator.addSnow();
-
-	box.set_height_texture(_tex_height);
-	water.set_height_texture(_tex_height);
-	water.set_mirror_texture(tex_mirror);
-	water.set_normal_map(tex_normal_map);
 }
 
 void init(){
     // Sets background color.
     glClearColor(/*gray*/ .937,.937,.937, /*solid*/1.0);
-    
+	
     // Enable depth test.
     glEnable(GL_DEPTH_TEST);
 
 	initParams();
+
+	terrain.init(&app_params);
+	
+	initBuffers();
 	initTextures();
 	initSceneObjects();
-
-	noise_generator.init(&app_params);
 	
 	compute_height_map();
+	
+	resize_callback(WIDTH, HEIGHT);
 
 #ifdef WITH_ANTTWEAKBAR
 
@@ -96,30 +124,36 @@ void init(){
 
 // Gets called for every frame.
 void display(){
-
+	
 	opengp::update_title_fps("Mountains");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Render the water reflect
-	fbw.bind();
+	// 1. Water Reflects
+
+	fb_mirror.bind(BUFFER_ATTACHMENT_0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
-	fbw.unbind();
+	fb_mirror.unbind();
 
-	glViewport(0, 0, window_params.width, window_params.height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	fb_water_depth.bind();
+	check_error_gl();
+	
+	// 2. Water depth
+	/*
+	fb_water_depth.bind(BUFFER_ATTACHMENT_DEPTH, 1);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	fb_water_depth.unbind();
+	*/
+	check_error_gl();
+
+	// 3. Scene
 
 	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
-	camera.move();
+	camera.move(); 
 	
 #ifdef WITH_ANTTWEAKBAR
 	TwDraw();
@@ -236,46 +270,35 @@ void initParams() {
 }
 
 void initSceneObjects() {
-
-	box.init(&app_params);
-	grid.init(&app_params, &_tex_height, &_tex_snow);
-	water.init(&app_params);
-
-	tex_mirror = fbw.init_texture();
-	fbw.init(GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE);
-	tex_water_depth = fb_water_depth.init_texture();
-	fb_water_depth.init();
-
 	
-	water.set_depth_texture(tex_water_depth);
-	sky.init();
+	box.init(&app_params);
+	box.setHeightTexture(_tex_height);
+	box.setWaterDepthTexture(_tex_water_depth);
 
+	grid.init(&app_params);
+	grid.setTexHeight(_tex_height);
+	grid.setTexSnow(_tex_snow);
+	grid.setTexDirt(_tex_dirt);
+	//grid.setTexShadow(_tex_shadow);
+
+	water.init(&app_params);
+	water.setHeightTexture(_tex_height);
+	water.setMirrorTexture(_tex_mirror);
+	water.setDepthTexture(_tex_water_depth);
+	
+	sky.init();
+	
 	check_error_gl();
 }
 
 void initTextures() {
-	glGenTextures(1, &tex_normal_map);
-	glBindTexture(GL_TEXTURE_2D, tex_normal_map);
-	glfwLoadTexture2D("textures/water/tex_normal_map.tga", 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	_tex_height = terrain.getHeightTexture();
+	_tex_dirt = terrain.getDirtTexture();
+	_tex_snow = terrain.getSnowTexture();
 
-	glGenTextures(1, &_tex_height);
-	glBindTexture(GL_TEXTURE_2D, _tex_height);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glGenTextures(1, &_tex_snow);
-	glBindTexture(GL_TEXTURE_2D, _tex_snow);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+	_tex_mirror = fb_mirror.getTexture(0);
+	_tex_water_depth = fb_water_depth.getTexture(0);
 }
 
 // --- Callbacks --- //

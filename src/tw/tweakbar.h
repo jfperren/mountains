@@ -16,7 +16,7 @@
 #include "../scene/grid.h"
 #include "../buffers/framebuffer.h"
 #include "../noise/quad.h"
-#include "../noise/noise_generator.h"
+#include "../noise/terrain.h"
 #include "../scene/water.h"
 #include "../scene/box.h"
 #include "../app/constants.h"

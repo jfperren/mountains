@@ -25,14 +25,17 @@ protected:
 	GLuint _vao;          ///< vertex array object
 	GLuint _vbo_pos;
 	GLuint _vbo_tex;
-	GLuint _tex_height;
 	GLuint _pid;          ///< GLSL shader program ID
 	GLuint _num_indices;  ///< number of vertices to render
+
+	GLuint* _tex_height;
+	GLuint* _tex_water_depth;
 
 public:
 	void init(AppParams* app_params);
 	void draw(const mat4& view, const mat4& projection);
 	void cleanup();
 
-	void set_height_texture(GLuint tex_height);
+	void setHeightTexture(GLuint* tex_height);
+	void setWaterDepthTexture(GLuint* tex_water_depth);
 };
