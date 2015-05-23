@@ -50,16 +50,25 @@ void main() {
 	vec2 uv_screen_inv = vec2(0, 1) + vec2(1, -1) * uv_screen;
 
 	// Compute the depth of the water
-	float z_ = texture(tex_depth, vec2(_u, _v))[0];
-	float grid_depth = (-2*far*near)/(far -near)/(z_ - ((far-near)/(far+near)));
+	
+	/*float grid_depth = (-2*far*near)/(far -near)/(z_ - ((far-near)/(far+near)));
 	float water_depth = (-2*far*near)/(far -near)/(gl_FragCoord.z - ((far-near)/(far+near)));
+	*/
 
-	float depth = grid_depth - water_depth;
-	/*
+	float grid_z_b = texture(tex_depth, vec2(_u, _v))[0];
+	float grid_z_n = 2.0 * grid_z_b - 1.0;
+	float grid_z_e = 2.0 * near * far / (far + near - grid_z_n * (far - near));
+
+	float water_z_b = gl_FragCoord.z;
+	float water_z_n = 2.0 * water_z_b - 1.0;
+	float water_z_e = 2.0 * near * far / (far + near - water_z_n * (far - near));
+
+	float depth = grid_z_e - water_z_e;
+
 	// Check if we need to take it into account
-	if (depth <= 0 || grid_depth == 0) {
+	if (depth <= 0) {
 		discard;
-	}*/
+	}
     
 	// Compute ambiant color according to depth & mirror color
 	vec3 texture_color = water_color / (1 + depth * water_depth_color_factor);

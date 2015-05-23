@@ -47,7 +47,7 @@ void Generalbuffer::genTextureImages(){
 	}
 }
 
-void Generalbuffer::wrap(const GLenum buffers[], GLuint count) {
+void Generalbuffer::genFramebuffer(const GLenum buffers[], GLuint count) {
 	glGenFramebuffers(1, &_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
 

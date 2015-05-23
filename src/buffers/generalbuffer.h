@@ -36,7 +36,8 @@ public:
 	void setSize(GLuint width, GLuint height);
 	void genTextureImages();
 
-	void wrap(const GLenum buffers[], GLuint count);
+	void genFramebuffer(const GLenum buffers[], GLuint count);
+	void genDepthbuffer();
 
 	int init_texture(bool use_interpolation = false);
 	void set_texture(GLuint* texture, bool use_interpolation = false);

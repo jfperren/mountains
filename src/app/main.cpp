@@ -56,7 +56,7 @@ void initBuffers() {
 	
 	fb_mirror.setSize(WIDTH, HEIGHT);
 	fb_mirror.genTextureImages();
-	fb_mirror.wrap(BUFFER_ATTACHMENT_0, 1);
+	fb_mirror.genFramebuffer(BUFFER_ATTACHMENT_0, 1);
 	
 	fb_water_depth.init(1);
 	fb_water_depth.genTextures();
@@ -64,7 +64,7 @@ void initBuffers() {
 
 	fb_water_depth.setSize(WIDTH, HEIGHT);
 	fb_water_depth.genTextureImages();
-	fb_water_depth.wrap(BUFFER_ATTACHMENT_0, 1);
+	fb_water_depth.genFramebuffer(BUFFER_ATTACHMENT_DEPTH, 1);
 
 	check_error_gl();
 }
@@ -139,12 +139,15 @@ void display(){
 	check_error_gl();
 	
 	// 2. Water depth
-	/*
-	fb_water_depth.bind(BUFFER_ATTACHMENT_DEPTH, 1);
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	
+	fb_water_depth.bind(BUFFER_ATTACHMENT_0, 1);
+	check_error_gl();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		check_error_gl();
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-	fb_water_depth.unbind();
-	*/
+		check_error_gl();
+		fb_water_depth.unbind();
+	
 	check_error_gl();
 
 	// 3. Scene
@@ -237,6 +240,7 @@ void initParams() {
 	erosion_params.iterations			= 1;
 
 	// --- Water ---
+	water_params.enable					= true;
 	water_params.height					= 0;
 	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
 	water_params.depth_alpha_factor		= 1.4f;

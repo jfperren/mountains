@@ -18,7 +18,7 @@ const float DX = 0.01f;
 const float DPHI = 1.0f;
 
 const float NEAR = 0.1f;
-const float FAR = 40.0f;
+const float FAR = 10.0f;
 
 const int FALL = 0;
 const int SLIDE = 1;

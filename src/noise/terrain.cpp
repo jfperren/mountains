@@ -153,22 +153,22 @@ void Terrain::erode() {
 void Terrain::resize() {
 	_snowbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
 	_snowbuffer[0].genTextureImages();
-	_snowbuffer[0].wrap(BUFFER_ATTACHMENT_2, 3);
+	_snowbuffer[0].genFramebuffer(BUFFER_ATTACHMENT_2, 3);
 	_snowbuffer[0].clear();
 
 	_snowbuffer[1].setSize(_noise_params->resolution, _noise_params->resolution);
 	_snowbuffer[1].genTextureImages();
-	_snowbuffer[1].wrap(BUFFER_ATTACHMENT_2, 3);
+	_snowbuffer[1].genFramebuffer(BUFFER_ATTACHMENT_2, 3);
 	_snowbuffer[1].clear();
 
 	_noisebuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
 	_noisebuffer[0].genTextureImages();
-	_noisebuffer[0].wrap(BUFFER_ATTACHMENT_0, 1);
+	_noisebuffer[0].genFramebuffer(BUFFER_ATTACHMENT_0, 1);
 	_noisebuffer[0].clear();
 
 	_noisebuffer[1].setSize(_noise_params->resolution, _noise_params->resolution);
 	_noisebuffer[1].genTextureImages();
-	_noisebuffer[1].wrap(BUFFER_ATTACHMENT_0, 1);
+	_noisebuffer[1].genFramebuffer(BUFFER_ATTACHMENT_0, 1);
 	_noisebuffer[1].clear();
 
 }
