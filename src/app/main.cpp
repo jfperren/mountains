@@ -266,7 +266,7 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 
 		if (navmode == BEZIER) {
 			if (glfwAction != GLFW_RELEASE) return; ///< only act on release
-			std::cout << "[Warning] No mouse interaction in Bezier mode.\n" << std::flush;
+			std::cerr << "[Warning] No mouse interaction in Bezier mode.\n" << std::flush;
 			return;
 		}
 		
@@ -386,7 +386,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				}
 			default:
 				if (!key_used)
-					std::cout << "[Warning] No actions attached to key '" << glfwKey << "'\n" << std::flush;
+					std::cerr << "[Warning] No actions attached to key '" << glfwKey << "'\n" << std::flush;
 				break;
 			}
 		}
