@@ -164,6 +164,7 @@ void display(){
 	
 	fb_water_depth.bind(BUFFER_ATTACHMENT_0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), NORMAL);
 	fb_water_depth.unbind();
 	

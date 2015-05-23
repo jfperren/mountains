@@ -50,10 +50,6 @@ void main() {
 	vec2 uv_screen_inv = vec2(0, 1) + vec2(1, -1) * uv_screen;
 
 	// Compute the depth of the water
-	
-	/*float grid_depth = (-2*far*near)/(far -near)/(z_ - ((far-near)/(far+near)));
-	float water_depth = (-2*far*near)/(far -near)/(gl_FragCoord.z - ((far-near)/(far+near)));
-	*/
 
 	float grid_z_b = texture(tex_depth, vec2(_u, _v))[0];
 	float grid_z_n = 2.0 * grid_z_b - 1.0;

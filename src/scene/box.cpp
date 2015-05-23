@@ -71,6 +71,9 @@ void Box::draw(const mat4& view, const mat4& projection){
 	_grid_params->setup(_pid);
 	_noise_params->setup_copy(_pid);
 
+	glUniform1f(glGetUniformLocation(_pid, "FAR"), FAR);
+	glUniform1f(glGetUniformLocation(_pid, "NEAR"), NEAR);
+
 	// Pass textures
 
 	glUniform1i(glGetUniformLocation(_pid, "tex_height") , 0);
