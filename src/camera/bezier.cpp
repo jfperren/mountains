@@ -66,8 +66,8 @@ void Bezier::init(int width, int height, int travel_time){
 	//--- init cam_pos_curve
 	cam_pos_curve.init(_pid_bezier);
 
-	// Add points
-	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
+	// Add points, the total number must be n_tot = 1 + 3n, n in Z
+	cam_pos_points.push_back(ControlPoint(0, 1, 0, 0));
 	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
 	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
 	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
@@ -85,7 +85,7 @@ void Bezier::init(int width, int height, int travel_time){
 	cam_look_curve.init(_pid_bezier);
 
 	// Add points
-	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
+	cam_look_points.push_back(ControlPoint(5, 5, 0.25, 7));
 	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
 	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
 	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));
@@ -201,4 +201,32 @@ void Bezier::selection_button(int button, int action, const mat4 &view, const ma
 
 mat4 Bezier::get_view_matrix(const vec3 &eye, const vec3 &center, const vec3 &up) {
 	return Eigen::lookAt(eye, center, up);
+}
+
+mat4 Bezier::get_view_matrix_mirrored(const vec3 &eye, const vec3 &center, const vec3 &up) {
+	/*vec3 cam_pos_mirrored = vec3(_cam_pos[0], -_cam_pos[1], _cam_pos[2]);
+	vec3 cam_dir_mirrored = vec3(_cam_dir[0], -_cam_dir[1], _cam_dir[2]);
+
+	vec3 cam_center_mirrored = cam_pos_mirrored + cam_dir_mirrored;
+
+	return Eigen::lookAt(cam_pos_mirrored, cam_center_mirrored, _cam_up);*/
+	return mat4::Identity();
+}
+
+/* Prints all information about the control points, typically used when switching to bezier mode for debug purposes */
+void Bezier::print_control_points() {
+
+	// cam_pos_points
+	std::cout << "[Info] cam_pos_points:\n{\n" << std::flush;
+
+	for (size_t i = 0; i < cam_pos_points.size(); i++)
+		cout << '(' << cam_pos_points[i].get_x_coord() << ", " << cam_pos_points[i].get_y_coord() << ", " << cam_pos_points[i].get_z_coord() << ", " << cam_pos_points[i].get_id() << ")\n";
+	cout << '}' << std::endl;
+
+	// cam_look_curve
+	std::cout << "[Info] cam_look_points:\n{\n" << std::flush;
+
+	for (size_t i = 0; i < cam_look_points.size(); i++)
+		cout << '(' << cam_look_points[i].get_x_coord() << ", " << cam_look_points[i].get_y_coord() << ", " << cam_look_points[i].get_z_coord() << ", " << cam_look_points[i].get_id() << ")\n";
+	cout << '}' << std::endl;
 }

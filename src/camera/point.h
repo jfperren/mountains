@@ -15,6 +15,22 @@ public:
         _selected = false;
     }
 
+	float get_x_coord() {
+		return _p.x();
+	}
+
+	float get_y_coord() {
+		return _p.y();
+	}
+
+	float get_z_coord() {
+		return _p.z();
+	}
+
+	unsigned int get_id() {
+		return _id;
+	}
+
     void init(GLuint pid, GLuint pid_selection) {
         ///--- Set the (compiled) shaders
         _pid = pid;

@@ -348,6 +348,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 			case '2':
 				navmode = BEZIER;
 				std::cout << "[Info] Running in bezier mode\n" << std::flush;
+				bezier.print_control_points();
 				bezier.set_start_time(glfwGetTime());
 				twBarVisible(false);
 				break;
