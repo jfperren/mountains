@@ -16,12 +16,16 @@ int Bezier::get_travel_time() {
 	return this->travel_time;
 }
 
-void Bezier::pos_curve_sample_point(double t, vec3 &sample) {
-	cam_pos_curve.sample_point(t, sample);
-}
+void Bezier::sample_points(vec3 &sample1, vec3 &sample2) {
+	float t = (glfwGetTime() - get_start_time()) / get_travel_time();
 
-void Bezier::cam_look_sample_point(double t, vec3 &sample) {
-	cam_look_curve.sample_point(t, sample);
+	if (t >= 1) {
+		set_start_time(glfwGetTime());
+		t = t - 1;
+	}
+
+	cam_pos_curve.sample_point(t, sample1);
+	cam_look_curve.sample_point(t, sample2);
 }
 
 void Bezier::pos_curve_draw(const mat4& view, const mat4& projection) {
@@ -193,4 +197,8 @@ void Bezier::selection_button(int button, int action, const mat4 &view, const ma
 			cout << "cam_look " << selected_point + cam_pos_points.size() << " value : " << cam_look_points[selected_point - cam_pos_points.size()].position() << endl;
 		}
 	}
+}
+
+mat4 Bezier::get_view_matrix(const vec3 &eye, const vec3 &center, const vec3 &up) {
+	return Eigen::lookAt(eye, center, up);
 }

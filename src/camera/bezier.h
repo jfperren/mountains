@@ -33,8 +33,7 @@ public:
 	int get_start_time();
 	void set_travel_time(int travel_time);
 	int get_travel_time();
-	void pos_curve_sample_point(double t, vec3 &sample);
-	void cam_look_sample_point(double t, vec3 &sample);
+	void sample_points(vec3 &sample1, vec3 &sample2);
 	void pos_curve_draw(const mat4& view, const mat4& projection);
 	void cam_look_draw(const mat4& view, const mat4& projection);
 	void draw_cam_pos_points(const mat4& view, const mat4& projection);
@@ -43,4 +42,5 @@ public:
 	bool unproject(int mouse_x, int mouse_y, vec3 &p, const mat4 &view, const mat4 &projection);
 	void render_selection(const mat4 &view, const mat4 &projection);
 	vec2 transform_xy_screen(int x, int y);
+	mat4 get_view_matrix(const vec3 &eye, const vec3 &center, const vec3 &up);
 };

@@ -100,17 +100,9 @@ void display(){
 		vec3 cam_look(0.0f, 0.0f, 0.0f);
 		vec3 cam_up(0.0f, 1.0f, 0.0f);
 
-		float t = (glfwGetTime() - bezier.get_start_time()) / bezier.get_travel_time();
+		bezier.sample_points(cam_pos, cam_look);
 
-		if (t >= 1) {
-			bezier.set_start_time(glfwGetTime());
-			t = t - 1;
-		}
-
-		bezier.pos_curve_sample_point(t, cam_pos);
-		bezier.cam_look_sample_point(t, cam_look);
-
-		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
+		view_matrix = bezier.get_view_matrix(cam_pos, cam_look, cam_up);
 	} else {
 		// Allow minecraft like mouvements for all other modes
 		camera.move();
