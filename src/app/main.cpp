@@ -258,7 +258,7 @@ void initParams() {
 	erosion_params.iterations			= 1;
 
 	// --- Water ---
-	water_params.enable					= false;
+	water_params.enable					= true;
 	water_params.height					= 0;
 	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
 	water_params.depth_alpha_factor		= 1.4f;
@@ -272,7 +272,7 @@ void initParams() {
 
 
 	// --- Shading ---
-	shading_params.enable_phong			= false;
+	shading_params.enable_phong			= true;
 	shading_params.enable_shadow		= true;
 	shading_params.shadow_intensity		= 0.2;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
