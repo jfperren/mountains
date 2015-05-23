@@ -204,13 +204,13 @@ mat4 Bezier::get_view_matrix(const vec3 &eye, const vec3 &center, const vec3 &up
 }
 
 mat4 Bezier::get_view_matrix_mirrored(const vec3 &eye, const vec3 &center, const vec3 &up) {
-	/*vec3 cam_pos_mirrored = vec3(_cam_pos[0], -_cam_pos[1], _cam_pos[2]);
-	vec3 cam_dir_mirrored = vec3(_cam_dir[0], -_cam_dir[1], _cam_dir[2]);
+	vec3 cam_pos_mirrored = vec3(eye[0], -eye[1], eye[2]);
+	vec3 cam_dir_mirrored = vec3(up[0], -up[1], up[2]);
 
 	vec3 cam_center_mirrored = cam_pos_mirrored + cam_dir_mirrored;
 
-	return Eigen::lookAt(cam_pos_mirrored, cam_center_mirrored, _cam_up);*/
-	return mat4::Identity();
+	return Eigen::lookAt(cam_pos_mirrored, cam_center_mirrored, up);
+	//return mat4::Identity();
 }
 
 /* Prints all information about the control points, typically used when switching to bezier mode for debug purposes */
