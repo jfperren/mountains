@@ -385,7 +385,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 					break;
 				}
 			case 269 /* F12 */:
-				if (save_screenshot(get_unique_name(), WIDTH, HEIGHT))
+				if (save_screenshot("../screenshots/" + get_unique_name(), WIDTH, HEIGHT))
 					std::cout << "[Info] Screenshot saved successfully\n" << std::flush;
 				else
 					std::cerr << "[Error] An error occured while trying to save the screenshot\n" << std::flush;
