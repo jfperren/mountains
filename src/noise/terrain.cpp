@@ -35,6 +35,7 @@ void Terrain::init(AppParams* app_params) {
 	_noise_params = app_params->noise_params;
 	_snow_params = app_params->snow_params;
 	_erosion_params = app_params->erosion_params;
+
 	_snowbuffer[0].init(3);
 	_snowbuffer[0].genTextures();
 	_snowbuffer[0].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
@@ -50,6 +51,14 @@ void Terrain::init(AppParams* app_params) {
 	_noisebuffer[1].init(1);
 	_noisebuffer[1].genTextures();
 	_noisebuffer[1].setFormat(GL_R32F, GL_RED, GL_FLOAT);
+
+	_dirtbuffer[0].init(BUFFER_DIRT_COUNT);
+	_dirtbuffer[0].genTextures();
+	_dirtbuffer[0].setFormat(GL_R32F, GL_RED, GL_FLOAT);
+
+	_dirtbuffer[1].init(BUFFER_DIRT_COUNT);
+	_dirtbuffer[1].genTextures();
+	_dirtbuffer[1].setFormat(GL_R32F, GL_RED, GL_FLOAT);
 	
 	_copybuffer.resize(_noise_params->resolution, _noise_params->resolution);
 	
@@ -103,51 +112,45 @@ void Terrain::renderFractal() {
 	copyNoise(tex_height, &_tex_height, _noise_params->amplitude, _noise_params->offset);
 }
 
-GLuint* Terrain::getHeightTexture() {
-	return &_tex_height;
-}
-
-GLuint* Terrain::getDirtTexture() {
-	return &_tex_dirt;
-}
-
-GLuint* Terrain::getSnowTexture() {
-	return &_tex_snow;
-}
-
 void Terrain::erode() {
-/*	GLuint* tex_height;
-	GLuint* tex_water;
-	GLuint* tex_sediment;
-	GLuint* tex_pos;
+	GLuint* tex_height;			const GLuint TEX_HEIGHT_INDEX = 0;
+	GLuint* tex_water;			const GLuint TEX_WATER_INDEX = 1;
+	GLuint* tex_sediment;		const GLuint TEX_SEDIMENT_INDEX = 2;	
+	GLuint* tex_flux_LR;		const GLuint TEX_FLUX_LR_INDEX = 3;
+	GLuint* tex_flux_TB;		const GLuint TEX_FLUX_TB_INDEX = 4;
+	GLuint* tex_velocity;		const GLuint TEX_VELOCITY_INDEX = 5;
 
-	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
-	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
-	_erosionbuffer[0].init();
-	_erosionbuffer[1].init();
-	_erosionbuffer[0].clear();
-	_erosionbuffer[1].clear();
+	CLEAR_BUFFERS(_noisebuffer);
+	SET_MODE(DIRT_MODE);
 
-	int in = 0;
-	int out = 1;
-	
+	INIT(in, out);
+
+	tex_height = &_tex_height;
+	SWAP_TEXTURE(tex_water, _dirtbuffer, TEX_WATER_INDEX);
+	SWAP_TEXTURE(tex_sediment, _dirtbuffer, TEX_SEDIMENT_INDEX);
+	SWAP_TEXTURE(tex_flux_LR, _dirtbuffer, TEX_FLUX_LR_INDEX);
+	SWAP_TEXTURE(tex_flux_TB, _dirtbuffer, TEX_FLUX_TB_INDEX);
+	SWAP_TEXTURE(tex_velocity, _dirtbuffer, TEX_VELOCITY_INDEX);
+
 	for (int t = 0; t < _erosion_params->iterations; t++) {
-		
-		tex_height		= (t == 0) ? _tex_height : _erosionbuffer[in].get_tex_height();
-		tex_water		= _erosionbuffer[in].get_tex_water();
-		tex_sediment	= _erosionbuffer[in].get_tex_sediment();
-		tex_pos			= _erosionbuffer[in].get_tex_pos();
-		
-		_erosionbuffer[out].bind();
-			glClear(GL_COLOR_BUFFER_BIT);
-			_erosion_quad.draw(tex_height, tex_water, tex_sediment, tex_pos, _erosion_params);
-		_erosionbuffer[out].unbind();
 
-		in = 1 - in;
-		out = 1 - out;
+		_dirtbuffer[out].bind(BUFFER_DIRT, BUFFER_DIRT_COUNT);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.drawDirt(tex_height, tex_water, tex_sediment, tex_flux_LR, tex_flux_TB, tex_velocity);
+		_dirtbuffer[out].unbind();
+
+		SWAP(in, out);
+		SWAP_TEXTURE(tex_height, _dirtbuffer, TEX_HEIGHT_INDEX);
+		SWAP_TEXTURE(tex_water, _dirtbuffer, TEX_WATER_INDEX);
+		SWAP_TEXTURE(tex_sediment, _dirtbuffer, TEX_SEDIMENT_INDEX);
+		SWAP_TEXTURE(tex_flux_LR, _dirtbuffer, TEX_FLUX_LR_INDEX);
+		SWAP_TEXTURE(tex_flux_TB, _dirtbuffer, TEX_FLUX_TB_INDEX);
+		SWAP_TEXTURE(tex_velocity, _dirtbuffer, TEX_VELOCITY_INDEX);
 	}
 
-	copyTexture(_erosionbuffer[in].get_tex_height(), _tex_height);*/
+	copyTexture(tex_height, &_tex_height);
+	copyTexture(tex_water, &_tex_water);
+	copyTexture(tex_sediment, &_tex_dirt);
 }
 
 void Terrain::resize() {
@@ -245,6 +248,18 @@ void Terrain::addSnow() {
 		copyTexture(tex_height, &_tex_height);
 		copyTexture(tex_snow, &_tex_snow);
 	}
+}
+
+GLuint* Terrain::getHeightTexture() {
+	return &_tex_height;
+}
+
+GLuint* Terrain::getDirtTexture() {
+	return &_tex_dirt;
+}
+
+GLuint* Terrain::getSnowTexture() {
+	return &_tex_snow;
 }
 
 void Terrain::copyTexture(GLuint* src, GLuint* dst) {

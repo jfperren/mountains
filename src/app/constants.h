@@ -27,7 +27,8 @@ const int SMOOTH = 3;
 
 const int NOISE_MODE = 0;
 const int SNOW_MODE = 1;
-const int COPY_MODE = 2;
+const int DIRT_MODE = 2;
+const int COPY_MODE = 3;
 
 const int NORMAL = 0;
 const int ONLY_REFLECT = 1;
@@ -62,6 +63,16 @@ const GLenum BUFFER_ATTACHMENT_3[] = {
 const GLuint TYPE_ATTACHMENT_DEPTH = 4;
 const GLenum BUFFER_ATTACHMENT_DEPTH[] = {
 	GL_DEPTH_ATTACHMENT
+};
+
+const int BUFFER_DIRT_COUNT = 6;
+const GLenum BUFFER_DIRT[] = {
+	GL_COLOR_ATTACHMENT0,
+	GL_COLOR_ATTACHMENT1,
+	GL_COLOR_ATTACHMENT2,
+	GL_COLOR_ATTACHMENT3,
+	GL_COLOR_ATTACHMENT4,
+	GL_COLOR_ATTACHMENT5,
 };
 
 typedef enum {

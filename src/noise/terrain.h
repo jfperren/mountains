@@ -14,12 +14,14 @@ class Terrain {
 private:
 	Generalbuffer _snowbuffer[2];
 	Generalbuffer _noisebuffer[2];
+	Generalbuffer _dirtbuffer[2];
 
 	Copybuffer _copybuffer;
 
 	GLuint _tex_height;
 	GLuint _tex_snow;
 	GLuint _tex_dirt;
+	GLuint _tex_water;
 
 	Quad _quad;
 
@@ -42,6 +44,7 @@ public:
 	GLuint* getHeightTexture();
 	GLuint* getDirtTexture();
 	GLuint* getSnowTexture();
+	GLuint* getWaterTexture();
 
 	void resize();
 };
