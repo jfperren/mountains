@@ -25,9 +25,9 @@ private:
 	GLenum _type;
 
 public:
-	Generalbuffer(GLuint count);
+	Generalbuffer();
 
-	void init();
+	void init(GLuint count);
 
 	void setTexture(GLuint index, GLuint* texture);
 	void genTextures();
@@ -45,4 +45,6 @@ public:
 	void unbind();
 	void clear();
 	void cleanup();
+
+	GLuint* getTexture(GLuint index);
 };

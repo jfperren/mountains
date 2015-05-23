@@ -4,6 +4,7 @@
 #include "../buffers/noisebuffer.h"
 #include "../buffers/copybuffer.h"
 #include "../buffers/erosionbuffer.h"
+#include "../buffers/generalbuffer.h"
 #include "quad.h"
 #include "../app/constants.h"
 
@@ -13,6 +14,9 @@ class NoiseGenerator {
 private:
 	Noisebuffer _framebuffer[2];
 	Erosionbuffer _erosionbuffer[2];
+
+	Generalbuffer _generalbuffer[2];
+
 	Copybuffer _copybuffer;
 
 	GLuint* _tex_height;

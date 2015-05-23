@@ -59,7 +59,7 @@ const GLenum BUFFER_ATTACHMENT_3[] = {
 const GLuint TYPE_ATTACHMENT_DEPTH = 4;
 const GLenum BUFFER_ATTACHMENT_DEPTH[] = {
 	GL_DEPTH_ATTACHMENT
-}
+};
 
 typedef enum {
 	NO_NOISE,

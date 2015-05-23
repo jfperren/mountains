@@ -1,9 +1,15 @@
 #include "generalbuffer.h"
 
-Generalbuffer::Generalbuffer(GLuint count){
-	_count = count;
+Generalbuffer::Generalbuffer(){
+	_tex = (GLuint**)malloc(sizeof(GLuint*));
+}
 
+void Generalbuffer::init(GLuint count) {
+	_count = count;
 	_tex = (GLuint**)calloc(_count, sizeof(GLuint*));
+	for (int i = 0; i < count; i++) {
+		_tex[i] = (GLuint*)malloc(sizeof(GLuint));
+	}
 }
 
 void Generalbuffer::setTexture(GLuint index, GLuint* texture){
@@ -84,3 +90,6 @@ void Generalbuffer::cleanup() {
 	glDeleteFramebuffers(1, &_fbo);
 }
 
+GLuint* Generalbuffer::getTexture(GLuint index) {
+	return _tex[index];
+}

@@ -4,6 +4,8 @@ NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_snow)
 	{
 		_tex_height = tex_height;
 		_tex_snow = tex_snow;
+		
+		/*
 
 		glGenTextures(1, _tex_height);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
@@ -17,7 +19,7 @@ NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_snow)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 	}
 
 void NoiseGenerator::init(AppParams* app_params) {
@@ -30,6 +32,14 @@ void NoiseGenerator::init(AppParams* app_params) {
 	_framebuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
 	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
 	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
+
+	_generalbuffer[0].init(3);
+	_generalbuffer[0].genTextures();
+	_generalbuffer[0].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
+
+	_generalbuffer[1].init(3);
+	_generalbuffer[1].genTextures();
+	_generalbuffer[1].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
 
 	_framebuffer[0].init();
 	_framebuffer[1].init();
@@ -129,12 +139,15 @@ void NoiseGenerator::addSnow() {
 	GLuint* tex_height;
 	GLuint* tex_pos;
 
-	_erosionbuffer[0].resize(_noise_params->resolution, _noise_params->resolution);
-	_erosionbuffer[1].resize(_noise_params->resolution, _noise_params->resolution);
-	_erosionbuffer[0].init();
-	_erosionbuffer[1].init();
-	_erosionbuffer[0].clear();
-	_erosionbuffer[1].clear();
+	_generalbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
+	_generalbuffer[0].genTextureImages();
+	_generalbuffer[0].wrap(BUFFER_ATTACHMENT_2, 3);
+	_generalbuffer[0].clear();
+
+	_generalbuffer[1].setSize(_noise_params->resolution, _noise_params->resolution);
+	_generalbuffer[1].genTextureImages();
+	_generalbuffer[1].wrap(BUFFER_ATTACHMENT_2, 3);
+	_generalbuffer[1].clear();
 
 	_quad.setShaders(SNOW_MODE);
 	_quad.genVertexArray();
@@ -144,62 +157,62 @@ void NoiseGenerator::addSnow() {
 		int out = 1;
 
 		tex_height = _tex_height;
-		tex_snow = _erosionbuffer[in].get_tex_snow();
-		tex_pos = _erosionbuffer[in].get_tex_pos();
+		tex_snow = _generalbuffer[in].getTexture(1);
+		tex_pos = _generalbuffer[in].getTexture(2);
 
-		_erosionbuffer[out].bind();
+		_generalbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 			glClear(GL_COLOR_BUFFER_BIT);
 			_quad.fall(tex_height, tex_snow, tex_pos);
-		_erosionbuffer[out].unbind();
+		_generalbuffer[out].unbind();
 
 		in = 1 - in;
 		out = 1 - out;
 		
 		for (int t = 0; t < _snow_params->slide_time; t++) {
 
-			tex_height = _erosionbuffer[in].get_tex_height();
-			tex_snow = _erosionbuffer[in].get_tex_snow();
-			tex_pos = _erosionbuffer[in].get_tex_pos();
+			tex_height = _generalbuffer[in].getTexture(0);
+			tex_snow = _generalbuffer[in].getTexture(1);
+			tex_pos = _generalbuffer[in].getTexture(2);
 
-			_erosionbuffer[out].bind();
-				glClear(GL_COLOR_BUFFER_BIT);
-				_quad.slide(tex_height, tex_snow, tex_pos);
-			_erosionbuffer[out].unbind();
-
-			in = 1 - in;
-			out = 1 - out;
-		}
-
-		for (int t = 0; t < _snow_params->melt_time; t++) {
-			tex_height = _erosionbuffer[in].get_tex_height();
-			tex_snow = _erosionbuffer[in].get_tex_snow();
-			tex_pos = _erosionbuffer[in].get_tex_pos();
-
-			_erosionbuffer[out].bind();
+			_generalbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 			glClear(GL_COLOR_BUFFER_BIT);
-			_quad.melt(tex_height, tex_snow, tex_pos);
-			_erosionbuffer[out].unbind();
+			_quad.slide(tex_height, tex_snow, tex_pos);
+			_generalbuffer[out].unbind();
 
 			in = 1 - in;
 			out = 1 - out;
 		}
 		
-		for (int t = 0; t < _snow_params->smooth_time; t++) {
-			tex_height = _erosionbuffer[in].get_tex_height();
-			tex_snow = _erosionbuffer[in].get_tex_snow();
-			tex_pos = _erosionbuffer[in].get_tex_pos();
+		for (int t = 0; t < _snow_params->melt_time; t++) {
+			tex_height = _generalbuffer[in].getTexture(0);
+			tex_snow = _generalbuffer[in].getTexture(1);
+			tex_pos = _generalbuffer[in].getTexture(2);
 
-			_erosionbuffer[out].bind();
-				glClear(GL_COLOR_BUFFER_BIT);
-				_quad.smooth(tex_height, tex_snow, tex_pos);
-			_erosionbuffer[out].unbind();
+			_generalbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.melt(tex_height, tex_snow, tex_pos);
+			_generalbuffer[out].unbind();
 
 			in = 1 - in;
 			out = 1 - out;
 		}
 
-		tex_height = _erosionbuffer[in].get_tex_height();
-		tex_snow = _erosionbuffer[in].get_tex_snow();
+		for (int t = 0; t < _snow_params->smooth_time; t++) {
+			tex_height = _generalbuffer[in].getTexture(0);
+			tex_snow = _generalbuffer[in].getTexture(1);
+			tex_pos = _generalbuffer[in].getTexture(2);
+
+			_generalbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.smooth(tex_height, tex_snow, tex_pos);
+			_generalbuffer[out].unbind();
+
+			in = 1 - in;
+			out = 1 - out;
+		}
+
+		tex_height = _generalbuffer[in].getTexture(0);
+		tex_snow = _generalbuffer[in].getTexture(1);
 
 		copyTexture(tex_height, _tex_height);
 		copyTexture(tex_snow, _tex_snow);
@@ -212,7 +225,6 @@ void NoiseGenerator::copyTexture(GLuint* src, GLuint* dst) {
 
 	_quad.setShaders(COPY_MODE);
 	_quad.genVertexArray();
-	cout << "COPY WITH RESOLUTION " << _noise_params->resolution << endl;
 	_copybuffer.bind();
 		glClear(GL_COLOR_BUFFER_BIT);
 		 _quad.drawTexture(src);

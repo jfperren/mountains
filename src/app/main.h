@@ -3,7 +3,7 @@
 #include "icg_common.h"
 #include "../camera/camera.h"
 #include "../scene/grid.h"
-#include "../noise/noise_quad.h"
+#include "../noise/quad.h"
 #include "../noise/noise_generator.h"
 #include "../buffers/framebuffer.h"
 #include "../buffers/depthbuffer.h"
