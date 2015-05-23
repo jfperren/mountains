@@ -1,5 +1,11 @@
 ﻿#include "noise_generator.h"
 
+#define INIT(in, out) int in = 0; int out = 1;
+#define SWAP(in, out) in = 1 - in; out = 1 - out;
+#define SWAP_TEXTURE(tex, buffer, index) tex = buffer[in].getTexture(index);
+#define CLEAR_BUFFERS(buffer) buffer[0].clear(); buffer[1].clear();
+#define SET_MODE(mode) _quad.setShaders(mode);_quad.genVertexArray();
+
 NoiseGenerator::NoiseGenerator(GLuint* tex_height, GLuint* tex_snow)
 	{
 		_tex_height = tex_height;
@@ -55,23 +61,20 @@ void NoiseGenerator::renderNoise(int out, int in, NoiseParams* noise_params, flo
 
 
 void NoiseGenerator::renderFractal() {
-	
+
 	GLuint* tex_height;
 
-	_noisebuffer[0].clear();
-	_noisebuffer[0].clear();
+	const GLuint TEX_HEIGHT_INDEX = 0;
 
-	_quad.setShaders(NOISE_MODE);
-	_quad.genVertexArray();
+	CLEAR_BUFFERS(_noisebuffer);
+	SET_MODE(NOISE_MODE);
 
 	NoiseParams noise_params_tmp = _noise_params->copy();
 	noise_params_tmp.amplitude = 1;
 
 	// Two variables to swap buffers
-	int in = 0;
-	int out = 1;
-
-	tex_height = _noisebuffer[in].getTexture(0);
+	INIT(in, out);
+	SWAP_TEXTURE(tex_height, _noisebuffer, TEX_HEIGHT_INDEX);
 
 	if (_noise_params->fractal_type == MULTIFRACTAL) {
 		_noisebuffer[out].bind(BUFFER_ATTACHMENT_0, 1);
@@ -79,13 +82,11 @@ void NoiseGenerator::renderFractal() {
 			_quad.drawNoise(&FLAT_NOISE, 1, tex_height);
 		_noisebuffer[out].unbind();
 
-		in = 1 - in;
-		out = 1 - out;
+		SWAP(in, out);
+		SWAP_TEXTURE(tex_height, _noisebuffer, TEX_HEIGHT_INDEX);
 	}
 
 	for (int i = 0; i < _noise_params->octaves; i++) {
-
-		tex_height = _noisebuffer[in].getTexture(0);
 
 		_noisebuffer[out].bind(BUFFER_ATTACHMENT_0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -97,11 +98,9 @@ void NoiseGenerator::renderFractal() {
 		noise_params_tmp.amplitude *= pow(_noise_params->lacunarity, -_noise_params->H);
 
 		// Swap input & output textures
-		in = 1 - in;
-		out = 1 - out;
+		SWAP(in, out);
+		SWAP_TEXTURE(tex_height, _noisebuffer, TEX_HEIGHT_INDEX);
 	}
-
-	tex_height = _noisebuffer[in].getTexture(0);
 
 	copyNoise(tex_height, _tex_height, _noise_params->amplitude, _noise_params->offset);
 }
@@ -173,73 +172,69 @@ void NoiseGenerator::addSnow() {
 	GLuint* tex_height;
 	GLuint* tex_pos;
 
-	_snowbuffer[0].clear();
-	_snowbuffer[1].clear();
+	const GLuint TEX_HEIGHT_INDEX = 0;
+	const GLuint TEX_SNOW_INDEX = 1;
+	const GLuint TEX_POS_INDEX = 2;
 
-	_quad.setShaders(SNOW_MODE);
-	_quad.genVertexArray();
+	CLEAR_BUFFERS(_snowbuffer);
+	SET_MODE(SNOW_MODE);
 
 	if (_snow_params->enable) {
-		int in = 0;
-		int out = 1;
+
+		INIT(in, out);
 
 		tex_height = _tex_height;
-		tex_snow = _snowbuffer[in].getTexture(1);
-		tex_pos = _snowbuffer[in].getTexture(2);
+		SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
+		SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 
 		_snowbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 			glClear(GL_COLOR_BUFFER_BIT);
 			_quad.fall(tex_height, tex_snow, tex_pos);
 		_snowbuffer[out].unbind();
 
-		in = 1 - in;
-		out = 1 - out;
+		SWAP(in, out);
+		SWAP_TEXTURE(tex_height, _snowbuffer, TEX_HEIGHT_INDEX);
+		SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
+		SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 		
 		for (int t = 0; t < _snow_params->slide_time; t++) {
-
-			tex_height = _snowbuffer[in].getTexture(0);
-			tex_snow = _snowbuffer[in].getTexture(1);
-			tex_pos = _snowbuffer[in].getTexture(2);
 
 			_snowbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 			glClear(GL_COLOR_BUFFER_BIT);
 			_quad.slide(tex_height, tex_snow, tex_pos);
 			_snowbuffer[out].unbind();
 
-			in = 1 - in;
-			out = 1 - out;
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _snowbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
+			SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 		}
 		
 		for (int t = 0; t < _snow_params->melt_time; t++) {
-			tex_height = _snowbuffer[in].getTexture(0);
-			tex_snow = _snowbuffer[in].getTexture(1);
-			tex_pos = _snowbuffer[in].getTexture(2);
 
 			_snowbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 			glClear(GL_COLOR_BUFFER_BIT);
 			_quad.melt(tex_height, tex_snow, tex_pos);
 			_snowbuffer[out].unbind();
 
-			in = 1 - in;
-			out = 1 - out;
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _snowbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
+			SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 		}
 
 		for (int t = 0; t < _snow_params->smooth_time; t++) {
-			tex_height = _snowbuffer[in].getTexture(0);
-			tex_snow = _snowbuffer[in].getTexture(1);
-			tex_pos = _snowbuffer[in].getTexture(2);
 
 			_snowbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 				glClear(GL_COLOR_BUFFER_BIT);
 				_quad.smooth(tex_height, tex_snow, tex_pos);
 			_snowbuffer[out].unbind();
 
-			in = 1 - in;
-			out = 1 - out;
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _snowbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
+			SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 		}
-
-		tex_height = _snowbuffer[in].getTexture(0);
-		tex_snow = _snowbuffer[in].getTexture(1);
 
 		copyTexture(tex_height, _tex_height);
 		copyTexture(tex_snow, _tex_snow);

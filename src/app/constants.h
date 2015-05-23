@@ -29,7 +29,6 @@ const int NOISE_MODE = 0;
 const int SNOW_MODE = 1;
 const int COPY_MODE = 2;
 
-
 const GLuint TYPE_ATTACHMENT_0 = 0;
 const GLenum BUFFER_ATTACHMENT_0[] = { 
 	GL_COLOR_ATTACHMENT0 

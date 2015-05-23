@@ -61,6 +61,7 @@ void resize_callback(int width, int height) {
 
 void compute_height_map() {
 
+	noise_generator.resize();
 	noise_generator.renderFractal();
 	//noise_generator.erode();
 	noise_generator.addSnow();
