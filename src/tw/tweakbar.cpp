@@ -95,8 +95,7 @@ void twBarVisible(bool b) {
 }
 
 void refreshTwBar() {
-	TwDeleteBar(bar);
-	TwDraw();
+	TwRefreshBar(bar);
 }
 
 // --- Value Callbacks --- //

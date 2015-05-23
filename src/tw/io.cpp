@@ -164,3 +164,57 @@ void loadFromFile(string file_name, NoiseParams *noise_params, WaterParams *wate
 	std::cout << "[Error] Could not load data: the file" << file_name << " could not be opened." << endl;
 	}*/
 }
+
+bool save_screenshot(string filename, int w, int h)
+{
+	//This prevents the images getting padded 
+	// when the width multiplied by 3 is not a multiple of 4
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+	int nSize = w*h * 3;
+	// First let's create our buffer, 3 channels per Pixel
+	char* dataBuffer = (char*)malloc(nSize*sizeof(char));
+
+	if (!dataBuffer) return false;
+
+	// Let's fetch them from the backbuffer	
+	// We request the pixels in GL_BGR format, thanks to Berzeger for the tip
+	glReadPixels((GLint)0, (GLint)0,
+		(GLint)w, (GLint)h,
+		GL_BGR, GL_UNSIGNED_BYTE, dataBuffer);
+
+	//Now the file creation
+	FILE *filePtr = fopen(filename.c_str(), "wb");
+	if (!filePtr) return false;
+
+
+	unsigned char TGAheader[12] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	unsigned char header[6] = { w % 256, w / 256,
+		h % 256, h / 256,
+		24, 0 };
+	// We write the headers
+	fwrite(TGAheader, sizeof(unsigned char), 12, filePtr);
+	fwrite(header, sizeof(unsigned char), 6, filePtr);
+	// And finally our image data
+	fwrite(dataBuffer, sizeof(GLubyte), nSize, filePtr);
+	fclose(filePtr);
+
+	return true;
+}
+
+string get_unique_name() {
+	std::stringstream ss;
+
+	time_t t = time(0);
+	struct tm * now = localtime(&t);
+
+	ss << (now->tm_year + 1900) << '-'
+		<< (now->tm_mon + 1) << '-'
+		<< now->tm_mday << '-'
+		<< now->tm_hour << '-'
+		<< now->tm_min << '-'
+		<< now->tm_sec
+		<< ".tga";
+
+	return ss.str();
+}
