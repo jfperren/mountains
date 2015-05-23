@@ -18,7 +18,7 @@ const float DX = 0.01f;
 const float DPHI = 1.0f;
 
 const float NEAR = 0.1f;
-const float FAR = 10.0f;
+const float FAR = 40.0f;
 
 const int FALL = 0;
 const int SLIDE = 1;
@@ -28,6 +28,10 @@ const int SMOOTH = 3;
 const int NOISE_MODE = 0;
 const int SNOW_MODE = 1;
 const int COPY_MODE = 2;
+
+const int NORMAL = 0;
+const int ONLY_REFLECT = 1;
+const int ILLUMINATE = 2;
 
 const GLuint TYPE_ATTACHMENT_0 = 0;
 const GLenum BUFFER_ATTACHMENT_0[] = { 
@@ -208,17 +212,36 @@ typedef struct SnowParams {
 };
 
 typedef struct ShadingParams {
-	bool enable;
+	bool enable_phong;
+	bool enable_shadow;
+
 	vec3 light_pos;
 	vec3 Ia, Id;
+
+	float shadow_intensity;
 
 	void setup(GLuint pid) {
 		glUseProgram(pid);
 
-		glUniform1i(glGetUniformLocation(pid, "shading_enable"), enable);
+		glUniform1i(glGetUniformLocation(pid, "shading_enable_phong"), enable_phong);
+		glUniform1i(glGetUniformLocation(pid, "shading_enable_shadow"), enable_shadow);
 		glUniform3fv(glGetUniformLocation(pid, "shading_light_pos"), ONE, light_pos.data());
 		glUniform3fv(glGetUniformLocation(pid, "shading_Ia"), ONE, Ia.data());
 		glUniform3fv(glGetUniformLocation(pid, "shading_Id"), ONE, Id.data());
+		glUniform1f(glGetUniformLocation(pid, "shading_shadow_intensity"), shadow_intensity);
+	}
+
+	mat4 get_view_matrix() {
+		return lookAt(
+			light_pos, 
+			vec3(0, 0, 0), 
+			vec3(0, 1, 0)
+		);
+	}
+
+	mat4 get_projection_matrix() {
+		return Eigen::ortho(-3.0f, 3.0f, -3.0f, 3.0f, NEAR, FAR);
+		//return Eigen::perspective(45.0f, float(WIDTH)/ HEIGHT, NEAR, FAR);
 	}
 };
 

@@ -117,7 +117,9 @@ void initAntTwBar(AppParams* app_params) {
 
 	// Shading
 
-	TwAddVarCB(bar, "shading_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &shading_params->enable, " group=Shading");
+	TwAddVarCB(bar, "shading_enable_phong", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &shading_params->enable_phong, " group=Shading");
+	TwAddVarCB(bar, "shading_enable_shadow", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &shading_params->enable_shadow, " group=Shading");
+	TwAddVarCB(bar, "shading_shadow_intensity", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->shadow_intensity, " group=Shading step=0.1 min=0 max=1");
 	TwAddVarCB(bar, "shading_light_X", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->light_pos[0], " group=Shading step=0.1");
 	TwAddVarCB(bar, "shading_light_Y", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->light_pos[1], " group=Shading step=0.1");
 	TwAddVarCB(bar, "shading_light_Z", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &shading_params->light_pos[2], " group=Shading step=0.1");

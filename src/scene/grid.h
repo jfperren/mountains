@@ -54,7 +54,7 @@ public:
 	void setTexDirt(GLuint* tex_dirt);
 	void setTexShadow(GLuint* tex_shadow);
 
-	void draw(const mat4& view, const mat4& projection, bool only_reflect = false);
+	void draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode);
 	void cleanup();
 
 	

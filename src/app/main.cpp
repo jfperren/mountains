@@ -31,8 +31,9 @@ Sky sky;
 
 // --- Buffers --- // 
 
-Generalbuffer fb_mirror = Generalbuffer();
+Generalbuffer fb_mirror;
 Generalbuffer fb_water_depth;
+Generalbuffer fb_shadow;
 
 // --- Textures --- //
 
@@ -42,6 +43,7 @@ GLuint* _tex_dirt;
 
 GLuint* _tex_mirror;
 GLuint* _tex_water_depth;
+GLuint* _tex_shadow;
 
 // --- Other --- //
 
@@ -65,6 +67,14 @@ void initBuffers() {
 	fb_water_depth.setSize(WIDTH, HEIGHT);
 	fb_water_depth.genTextureImages();
 	fb_water_depth.genFramebuffer(BUFFER_ATTACHMENT_DEPTH, 1);
+
+	fb_shadow.init(1);
+	fb_shadow.genTextures();
+	fb_shadow.setFormat(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+
+	fb_shadow.setSize(WIDTH, HEIGHT);
+	fb_shadow.genTextureImages();
+	fb_shadow.genFramebuffer(BUFFER_ATTACHMENT_DEPTH, 1);
 
 	check_error_gl();
 }
@@ -129,30 +139,36 @@ void display(){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// 1. Water Reflects
+
+	cout << "view" << shading_params.get_view_matrix() << endl;
+	cout << "proj" << shading_params.get_projection_matrix() << endl;
+
+	// 1. Shadow
+
+	fb_shadow.bind(BUFFER_ATTACHMENT_0, 1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), ILLUMINATE);
+	fb_shadow.unbind();
+
+	// 2. Water Reflects
 
 	fb_mirror.bind(BUFFER_ATTACHMENT_0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), true);
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), ONLY_REFLECT);
 	fb_mirror.unbind();
 
 	check_error_gl();
 	
-	// 2. Water depth
+	// 3. Water depth
 	
 	fb_water_depth.bind(BUFFER_ATTACHMENT_0, 1);
-	check_error_gl();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		check_error_gl();
-		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
-		check_error_gl();
-		fb_water_depth.unbind();
+		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), NORMAL);
+	fb_water_depth.unbind();
 	
-	check_error_gl();
+	// 4. Scene
 
-	// 3. Scene
-
-	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), false);
+	grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), NORMAL);
 	water.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
 	sky.draw(camera.get_view_matrix(), camera.get_projection_matrix());
@@ -240,7 +256,7 @@ void initParams() {
 	erosion_params.iterations			= 1;
 
 	// --- Water ---
-	water_params.enable					= true;
+	water_params.enable					= false;
 	water_params.height					= 0;
 	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
 	water_params.depth_alpha_factor		= 1.4f;
@@ -254,10 +270,12 @@ void initParams() {
 
 
 	// --- Shading ---
-	shading_params.enable				= true;
+	shading_params.enable_phong			= false;
+	shading_params.enable_shadow		= true;
+	shading_params.shadow_intensity		= 0.2;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
-	shading_params.light_pos			= vec3(2.0f, 2.0f, 2.0f);
+	shading_params.light_pos			= vec3(0.1f, 1.0f, 0.1f);
 
 	// --- Texture ---
 	texture_params.texture_type			= TEXTURE;
@@ -283,7 +301,7 @@ void initSceneObjects() {
 	grid.setTexHeight(_tex_height);
 	grid.setTexSnow(_tex_snow);
 	grid.setTexDirt(_tex_dirt);
-	//grid.setTexShadow(_tex_shadow);
+	grid.setTexShadow(_tex_shadow);
 
 	water.init(&app_params);
 	water.setHeightTexture(_tex_height);
@@ -301,6 +319,7 @@ void initTextures() {
 	_tex_dirt = terrain.getDirtTexture();
 	_tex_snow = terrain.getSnowTexture();
 
+	_tex_shadow = fb_shadow.getTexture(0);
 	_tex_mirror = fb_mirror.getTexture(0);
 	_tex_water_depth = fb_water_depth.getTexture(0);
 }

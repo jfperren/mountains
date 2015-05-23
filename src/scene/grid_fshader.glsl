@@ -3,6 +3,7 @@
 // --- Inputs --- //
 
 in vec2 uv;
+in vec4 pos_to_light;
 
 // --- Outputs --- //
 
@@ -12,6 +13,8 @@ out vec4 color;
 
 layout(location = 0) uniform sampler2D tex_height;
 layout(location = 1) uniform sampler2D tex_snow;
+layout(location = 2) uniform sampler2D tex_dirt;
+layout(location = 3) uniform sampler2D tex_shadow;
 
 layout(location = 10) uniform sampler2D tex_grass_;
 layout(location = 11) uniform sampler2D tex_sand_;
@@ -22,9 +25,11 @@ layout(location = 14) uniform sampler2D tex_rock_underwater_;
 // --- Uniforms --- //
 
 // light_params
-uniform int shading_enable;
+uniform int shading_enable_phong;
+uniform int shading_enable_shadow;
 uniform vec3 shading_light_pos;
 uniform vec3 shading_Ia, shading_Id;
+uniform float shading_shadow_intensity;
 
 // texture_params
 
@@ -44,52 +49,38 @@ uniform int grass_s_transition;
 uniform int sand_h_transition;
 uniform int sand_s_transition;
 
+uniform float water_height;
+
 uniform float DX;
 uniform float DY;
+
+uniform float NEAR;
+uniform float FAR;
 
 const int NONE = 0;
 const int SHADES = 1;
 const int TEXTURE = 2;
 
-// others
-uniform float water_height;
-uniform int only_reflect;
 
-/** Computes the coefficient used as the 3rd arg of mix(3).
-	The output ranges from 0 to 1 in the reals.
-*/
-float compute_linear_interpolation(float height1, float height2, float x) {
-	float beta = (0 - 1) / (height1 - height2) * x + (height1 * 1 - height2 * 0) / (height1 - height2);
-	if (beta > 0.99) {
-		beta = 1;
-	}
-	if (beta < 0) {
-		beta = 0;
-	}
+uniform int mode;
 
-	return beta;
-}
-
-float smooth_interpolate(float alpha, float factor, float threshold) {
-	if (alpha < threshold) 
-		return 1-exp(-factor * (threshold-alpha));
-	else
-		return 0;
-}
+const int NORMAL = 0;
+const int ONLY_REFLECT = 1;
+const int ILLUMINATE = 2;
 
 void main() {
 
 	float height = texture(tex_height, uv).rgb[0];
 	float snow = texture(tex_snow, uv)[0];
 
-	if (only_reflect == 1 && height < 0) {
+	if (mode == ONLY_REFLECT && height < 0) {
 		discard;
 	}
 
 	vec3 derivative_x = vec3(1, 0, 1000*texture(tex_height, uv + vec2(DX, 0))[0] - 1000*texture(tex_height, uv - vec2(DX, 0)*2*DX)[0]);
 	vec3 derivative_y = vec3(0, 1, 1000*texture(tex_height, uv + vec2(0, DX))[0] - 1000*texture(tex_height, uv - vec2(0, DX)*2*DY)[0]);
 	vec3 normal = normalize(cross(derivative_x, derivative_y));
-	
+
 	vec3 ambient;
 	vec3 diffuse;
 
@@ -117,11 +108,57 @@ void main() {
 		}
 	}
 
-	if (shading_enable != 0) {
+	if (shading_enable_phong != 0) {
 		ambient *= shading_Ia;
 		diffuse = shading_Id * dot(normal, normalize(shading_light_pos));
 	}
 
-	color = vec4(ambient + diffuse, 1.0);
-	
+	vec3 color_unshadowed = ambient + diffuse;
+
+	if (shading_enable_shadow != 0 && mode != ILLUMINATE) {
+		vec2 uv_light = vec2((pos_to_light.x + 1) / 2, (pos_to_light.y + 1) / 2);
+		float bias = 0.100;
+		float visibility = 1.0;
+
+		float shadow_z_b = texture(tex_shadow, uv_light)[0];
+		float shadow_z_n = 2.0 * shadow_z_b - 1.0;
+		//float shadow_z_e = 2.0 * NEAR * FAR / (FAR + NEAR - shadow_z_n * (FAR - NEAR));
+		float shadow_z_e = (shadow_z_n * (FAR - NEAR) + FAR + NEAR)/(-2.0);
+
+		float grid_z_b = pos_to_light.z;
+		float grid_z_n = 2.0 * grid_z_b - 1.0;
+		//float grid_z_e = 2.0 * NEAR * FAR / (FAR + NEAR - grid_z_n * (FAR - NEAR));
+		float grid_z_e = (grid_z_n * (FAR - NEAR) + FAR + NEAR)/(-2.0);
+
+		float diff = grid_z_e - shadow_z_e;
+
+		//float depth_shadow = 39 * shadow_z_b - NEAR;
+		//float depth_grid = 39 - grid_z_e;
+
+		float depth_shadow = 40 * shadow_z_b - NEAR;
+		float depth_grid = 39 - grid_z_e;
+
+		float value = depth_grid - depth_shadow;
+
+		if (value < 0) {
+			color = vec4(1, 1 , 1, 1);
+		} if (value < 1) {
+			color = vec4(value, 0, 0, 1);
+		} else if (value < 2) {
+			color = vec4(0, value - 1, 0, 1);
+		} else {
+			color = vec4(0, 0, value - 2, 1);
+		} 
+
+		/*
+		if(diff > bias){
+			visibility = shading_shadow_intensity;
+		}
+
+
+		
+		color = vec4(vec3(visibility) * color_unshadowed, 1.0);*/
+	} else {
+		color = vec4(color_unshadowed, 1.0);
+	}
 }

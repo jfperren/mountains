@@ -142,7 +142,7 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
-	void Grid::draw(const mat4& view, const mat4& projection, bool only_reflect){
+	void Grid::draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 
@@ -154,12 +154,10 @@ using namespace std;
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
 		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
 
-		if (only_reflect){
-			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
-		}
-		else {
-			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 0);
-		}
+		glUniform1i(glGetUniformLocation(_pid, "mode"), mode);
+
+		glUniform1f(glGetUniformLocation(_pid, "FAR"), FAR);
+		glUniform1f(glGetUniformLocation(_pid, "NEAR"), NEAR);
 
 		// Bind textures
 		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
@@ -170,6 +168,10 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
 
+		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 3);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, *_tex_shadow);
+
 		for (int i = 0; i < TEXTURES_COUNT; i++){
 
 			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
@@ -178,10 +180,16 @@ using namespace std;
 			glBindTexture(GL_TEXTURE_2D, _texs[i]);
 		}
 
-		// Setup MVP
+		// Setup MVPs
+
 		mat4 MVP = projection*view*model;
 		GLuint MVP_id = glGetUniformLocation(_pid, "mvp");
 		glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
+
+		mat4 MVP_light = light_projection * light_view * model;
+
+		GLuint MVP_shadow_id = glGetUniformLocation(_pid, "mvp_light");
+		glUniformMatrix4fv(MVP_shadow_id, 1, GL_FALSE, MVP_light.data());
 
 		// Draw
 		glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);
