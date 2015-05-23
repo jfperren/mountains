@@ -4,9 +4,7 @@
 #include "../buffers/noisebuffer.h"
 #include "../buffers/copybuffer.h"
 #include "../buffers/erosionbuffer.h"
-#include "noise_quad.h"
-#include "erosion_quad.h"
-#include "copy_quad.h"
+#include "quad.h"
 #include "../app/constants.h"
 
 
@@ -20,9 +18,7 @@ private:
 	GLuint* _tex_height;
 	GLuint* _tex_snow;
 
-	CopyQuad _copy_quad;
-	NoiseQuad _quad;
-	ErosionQuad _erosion_quad;
+	Quad _quad;
 
 	NoiseParams* _noise_params;
 	SnowParams* _snow_params;

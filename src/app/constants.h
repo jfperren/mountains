@@ -25,6 +25,10 @@ const int SLIDE = 1;
 const int MELT = 2;
 const int SMOOTH = 3;
 
+const int NOISE_MODE = 0;
+const int SNOW_MODE = 1;
+const int COPY_MODE = 2;
+
 typedef enum {
 	NO_NOISE,
 	RANDOM_NOISE,

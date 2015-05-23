@@ -3,7 +3,7 @@
 #include "icg_common.h"
 #include "../app/constants.h"
 
-class ErosionQuad {
+class Quad {
 
 private:
 	GLuint _vao; ///< vertex array object
@@ -15,12 +15,17 @@ private:
 
 public:
 	void init(AppParams* app_params);
-	void cleanup();
+	void setShaders(int mode);
+	void genVertexArray();
+
+	void drawNoise(NoiseParams* noise_params, float noise_amplitude, GLuint* in_texture = nullptr);
+	void drawSnow(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos, int mode);
+	void drawTexture(GLuint* texture, float amplitude = 1, float offset = 0);
 
 	void fall(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
 	void slide(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
 	void melt(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
 	void smooth(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);
 
-	void draw(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos, int mode);
+	void cleanup();
 };

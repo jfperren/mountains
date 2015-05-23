@@ -3,7 +3,7 @@
 void CopyQuad::init(){
 
 	///--- Compile the shaders
-	_pid = opengp::load_shaders("noise/copy_quad_vshader.glsl", "noise/copy_quad_fshader.glsl");
+	_pid = opengp::load_shaders("noise/quad_copy_vshader.glsl", "noise/copy_quad_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
 
@@ -40,24 +40,3 @@ void CopyQuad::cleanup(){
 	// TODO cleanup
 }
 
-void CopyQuad::drawTexture(GLuint* texture, float amplitude, float offset){
-
-	// Bind program & vertex array
-	glUseProgram(_pid);
-	glBindVertexArray(_vao);
-
-	glUniform1f(glGetUniformLocation(_pid, "amplitude"), amplitude);
-	glUniform1f(glGetUniformLocation(_pid, "offset"), offset);
-
-	// Set texture input
-	glUniform1i(glGetUniformLocation(_pid, "tex"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, *texture);
-
-	// Draw
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	// Unbind
-	glBindVertexArray(0);
-	glUseProgram(0);
-}
