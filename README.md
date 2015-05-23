@@ -1,7 +1,7 @@
 # opengl-terrain
 
 ## Screenshots
-![ScreenShot](https://raw.github.com/jfperren/procedural-terrain/bezier-robiche/screenshots/opengl-1.png)
+![ScreenShot](https://github.com/jfperren/procedural-terrain/blob/bezier-robich/screenshots/opengl-1.png)
 
 ## Compiling the project with Visual Studio
 
