@@ -1,0 +1,86 @@
+#include "generalbuffer.h"
+
+Generalbuffer::Generalbuffer(GLuint count){
+	_count = count;
+
+	_tex = (GLuint**)calloc(_count, sizeof(GLuint*));
+}
+
+void Generalbuffer::setTexture(GLuint index, GLuint* texture){
+	_tex[index] = texture;
+}
+
+void Generalbuffer::genTextures() {
+	for (int i = 0; i < _count; i++) {
+		glGenTextures(1, _tex[i]);
+		glBindTexture(GL_TEXTURE_2D, *_tex[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+}
+
+void Generalbuffer::setSize(GLuint width, GLuint height) {
+	_width = width;
+	_height = height;
+}
+
+void Generalbuffer::setFormat(GLint internal_format, GLenum format, GLenum type){
+	_internal_format = internal_format;
+	_format = format;
+	_type = type;
+}
+
+void Generalbuffer::genTextureImages(){
+	for (int i = 0; i < _count; i++) {
+		glBindTexture(GL_TEXTURE_2D, *_tex[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, _internal_format,
+			_width, _height, 0,
+			_format, _type, NULL);
+	}
+}
+
+void Generalbuffer::wrap(const GLenum buffers[], GLuint count) {
+	glGenFramebuffers(1, &_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
+
+	for (int i = 0; i < count; i++) {
+		glBindTexture(GL_TEXTURE_2D, *_tex[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, buffers[i], GL_TEXTURE_2D, *_tex[i], 0);
+	}
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cerr << "!!!ERROR: Framebuffer not OK :(" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0); ///< avoid pollution
+}
+
+
+///--- Warning: ovverrides viewport!!
+void Generalbuffer::bind(const GLenum buffers[], GLuint count) {
+	glViewport(0, 0, _width, _height);
+	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+	
+	glDrawBuffers(count, buffers);
+}
+
+void Generalbuffer::unbind() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Generalbuffer::clear() {
+	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+	glClearColor(.0, .0, .0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(.937, .937, .937, 1.0);
+}
+
+void Generalbuffer::cleanup() {
+	for (int i = 0; i < _count; i++) {
+		glDeleteTextures(1, _tex[i]);
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0 /*UNBIND*/);
+	glDeleteFramebuffers(1, &_fbo);
+}
+
