@@ -47,6 +47,14 @@ void Generalbuffer::genTextureImages(){
 	}
 }
 
+void Generalbuffer::genRenderbuffer(){
+	_rb = true;
+	glGenRenderbuffers(1, &_depth_rb);
+	glBindRenderbuffer(GL_RENDERBUFFER, _depth_rb);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, _width, _height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
 void Generalbuffer::genFramebuffer(const GLenum buffers[], GLuint count) {
 	glGenFramebuffers(1, &_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER_EXT, _fbo);
@@ -55,7 +63,7 @@ void Generalbuffer::genFramebuffer(const GLenum buffers[], GLuint count) {
 		glBindTexture(GL_TEXTURE_2D, *_tex[i]);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, buffers[i], GL_TEXTURE_2D, *_tex[i], 0);
 	}
-
+	if (_rb) glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depth_rb);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cerr << "!!!ERROR: Framebuffer not OK :(" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); ///< avoid pollution

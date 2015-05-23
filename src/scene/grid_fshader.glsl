@@ -113,8 +113,9 @@ void main() {
 		diffuse = shading_Id * dot(normal, normalize(shading_light_pos));
 	}
 
-	vec3 color_unshadowed = ambient + diffuse;
+	color = vec4(ambient + diffuse, 1.0);
 
+	/*
 	if (shading_enable_shadow != 0 && mode != ILLUMINATE) {
 		vec2 uv_light = vec2((pos_to_light.x + 1) / 2, (pos_to_light.y + 1) / 2);
 		float bias = 0.100;
@@ -150,15 +151,13 @@ void main() {
 			color = vec4(0, 0, value - 2, 1);
 		} 
 
-		/*
+		
 		if(diff > bias){
 			visibility = shading_shadow_intensity;
 		}
-
-
 		
-		color = vec4(vec3(visibility) * color_unshadowed, 1.0);*/
+		color = vec4(vec3(visibility) * color_unshadowed, 1.0);
 	} else {
 		color = vec4(color_unshadowed, 1.0);
-	}
+	}*/
 }

@@ -58,6 +58,7 @@ void initBuffers() {
 	
 	fb_mirror.setSize(WIDTH, HEIGHT);
 	fb_mirror.genTextureImages();
+	fb_mirror.genRenderbuffer();
 	fb_mirror.genFramebuffer(BUFFER_ATTACHMENT_0, 1);
 	
 	fb_water_depth.init(1);
@@ -154,7 +155,7 @@ void display(){
 
 	fb_mirror.bind(BUFFER_ATTACHMENT_0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		grid.draw(camera.get_view_matrix(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), ONLY_REFLECT);
+		grid.draw(camera.get_view_matrix_mirrored(), camera.get_projection_matrix(), shading_params.get_view_matrix(), shading_params.get_projection_matrix(), ONLY_REFLECT);
 	fb_mirror.unbind();
 
 	check_error_gl();

@@ -12,13 +12,14 @@
 class Generalbuffer{
 
 private:
-	bool _init;
+	bool _rb = false;
 	GLuint _width;
 	GLuint _height;
 	GLuint _fbo;
 
 	GLuint _count;
 	GLuint** _tex;
+	GLuint _depth_rb;
 
 	GLint _internal_format;
 	GLenum _format;
@@ -36,8 +37,8 @@ public:
 	void setSize(GLuint width, GLuint height);
 	void genTextureImages();
 
+	void genRenderbuffer();
 	void genFramebuffer(const GLenum buffers[], GLuint count);
-	void genDepthbuffer();
 
 	int init_texture(bool use_interpolation = false);
 	void set_texture(GLuint* texture, bool use_interpolation = false);
