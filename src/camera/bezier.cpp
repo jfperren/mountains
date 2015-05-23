@@ -47,7 +47,7 @@ void Bezier::draw_cam_look_points(const mat4& view, const mat4& projection) {
 	}
 }
 
-void Bezier::init(int width, int height, int travel_time){
+void Bezier::init(int width, int height, int travel_time) {
 
 	this->width = width;
 	this->height = height;
@@ -67,7 +67,7 @@ void Bezier::init(int width, int height, int travel_time){
 	cam_pos_curve.init(_pid_bezier);
 
 	// Add points, the total number must be n_tot = 1 + 3n, n in Z
-	cam_pos_points.push_back(ControlPoint(0, 1, 0, 0));
+	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
 	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
 	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
 	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
@@ -85,7 +85,7 @@ void Bezier::init(int width, int height, int travel_time){
 	cam_look_curve.init(_pid_bezier);
 
 	// Add points
-	cam_look_points.push_back(ControlPoint(5, 5, 0.25, 7));
+	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
 	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
 	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
 	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));

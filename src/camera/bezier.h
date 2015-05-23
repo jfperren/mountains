@@ -31,7 +31,7 @@ private:
 	int start_time;
 
 public:
-	void init(int width, int height, int travel_time=20);
+	void init(int width, int height, int travel_time);
 	void cleanup();
 	void set_start_time(int start_time);
 	int get_start_time();

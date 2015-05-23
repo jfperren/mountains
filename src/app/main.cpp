@@ -68,7 +68,7 @@ void init(){
     glEnable(GL_DEPTH_TEST);
 
 	// Possible to specify the travel time in the last argument. Note: the bigger the slower.
-	bezier.init(WIDTH, HEIGHT);
+	bezier.init(WIDTH, HEIGHT, 20);
 
 	initParams();
 	initTextures();
@@ -264,6 +264,7 @@ void GLFWCALL OnMouseButton(int glfwButton, int glfwAction)
 		// Event not handled by AntTweakBar, we handle it ourselves
 
 		if (navmode == BEZIER) {
+			if (glfwAction != GLFW_RELEASE) return; ///< only act on release
 			std::cout << "[Warning] No mouse interaction in Bezier mode.\n" << std::flush;
 			return;
 		}
@@ -338,12 +339,15 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 
 			if (glfwAction != GLFW_RELEASE) return; ///< only act on release
 
+			bool key_used = false;
+
 
 			switch (glfwKey){
 			case '1':
 				navmode = FREE;
 				std::cout << "[Info] Running in free mode\n" << std::flush;
 				twBarVisible(true);
+				key_used = true;
 				break;
 			case '2':
 				navmode = BEZIER;
@@ -351,14 +355,37 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				bezier.print_control_points();
 				bezier.set_start_time(glfwGetTime());
 				twBarVisible(false);
+				key_used = true;
 				break;
 			case '3':
 				navmode = CAMERA_PATH;
 				std::cout << "[Info] Running in camera path editing mode\n" << std::flush;
 				twBarVisible(false);
+				key_used = true;
 				break;
+			case 283 /* arrow up */:
+				if (navmode == BEZIER) {
+					unsigned int new_value = bezier.get_travel_time() - 1;
+					if (new_value < 1)
+						new_value = 1;
+					bezier.set_travel_time(new_value);
+					std::cout << "[Info] Travel time changed to  '" << new_value << "'\n" << std::flush;
+					key_used = true;
+					break;
+				}
+			case 284 /* arrow down */:
+				if (navmode == BEZIER) {
+					unsigned int new_value = bezier.get_travel_time() + 1;
+					if (new_value == UINT_MAX)
+						new_value--;
+					bezier.set_travel_time(new_value);
+					std::cout << "[Info] Travel time changed to  '" << new_value << "'\n" << std::flush;
+					key_used = true;
+					break;
+				}
 			default:
-				std::cout << "[Warning] No keyboard interaction in bezier mode.\n" << std::flush;
+				if (!key_used)
+					std::cout << "[Warning] No actions attached to key '" << glfwKey << "'\n" << std::flush;
 				break;
 			}
 		}
