@@ -175,6 +175,7 @@ void display(){
 	}
 			break;
 		case FREE:
+		case FPS:
 		case CAMERA_PATH:
 			camera.move(navmode);
 			view_matrix = camera.get_view_matrix();
@@ -506,9 +507,9 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 						new_value = 1;
 					bezier.set_travel_time(new_value);
 					std::cout << "[Info] Travel time changed to  '" << new_value << "'\n" << std::flush;
-					key_used = true;
-					break;
 				}
+				key_used = true;
+				break;
 			case 83 /* s */:
 				if (navmode == BEZIER) {
 					unsigned int new_value = bezier.get_travel_time() + 1;
@@ -516,9 +517,9 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 						new_value--;
 					bezier.set_travel_time(new_value);
 					std::cout << "[Info] Travel time changed to  '" << new_value << "'\n" << std::flush;
-					key_used = true;
-					break;
 				}
+				key_used = true;
+				break;
 			case 269 /* F12 */:
 				if (save_screenshot("../screenshots/" + get_unique_name(), WIDTH, HEIGHT))
 					std::cout << "[Info] Screenshot saved successfully\n" << std::flush;
@@ -527,8 +528,9 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 
 				break;
 			default:
+				/* Too verbose
 				if (!key_used)
-					std::cerr << "[Warning] No actions attached to key '" << glfwKey << "'\n" << std::flush;
+					std::cerr << "[Warning] No actions attached to key '" << glfwKey << "'\n" << std::flush;*/
 				break;
 			}
 		}
