@@ -156,9 +156,6 @@ using namespace std;
 
 		glUniform1i(glGetUniformLocation(_pid, "mode"), mode);
 
-		glUniform1f(glGetUniformLocation(_pid, "FAR"), FAR);
-		glUniform1f(glGetUniformLocation(_pid, "NEAR"), NEAR);
-
 		// Bind textures
 		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
 		glActiveTexture(GL_TEXTURE0);

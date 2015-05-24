@@ -227,6 +227,7 @@ typedef struct ShadingParams {
 	bool enable_shadow;
 
 	vec3 light_pos;
+	float near, far;
 	vec3 Ia, Id;
 
 	float shadow_intensity;
@@ -240,6 +241,9 @@ typedef struct ShadingParams {
 		glUniform3fv(glGetUniformLocation(pid, "shading_Ia"), ONE, Ia.data());
 		glUniform3fv(glGetUniformLocation(pid, "shading_Id"), ONE, Id.data());
 		glUniform1f(glGetUniformLocation(pid, "shading_shadow_intensity"), shadow_intensity);
+		
+		glUniform1f(glGetUniformLocation(pid, "shading_near"), near);
+		glUniform1f(glGetUniformLocation(pid, "shading_far"), far);
 	}
 
 	mat4 get_view_matrix() {
@@ -251,7 +255,7 @@ typedef struct ShadingParams {
 	}
 
 	mat4 get_projection_matrix() {
-		return Eigen::ortho(-3.0f, 3.0f, -3.0f, 3.0f, NEAR, FAR);
+		return Eigen::ortho(-4.0f, 4.0f, -4.0f, 4.0f, near, far);
 		//return Eigen::perspective(45.0f, float(WIDTH)/ HEIGHT, NEAR, FAR);
 	}
 };

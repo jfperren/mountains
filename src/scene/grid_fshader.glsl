@@ -54,8 +54,8 @@ uniform float water_height;
 uniform float DX;
 uniform float DY;
 
-uniform float NEAR;
-uniform float FAR;
+uniform float shading_far;
+uniform float shading_near;
 
 const int NONE = 0;
 const int SHADES = 1;
@@ -67,6 +67,13 @@ uniform int mode;
 const int NORMAL = 0;
 const int ONLY_REFLECT = 1;
 const int ILLUMINATE = 2;
+
+const vec2 poisson_disk[4] = vec2[](
+  vec2( -0.94201624, -0.39906216 ),
+  vec2( 0.94558609, -0.76890725 ),
+  vec2( -0.094184101, -0.92938870 ),
+  vec2( 0.34495938, 0.29387760 )
+);
 
 void main() {
 
@@ -113,51 +120,49 @@ void main() {
 		diffuse = shading_Id * dot(normal, normalize(shading_light_pos));
 	}
 
-	color = vec4(ambient + diffuse, 1.0);
+	vec3 color_unshadowed = vec3(ambient + diffuse);
 
-	/*
+
+
+	
 	if (shading_enable_shadow != 0 && mode != ILLUMINATE) {
+
+		float NEAR = shading_near;
+		float FAR = shading_far;
+
 		vec2 uv_light = vec2((pos_to_light.x + 1) / 2, (pos_to_light.y + 1) / 2);
-		float bias = 0.100;
+		float bias = 0.005;
 		float visibility = 1.0;
 
-		float shadow_z_b = texture(tex_shadow, uv_light)[0];
-		float shadow_z_n = 2.0 * shadow_z_b - 1.0;
-		//float shadow_z_e = 2.0 * NEAR * FAR / (FAR + NEAR - shadow_z_n * (FAR - NEAR));
-		float shadow_z_e = (shadow_z_n * (FAR - NEAR) + FAR + NEAR)/(-2.0);
-
 		float grid_z_b = pos_to_light.z;
-		float grid_z_n = 2.0 * grid_z_b - 1.0;
-		//float grid_z_e = 2.0 * NEAR * FAR / (FAR + NEAR - grid_z_n * (FAR - NEAR));
-		float grid_z_e = (grid_z_n * (FAR - NEAR) + FAR + NEAR)/(-2.0);
+		float grid_depth = (grid_z_b * (FAR - NEAR) + FAR + NEAR)/(2.0);
 
-		float diff = grid_z_e - shadow_z_e;
+		vec2 tex_shadow_size = textureSize(tex_shadow, 0);
 
-		//float depth_shadow = 39 * shadow_z_b - NEAR;
-		//float depth_grid = 39 - grid_z_e;
+		int count = 0;
 
-		float depth_shadow = 40 * shadow_z_b - NEAR;
-		float depth_grid = 39 - grid_z_e;
+		// Poisson sampling
+		for (int i = 0; i < 4; i++){
 
-		float value = depth_grid - depth_shadow;
-
-		if (value < 0) {
-			color = vec4(1, 1 , 1, 1);
-		} if (value < 1) {
-			color = vec4(value, 0, 0, 1);
-		} else if (value < 2) {
-			color = vec4(0, value - 1, 0, 1);
-		} else {
-			color = vec4(0, 0, value - 2, 1);
-		} 
-
+			vec2 uv_light_i = uv_light + poisson_disk[i] / (tex_shadow_size);
 		
-		if(diff > bias){
-			visibility = shading_shadow_intensity;
+			float shadow_z_b = texture(tex_shadow, uv_light_i)[0];
+			float shadow_z_n = 2.0 * shadow_z_b - 1.0;
+			float shadow_depth = (shadow_z_n * (FAR - NEAR) + FAR + NEAR)/(2.0);
+
+			float diff = grid_depth - shadow_depth;
+
+			if ( diff  >  bias ){
+				count ++;
+			}
+		}
+
+		if (count > 1){
+			visibility = visibility - (visibility - shading_shadow_intensity);
 		}
 		
 		color = vec4(vec3(visibility) * color_unshadowed, 1.0);
 	} else {
 		color = vec4(color_unshadowed, 1.0);
-	}*/
+	}
 }

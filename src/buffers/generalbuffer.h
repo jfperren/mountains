@@ -31,7 +31,7 @@ public:
 	void init(GLuint count);
 
 	void setTexture(GLuint index, GLuint* texture);
-	void genTextures();
+	void genTextures(bool use_interpolation = false);
 
 	void setFormat(GLint internal_format, GLenum format, GLenum type);
 	void setSize(GLuint width, GLuint height);

@@ -70,7 +70,7 @@ void initBuffers() {
 	fb_water_depth.genFramebuffer(BUFFER_ATTACHMENT_DEPTH, 1);
 
 	fb_shadow.init(1);
-	fb_shadow.genTextures();
+	fb_shadow.genTextures(true);
 	fb_shadow.setFormat(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
 
 	fb_shadow.setSize(WIDTH, HEIGHT);
@@ -139,11 +139,41 @@ void display(){
 	opengp::update_title_fps("Mountains");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/*
+	// 1. Shadow
 
+	fb_shadow.bind(BUFFER_ATTACHMENT_0, 1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		grid.draw(camera.get_view_matrix(), shading_params.get_projection_matrix(), camera.get_view_matrix(), shading_params.get_projection_matrix(), ILLUMINATE);
+	fb_shadow.unbind();
 
-	cout << "view" << shading_params.get_view_matrix() << endl;
-	cout << "proj" << shading_params.get_projection_matrix() << endl;
+	// 2. Water Reflects
 
+	fb_mirror.bind(BUFFER_ATTACHMENT_0, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	grid.draw(camera.get_view_matrix_mirrored(), shading_params.get_projection_matrix(), camera.get_view_matrix(), shading_params.get_projection_matrix(), ONLY_REFLECT);
+	fb_mirror.unbind();
+
+	check_error_gl();
+
+	// 3. Water depth
+
+	fb_water_depth.bind(BUFFER_ATTACHMENT_0, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//box.draw(camera.get_view_matrix(), camera.get_projection_matrix());
+	grid.draw(camera.get_view_matrix(), shading_params.get_projection_matrix(), camera.get_view_matrix(), shading_params.get_projection_matrix(), NORMAL);
+	fb_water_depth.unbind();
+
+	// 4. Scene
+
+	grid.draw(camera.get_view_matrix(), shading_params.get_projection_matrix(), camera.get_view_matrix(), shading_params.get_projection_matrix(), NORMAL);
+	water.draw(camera.get_view_matrix(), shading_params.get_projection_matrix());
+	box.draw(camera.get_view_matrix(), shading_params.get_projection_matrix());
+	sky.draw(camera.get_view_matrix(), shading_params.get_projection_matrix());
+	camera.move();
+
+	*/
+	
 	// 1. Shadow
 
 	fb_shadow.bind(BUFFER_ATTACHMENT_0, 1);
@@ -274,10 +304,12 @@ void initParams() {
 	// --- Shading ---
 	shading_params.enable_phong			= true;
 	shading_params.enable_shadow		= true;
-	shading_params.shadow_intensity		= 0.2;
+	shading_params.shadow_intensity		= 0.5;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
-	shading_params.light_pos			= vec3(0.1f, 1.0f, 0.1f);
+	shading_params.light_pos			= vec3(0.5f, 1.0f, 0.5f);
+	shading_params.far					= 4;
+	shading_params.near					= -4;
 
 	// --- Texture ---
 	texture_params.texture_type			= TEXTURE;
