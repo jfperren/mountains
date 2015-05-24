@@ -364,7 +364,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				twBarVisible(false);
 				key_used = true;
 				break;
-			case 283 /* arrow up */:
+			case 87 /* w */:
 				if (navmode == BEZIER) {
 					unsigned int new_value = bezier.get_travel_time() - 1;
 					if (new_value < 1)
@@ -374,7 +374,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 					key_used = true;
 					break;
 				}
-			case 284 /* arrow down */:
+			case 83 /* s */:
 				if (navmode == BEZIER) {
 					unsigned int new_value = bezier.get_travel_time() + 1;
 					if (new_value == UINT_MAX)
