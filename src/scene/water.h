@@ -14,10 +14,11 @@ private:
 	GLuint* _tex_mirror;
 	GLuint* _tex_height;
 	GLuint* _tex_depth;
-	GLuint* _tex_normal;
+	GLuint _tex_normal;
 
 	GridParams* _grid_params;
 	WaterParams* _water_params;
+	ShadingParams* _shading_params;
 
 	mat4 model = mat4::Identity();
 

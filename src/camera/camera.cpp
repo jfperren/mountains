@@ -90,10 +90,12 @@ void Camera::move(NAVIGATION_MODE navmode) {
 	vec3 right = DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]);
 	vec3 up = DX * vec3(0.0f, 1.0f, 0.0f);
 
-	GLfloat array[3];
+	/*GLfloat array[3];
+
+	glBindTexture(GL_TEXTURE_2D, *_tex_height); // Bind our frame buffer texture
 	glReadPixels(_cam_pos.x(), _cam_pos.y(), 1, 1, GL_R32F, GL_FLOAT, array);
 
-	//std::cout << "Array: " << array[0] << ", " << array[1] << ", " << array[2] << std::endl;
+	std::cout << "Array: " << array[0] << ", " << array[1] << ", " << array[2] << std::endl;*/
 
 	if (pressed_keys[65]) // A
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-right)).matrix();

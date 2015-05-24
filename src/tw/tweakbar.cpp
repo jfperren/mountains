@@ -97,6 +97,9 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "water_color_R", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->color[0], " group=Water step=0.05 min=0 max=1");
 	TwAddVarCB(bar, "water_color_G", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->color[1], " group=Water step=0.05 min=0 max=1");
 	TwAddVarCB(bar, "water_color_B", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->color[2], " group=Water step=0.05 min=0 max=1");
+	TwAddVarCB(bar, "water_tile_factor", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->waves_tile_factor, " group=Water step=1 min=1");
+	TwAddVarCB(bar, "water_waves_speed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->waves_speed, " group=Water step=0.05");
+	TwAddVarCB(bar, "water_waves_amplitude", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &water_params->waves_amplitude, " group=Water step=1 min=0");
 
 	// Texture 
 

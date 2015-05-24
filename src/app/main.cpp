@@ -45,6 +45,8 @@ GLuint* _tex_mirror;
 GLuint* _tex_water_depth;
 GLuint* _tex_shadow;
 
+GLuint* _tex_normal_map;
+
 // --- Camera --- //
 Camera camera(&app_params);
 NAVIGATION_MODE navmode;
@@ -312,14 +314,14 @@ void initParams() {
 	water_params.enable					= true;
 	water_params.height					= 0;
 	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
-	water_params.depth_alpha_factor		= 1.4f;
+	water_params.depth_alpha_factor		= 3.0f;
 	water_params.depth_color_factor		= 0.05f;
 	water_params.transparency			= 0.4f;
 
-	water_params.reflection_factor		= 0.25f;
-	/*water_params.waves_speed = 0.04f;
-	water_params.waves_tile_factor = 2.0;
-	water_params.waves_amplitude = 1.0f;*/
+	water_params.reflection_factor		= 1.0f;
+	water_params.waves_speed			= 0.1f;
+	water_params.waves_tile_factor		= 5.0f;
+	water_params.waves_amplitude		= 30.0f;
 
 
 	// --- Shading ---

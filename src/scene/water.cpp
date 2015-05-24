@@ -4,6 +4,7 @@ void Water::init(AppParams* app_params){
 
 	_water_params = app_params->water_params;
 	_grid_params = app_params->grid_params;
+	_shading_params = app_params->shading_params;
 
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("scene/water_vshader.glsl", "scene/water_fshader.glsl");
@@ -41,6 +42,18 @@ void Water::init(AppParams* app_params){
 	///--- to avoid the current object being polluted
 	glBindVertexArray(0);
 	glUseProgram(0);
+
+	glGenTextures(1, &_tex_normal);
+	glBindTexture(GL_TEXTURE_2D, _tex_normal);
+	glfwLoadTexture2D("textures/water/tex_normal_map_water.tga", 0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+	
 	check_error_gl();
 }
 
@@ -62,16 +75,13 @@ void Water::setDepthTexture(GLuint* tex_depth) {
 	_tex_depth = tex_depth;
 }
 
-void Water::setNormalTexture(GLuint* tex_normal) {
-	_tex_normal = tex_normal;
-}
-
 void Water::draw(const mat4& view, const mat4& projection){
 	glUseProgram(_pid);
 	glBindVertexArray(_vao);
 
 	_water_params->setup(_pid);
 	_grid_params->setup(_pid);
+	_shading_params->setup(_pid);
 
 	glUniform1f(glGetUniformLocation(_pid, "near"), NEAR);
 	glUniform1f(glGetUniformLocation(_pid, "far"), FAR);
@@ -91,10 +101,10 @@ void Water::draw(const mat4& view, const mat4& projection){
 	glUniform1i(glGetUniformLocation(_pid, "tex_depth"), 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, *_tex_depth);
-	/*
+	
 	glUniform1i(glGetUniformLocation(_pid, "tex_normal"), 3);
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, *_tex_normal);*/
+	glBindTexture(GL_TEXTURE_2D, _tex_normal);
 
 	// Setup MVP
 	mat4 MVP = projection*view*model;

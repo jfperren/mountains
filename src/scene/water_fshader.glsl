@@ -9,8 +9,8 @@ layout (location = 1) uniform sampler2D tex_height;
 layout (location = 2) uniform sampler2D tex_depth;
 layout (location = 3) uniform sampler2D tex_normal;
 
-uniform vec3 light_pos;
-uniform vec3 Id;
+uniform vec3 shading_light_pos;
+uniform vec3 shading_Id;
 
 uniform float far;
 uniform float near;
@@ -27,9 +27,9 @@ uniform float water_reflection_factor;
 
 uniform float time;
 
-uniform float waves_speed;
-uniform float waves_tile_factor;
-uniform float waves_amplitude;
+uniform float water_waves_speed;
+uniform float water_waves_tile_factor;
+uniform float water_waves_amplitude;
 
 const float time_factor = 0.05;
 
@@ -73,18 +73,26 @@ void main() {
     
 	// Compute ambiant color according to depth & mirror color
 	vec3 texture_color = water_color / (1 + depth * water_depth_color_factor);
-    vec3 mirror_color = texture(tex_mirror, uv_screen_inv).rgb;
+    
 
 	// Compute alpha
 	float alpha = water_transparency * (1 + water_depth_alpha_factor * depth);
     
     // Compute ambiant & diffuse color
-    vec3 ambiant_color = vec3(mix(texture_color, mirror_color, vec3(water_reflection_factor)));
+   
 
-	vec3 normal = vec3(texture(tex_normal,  uv * vec2(waves_tile_factor)  + vec2(time * waves_speed))).rgb;
-	normal[1] = 1;
-	vec3 diffuse_color =  waves_amplitude * Id * (dot(normalize(normal), normalize(light_pos)));
+	vec3 normal = vec3(texture(tex_normal,  uv * vec2(water_waves_tile_factor)  + vec2(time * water_waves_speed))).rgb;
+
+	vec3 mirror_color = texture(tex_mirror, uv_screen_inv + vec2(water_waves_amplitude*normal[0], water_waves_amplitude*normal[2])/texture_size).rgb;
+	vec3 ambiant_color = vec3(mix(texture_color, mirror_color, vec3(water_reflection_factor)));
+
+	//normal[1] = 0.001;
+	vec3 diffuse_color =  water_color * (dot(normalize(normal), normalize(shading_light_pos)));
+
+	
+
 
 	// Put everything together
-	color = vec4(ambiant_color, alpha);
+	color = vec4(0.5 * ambiant_color + diffuse_color, alpha);
+	//color = vec4(normal, 1);
 }

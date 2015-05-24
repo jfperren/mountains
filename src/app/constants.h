@@ -295,9 +295,9 @@ typedef struct WaterParams {
 		glUniform1f(glGetUniformLocation(pid, "water_reflection_factor"), reflection_factor);
 
 		/* Waves */
-		glUniform1f(glGetUniformLocation(pid, "waves_speed"), waves_speed);
-		glUniform1f(glGetUniformLocation(pid, "waves_tile_factor"), waves_tile_factor);
-		glUniform1f(glGetUniformLocation(pid, "waves_amplitude"), waves_amplitude);
+		glUniform1f(glGetUniformLocation(pid, "water_waves_speed"), waves_speed);
+		glUniform1f(glGetUniformLocation(pid, "water_waves_tile_factor"), waves_tile_factor);
+		glUniform1f(glGetUniformLocation(pid, "water_waves_amplitude"), waves_amplitude);
 	}
 };
 
