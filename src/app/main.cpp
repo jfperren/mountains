@@ -348,6 +348,8 @@ void initSceneObjects() {
 	box.setHeightTexture(_tex_height);
 	box.setWaterDepthTexture(_tex_water_depth);
 
+	camera.set_height_texture(_tex_height);
+
 	grid.init(&app_params);
 	grid.setTexHeight(_tex_height);
 	grid.setTexSnow(_tex_snow);

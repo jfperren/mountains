@@ -88,6 +88,11 @@ void Camera::move(NAVIGATION_MODE navmode) {
 	vec3 right = DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]);
 	vec3 up = DX * vec3(0.0f, 1.0f, 0.0f);
 
+	GLfloat array[3];
+	glReadPixels(_cam_pos.x(), _cam_pos.y(), 1, 1, GL_R32F, GL_FLOAT, array);
+
+	//std::cout << "Array: " << array[0] << ", " << array[1] << ", " << array[2] << std::endl;
+
 	if (pressed_keys[65]) // A
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-right)).matrix();
 	if (pressed_keys[87]) // W
@@ -104,4 +109,8 @@ void Camera::move(NAVIGATION_MODE navmode) {
 	_cam_pos = (translation * vec4(_cam_pos[0], _cam_pos[1], _cam_pos[2], 1.0f)).head<3>();
 
 	compute_view_matrix();
+}
+
+void Camera::set_height_texture(GLuint* tex_height) {
+	_tex_height = tex_height;
 }

@@ -44,6 +44,7 @@ public:
 	// (Re)Setters
 	void compute_view_matrix();
 	void compute_projection_matrix();
+	void set_height_texture(GLuint* tex_height);
 
 	// User Interaction
 	void mouse_button(int button, int action);
@@ -54,4 +55,6 @@ public:
 private:
 	// Helpers
 	vec2 transform_screen_coords(int x, int y);
+
+	GLuint* _tex_height;
 };
