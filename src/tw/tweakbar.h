@@ -15,14 +15,15 @@
 #include "../app/main.h"
 #include "../scene/grid.h"
 #include "../buffers/framebuffer.h"
-#include "../noise/noise_quad.h"
-#include "../noise/noise_generator.h"
+#include "../noise/quad.h"
+#include "../noise/terrain.h"
 #include "../scene/water.h"
 #include "../scene/box.h"
 #include "../app/constants.h"
 #include "../tw/io.h"
 
-void initAntTwBar(GridParams* grid_params, WindowParams* window_params, NoiseParams* noise_params, WaterParams* water_params, TextureParams* texture_params);
+
+void initAntTwBar(AppParams* app_params);
 void twBarVisible(bool b);
 void refreshTwBar();
 

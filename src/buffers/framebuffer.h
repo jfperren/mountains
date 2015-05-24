@@ -26,7 +26,7 @@ private:
 public:
 	Framebuffer();
 	Framebuffer(int image_width, int image_height);
-	
+
 	void bind();
 	void unbind();
 	void cleanup();
@@ -37,5 +37,5 @@ public:
 
 	void resize(float width, float height);
 	void clear();
-	
+
 };

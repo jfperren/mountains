@@ -20,6 +20,61 @@ const float DPHI = 1.0f;
 const float NEAR = 0.1f;
 const float FAR = 40.0f;
 
+const int FALL = 0;
+const int SLIDE = 1;
+const int MELT = 2;
+const int SMOOTH = 3;
+
+const int NOISE_MODE = 0;
+const int SNOW_MODE = 1;
+const int DIRT_MODE = 2;
+const int COPY_MODE = 3;
+
+const int NORMAL = 0;
+const int ONLY_REFLECT = 1;
+const int ILLUMINATE = 2;
+
+const GLuint TYPE_ATTACHMENT_0 = 0;
+const GLenum BUFFER_ATTACHMENT_0[] = { 
+	GL_COLOR_ATTACHMENT0 
+};
+
+const GLuint TYPE_ATTACHMENT_1 = 1;
+const GLenum BUFFER_ATTACHMENT_1[] = {
+	GL_COLOR_ATTACHMENT0,
+	GL_COLOR_ATTACHMENT1
+};
+
+const GLuint TYPE_ATTACHMENT_2 = 3;
+const GLenum BUFFER_ATTACHMENT_2[] = {
+	GL_COLOR_ATTACHMENT0,
+	GL_COLOR_ATTACHMENT1,
+	GL_COLOR_ATTACHMENT2
+};
+
+const GLuint TYPE_ATTACHMENT_3 = 3;
+const GLenum BUFFER_ATTACHMENT_3[] = {
+	GL_COLOR_ATTACHMENT0,
+	GL_COLOR_ATTACHMENT1,
+	GL_COLOR_ATTACHMENT2,
+	GL_COLOR_ATTACHMENT3
+};
+
+const GLuint TYPE_ATTACHMENT_DEPTH = 4;
+const GLenum BUFFER_ATTACHMENT_DEPTH[] = {
+	GL_DEPTH_ATTACHMENT
+};
+
+const int BUFFER_DIRT_COUNT = 6;
+const GLenum BUFFER_DIRT[] = {
+	GL_COLOR_ATTACHMENT0,
+	GL_COLOR_ATTACHMENT1,
+	GL_COLOR_ATTACHMENT2,
+	GL_COLOR_ATTACHMENT3,
+	GL_COLOR_ATTACHMENT4,
+	GL_COLOR_ATTACHMENT5,
+};
+
 typedef enum {
 	FREE,
 	FPS,
@@ -47,7 +102,11 @@ typedef enum {
 	DISCRETIZE // Step = 0.2
 } Effect;
 
-const static int PIXELS_PER_UNIT = 2048;
+typedef enum {
+	NO_TEXTURE,
+	SHADES,
+	TEXTURE
+} TextureType;
 
 typedef struct WindowParams {
 	int width;
@@ -55,11 +114,13 @@ typedef struct WindowParams {
 };
 
 typedef struct GridParams {
+	bool enable;
 	int length;
 	int width;
 	int resolution;
 
 	void setup(GLuint pid){
+		glUniform1i(glGetUniformLocation(pid, "grid_enable"), enable);
 		glUniform1i(glGetUniformLocation(pid, "grid_length"), length);
 		glUniform1i(glGetUniformLocation(pid, "grid_width"), width);
 		glUniform1i(glGetUniformLocation(pid, "grid_resolution"), resolution);
@@ -73,6 +134,7 @@ typedef struct NoiseParams {
 	Effect noise_effect;
 	Effect fractal_effect;
 
+	int resolution;
 	int width;
 	int height;
 	float amplitude;
@@ -90,6 +152,7 @@ typedef struct NoiseParams {
 			fractal_type,
 			noise_effect,
 			fractal_effect,
+			resolution,
 			width,
 			height,
 			amplitude,
@@ -136,8 +199,77 @@ static NoiseParams FLAT_NOISE = {
 	0
 };
 
+typedef struct SnowParams {
+	bool enable;
+
+	float amount;
+	float max_amount;
+	float max_slope;
+	float min_height;
+	float threshold;
+	
+	int slide_time;
+	int melt_time;
+	int smooth_time;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "snow_enable"), enable);
+
+		glUniform1f(glGetUniformLocation(pid, "snow_amount"), amount);
+		glUniform1f(glGetUniformLocation(pid, "snow_max_slope"), max_slope);
+		glUniform1f(glGetUniformLocation(pid, "snow_min_height"), min_height);
+		glUniform1f(glGetUniformLocation(pid, "snow_max_amount"), max_amount);
+		glUniform1f(glGetUniformLocation(pid, "snow_threshold"), threshold);
+
+		glUniform1i(glGetUniformLocation(pid, "snow_slide_time"), slide_time);
+		glUniform1i(glGetUniformLocation(pid, "snow_melt_time"), melt_time);
+		glUniform1i(glGetUniformLocation(pid, "snow_smooth_time"), smooth_time);
+	}
+};
+
+typedef struct ShadingParams {
+	bool enable_phong;
+	bool enable_shadow;
+
+	vec3 light_pos;
+	float near, far;
+	vec3 Ia, Id;
+
+	float shadow_intensity;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "shading_enable_phong"), enable_phong);
+		glUniform1i(glGetUniformLocation(pid, "shading_enable_shadow"), enable_shadow);
+		glUniform3fv(glGetUniformLocation(pid, "shading_light_pos"), ONE, light_pos.data());
+		glUniform3fv(glGetUniformLocation(pid, "shading_Ia"), ONE, Ia.data());
+		glUniform3fv(glGetUniformLocation(pid, "shading_Id"), ONE, Id.data());
+		glUniform1f(glGetUniformLocation(pid, "shading_shadow_intensity"), shadow_intensity);
+		
+		glUniform1f(glGetUniformLocation(pid, "shading_near"), near);
+		glUniform1f(glGetUniformLocation(pid, "shading_far"), far);
+	}
+
+	mat4 get_view_matrix() {
+		return lookAt(
+			light_pos, 
+			vec3(0, 0, 0), 
+			vec3(0, 1, 0)
+		);
+	}
+
+	mat4 get_projection_matrix() {
+		return Eigen::ortho(-4.0f, 4.0f, -4.0f, 4.0f, near, far);
+		//return Eigen::perspective(45.0f, float(WIDTH)/ HEIGHT, NEAR, FAR);
+	}
+};
+
 typedef struct WaterParams {
 	/* Water*/
+	bool enable;
 	float height;
 	float transparency;
 	float depth_alpha_factor;
@@ -154,6 +286,7 @@ typedef struct WaterParams {
 		glUseProgram(pid);
 
 		/* Water */
+		glUniform1i(glGetUniformLocation(pid, "water_enable"), enable);
 		glUniform1f(glGetUniformLocation(pid, "water_height"), height);
 		glUniform1f(glGetUniformLocation(pid, "water_transparency"), transparency);
 		glUniform3f(glGetUniformLocation(pid, "water_color"), color[0], color[1], color[2]);
@@ -168,21 +301,32 @@ typedef struct WaterParams {
 	}
 };
 
-typedef struct LightParams {
-	vec3 Ia;
-	vec3 Id;
-	vec3 position;
+typedef struct ErosionParams {
+	float deposition_rate;
+	float evaporation_rate;
+	float erosion_rate;
+	float rain_rate;
 
-	void setup(GLuint pid){
-		glUseProgram(pid);
+	float direction_inertia;
+	float sediment_capacity;
 
-		glUniform3fv(glGetUniformLocation(pid, "light_pos"), ONE, position.data());
-		glUniform3fv(glGetUniformLocation(pid, "Ia"), ONE, Ia.data());
-		glUniform3fv(glGetUniformLocation(pid, "Id"), ONE, Id.data());
+	int iterations;
+
+	void setup(GLuint pid) {
+		glUniform1f(glGetUniformLocation(pid, "erosion_deposition_rate"), deposition_rate);
+		glUniform1f(glGetUniformLocation(pid, "erosion_evaporation_rate"), evaporation_rate);
+		glUniform1f(glGetUniformLocation(pid, "erosion_erosion_rate"), erosion_rate);
+		glUniform1f(glGetUniformLocation(pid, "erosion_rain_rate"), rain_rate);
+
+		glUniform1f(glGetUniformLocation(pid, "erosion_sediment_capacity"), sediment_capacity);
+		glUniform1f(glGetUniformLocation(pid, "erosion_direction_inertia"), direction_inertia);
 	}
 };
 
 typedef struct TextureParams {
+	
+	TextureType texture_type;
+	
 	float sand_min_height;
 	float sand_max_height;
 	float grass_max_height;
@@ -196,6 +340,8 @@ typedef struct TextureParams {
 	int sand_s_transition;
 
 	void setup(GLuint pid) {
+		glUniform1i(glGetUniformLocation(pid, "texture_type"), texture_type);
+
 		glUniform1f(glGetUniformLocation(pid, "sand_min_height"), sand_min_height);
 		glUniform1f(glGetUniformLocation(pid, "sand_max_height"), sand_max_height);
 		glUniform1f(glGetUniformLocation(pid, "grass_max_height"), grass_max_height);
@@ -208,4 +354,15 @@ typedef struct TextureParams {
 		glUniform1i(glGetUniformLocation(pid, "sand_h_transition"), sand_h_transition);
 		glUniform1i(glGetUniformLocation(pid, "sand_s_transition"), sand_s_transition);
 	}
+};
+
+typedef struct AppParams {
+	WindowParams* window_params;
+	GridParams* grid_params;
+	NoiseParams* noise_params;
+	SnowParams* snow_params;
+	ErosionParams* erosion_params;
+	TextureParams* texture_params;
+	ShadingParams* shading_params;
+	WaterParams* water_params;
 };

@@ -22,11 +22,11 @@ class Grid {
 	string TEX_NAMES[5];
 
 private:
-	static const int grid_dim_ = 2048;
-
-	LightParams* _light_params;
+	NoiseParams* _noise_params;
 	GridParams* _grid_params;
+	SnowParams* _snow_params;
 	TextureParams* _texture_params;
+	ShadingParams* _shading_params;
 
 	mat4 model = mat4::Identity();
 
@@ -36,19 +36,28 @@ protected:
     GLuint _vbo_index;    ///< memory buffer for indice
 	GLuint _vbo;
     GLuint _pid;          ///< GLSL shader program ID
-    GLuint _tex_height;    ///< HeightMap Texture ID
-
-	GLuint _tex_main;
+   
+	GLuint* _tex_height; 
+	GLuint* _tex_snow;
+	GLuint* _tex_dirt;
+	GLuint* _tex_shadow;
 
 	vector<GLuint> _texs;     
 
     GLuint _num_indices;  ///< number of vertices to render
     
 public:    
-	void init(GridParams* grid_params, LightParams* light_params, TextureParams* texture_params);
-	void draw(const mat4& view, const mat4& projection, bool only_reflect = false);
+	void init(AppParams* app_params);
+
+	void setTexHeight(GLuint* tex_height);
+	void setTexSnow(GLuint* tex_snow);
+	void setTexDirt(GLuint* tex_dirt);
+	void setTexShadow(GLuint* tex_shadow);
+
+	void draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode);
 	void cleanup();
 
-	void set_height_texture(GLuint tex_height);
+	
+
 	int get_vertex_index(int i, int j);
 };

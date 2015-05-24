@@ -4,16 +4,16 @@
 #include "../camera/camera.h"
 #include "../scene/grid.h"
 #include "../camera/bezier.h"
-#include "../noise/noise_quad.h"
-#include "../noise/noise_generator.h"
-#include "../buffers/framebuffer.h"
-#include "../buffers/depthbuffer.h"
+#include "../noise/quad.h"
+#include "../noise/terrain.h"
+#include "../buffers/generalbuffer.h"
 #include "../scene/water.h"
 #include "../scene/sky.h"
 #include "../tw/tweakbar.h"
 #include "../scene/box.h"
 #include "../app/constants.h"
 #include "../tw/io.h"
+#include "../buffers/erosionbuffer.h"
 
 using namespace std;
 
@@ -30,3 +30,4 @@ void resize_callback(int width, int height);
 void initTextures();
 void initSceneObjects();
 void initParams();
+void initBuffers();

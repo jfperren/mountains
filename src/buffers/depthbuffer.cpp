@@ -8,8 +8,8 @@ Depthbuffer::Depthbuffer(int image_width, int image_height){
 void Depthbuffer::bind() {
 	glViewport(0, 0, _width, _height);
 	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
-	const GLenum buffers[] = { GL_DEPTH_ATTACHMENT };
-	glDrawBuffers(1 /*length of buffers[]*/, buffers);
+	const GLenum buffers[] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, buffers);
 }
 
 void Depthbuffer::unbind() {
