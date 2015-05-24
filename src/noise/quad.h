@@ -12,6 +12,7 @@ private:
 	GLuint _tex; ///< Texture ID
 
 	SnowParams* _snow_params;
+	GrassParams* _grass_params;
 
 public:
 	void init(AppParams* app_params);
@@ -20,6 +21,7 @@ public:
 
 	void drawNoise(NoiseParams* noise_params, float noise_amplitude, GLuint* in_texture = nullptr);
 	void drawSnow(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos, int mode);
+	void drawGrass(GLuint* tex_noise, GLuint* tex_grass, int mode);
 	void drawTexture(GLuint* texture, float amplitude = 1, float offset = 0);
 
 	void fall(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos);

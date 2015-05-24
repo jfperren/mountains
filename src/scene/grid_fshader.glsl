@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 
 // --- Inputs --- //
 
@@ -13,7 +13,7 @@ out vec4 color;
 
 layout(location = 0) uniform sampler2D tex_height;
 layout(location = 1) uniform sampler2D tex_snow;
-layout(location = 2) uniform sampler2D tex_dirt;
+layout(location = 2) uniform sampler2D tex_grass;
 layout(location = 3) uniform sampler2D tex_shadow;
 
 layout(location = 10) uniform sampler2D tex_grass_;
@@ -72,6 +72,7 @@ void main() {
 
 	float height = texture(tex_height, uv).rgb[0];
 	float snow = texture(tex_snow, uv)[0];
+	float grass = texture(tex_grass, uv)[0];
 
 	if (mode == ONLY_REFLECT && height < 0) {
 		discard;
@@ -94,6 +95,8 @@ void main() {
 
 		if (snow > 0) {
 			ambient = color_snow;
+		} else if (grass > 0) {
+			ambient = color_grass * grass + (1-grass) * color_rock;
 		} else {
    			ambient = color_rock;
 		}
@@ -114,8 +117,9 @@ void main() {
 	}
 
 	color = vec4(ambient + diffuse, 1.0);
+	/*vec3 color_unshadowed = ambient + diffuse;
 
-	/*
+	
 	if (shading_enable_shadow != 0 && mode != ILLUMINATE) {
 		vec2 uv_light = vec2((pos_to_light.x + 1) / 2, (pos_to_light.y + 1) / 2);
 		float bias = 0.100;
@@ -141,7 +145,7 @@ void main() {
 
 		float value = depth_grid - depth_shadow;
 
-		if (value < 0) {
+		/*if (value < 0) {
 			color = vec4(1, 1 , 1, 1);
 		} if (value < 1) {
 			color = vec4(value, 0, 0, 1);
@@ -149,14 +153,17 @@ void main() {
 			color = vec4(0, value - 1, 0, 1);
 		} else {
 			color = vec4(0, 0, value - 2, 1);
-		} 
+		}
+
+		vec3 ambiant = vec3(mix(vec3(value), color_unshadowed, vec3(shading_shadow_intensity)));
+		color = vec4(ambiant, 1.0);
 
 		
 		if(diff > bias){
 			visibility = shading_shadow_intensity;
 		}
 		
-		color = vec4(vec3(visibility) * color_unshadowed, 1.0);
+		//color = vec4(vec3(visibility) * color_unshadowed, 1.0);
 	} else {
 		color = vec4(color_unshadowed, 1.0);
 	}*/

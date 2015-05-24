@@ -27,7 +27,8 @@ const int SMOOTH = 3;
 
 const int NOISE_MODE = 0;
 const int SNOW_MODE = 1;
-const int COPY_MODE = 2;
+const int GRASS_MODE = 2;
+const int COPY_MODE = 3;
 
 const int NORMAL = 0;
 const int ONLY_REFLECT = 1;
@@ -211,6 +212,33 @@ typedef struct SnowParams {
 	}
 };
 
+typedef struct GrassParams {
+	bool enable;
+
+	float max_height;
+	float min_height;
+	float max_slope;
+	float min_angle;
+
+	int time_grow;
+	int time_smooth;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "grass_enable"), enable);
+
+		glUniform1f(glGetUniformLocation(pid, "grass_max_height"), max_height);
+		glUniform1f(glGetUniformLocation(pid, "grass_min_height"), min_height);
+		glUniform1f(glGetUniformLocation(pid, "grass_max_slope"), max_slope);
+		glUniform1f(glGetUniformLocation(pid, "grass_min_angle"), min_angle);
+
+		glUniform1f(glGetUniformLocation(pid, "grass_time_grow"), time_grow);
+		glUniform1f(glGetUniformLocation(pid, "grass_time_smooth"), time_smooth);
+	}
+};
+
+
 typedef struct ShadingParams {
 	bool enable_phong;
 	bool enable_shadow;
@@ -339,6 +367,7 @@ typedef struct AppParams {
 	GridParams* grid_params;
 	NoiseParams* noise_params;
 	SnowParams* snow_params;
+	GrassParams* grass_params;
 	ErosionParams* erosion_params;
 	TextureParams* texture_params;
 	ShadingParams* shading_params;

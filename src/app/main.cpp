@@ -5,6 +5,7 @@
 WindowParams window_params{ WIDTH, HEIGHT };
 NoiseParams noise_params;
 SnowParams snow_params;
+GrassParams grass_params;
 ErosionParams erosion_params;
 ShadingParams shading_params;
 WaterParams water_params;
@@ -16,10 +17,11 @@ AppParams app_params{
 	&grid_params,
 	&noise_params,
 	&snow_params,
+	&grass_params,
 	&erosion_params,
 	&texture_params,
 	&shading_params,
-	&water_params
+	&water_params,
 };
 
 // --- Scene Objects --- // 
@@ -40,6 +42,7 @@ Generalbuffer fb_shadow;
 GLuint* _tex_height;
 GLuint* _tex_snow;
 GLuint* _tex_dirt;
+GLuint* _tex_grass;
 
 GLuint* _tex_mirror;
 GLuint* _tex_water_depth;
@@ -103,6 +106,7 @@ void compute_height_map() {
 	
 	terrain.resize();
 	terrain.renderFractal();
+	terrain.addGrass();
 	terrain.addSnow();
 
 }
@@ -246,6 +250,16 @@ void initParams() {
 	snow_params.melt_time				= 10;
 	snow_params.smooth_time				= 10;
 
+	// --- grass ---
+
+	grass_params.enable					= true;
+	grass_params.min_height				= water_params.height;
+	grass_params.max_height				= 0.15;
+	grass_params.max_slope				= 1.0;
+	grass_params.min_angle				= 1.2;
+	grass_params.time_grow				= 25;
+	grass_params.time_smooth			= 2;
+
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;
 	erosion_params.erosion_rate			= 0.04;
@@ -258,7 +272,7 @@ void initParams() {
 	erosion_params.iterations			= 1;
 
 	// --- Water ---
-	water_params.enable					= false;
+	water_params.enable					= true;
 	water_params.height					= 0;
 	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
 	water_params.depth_alpha_factor		= 1.4f;
@@ -272,9 +286,9 @@ void initParams() {
 
 
 	// --- Shading ---
-	shading_params.enable_phong			= false;
-	shading_params.enable_shadow		= true;
-	shading_params.shadow_intensity		= 0.2;
+	shading_params.enable_phong			= true;
+	shading_params.enable_shadow		= false;
+	shading_params.shadow_intensity		= 0.5;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
 	shading_params.light_pos			= vec3(0.1f, 1.0f, 0.1f);
@@ -304,6 +318,7 @@ void initSceneObjects() {
 	grid.setTexSnow(_tex_snow);
 	grid.setTexDirt(_tex_dirt);
 	grid.setTexShadow(_tex_shadow);
+	grid.setTexGrass(_tex_grass);
 
 	water.init(&app_params);
 	water.setHeightTexture(_tex_height);
@@ -320,6 +335,7 @@ void initTextures() {
 	_tex_height = terrain.getHeightTexture();
 	_tex_dirt = terrain.getDirtTexture();
 	_tex_snow = terrain.getSnowTexture();
+	_tex_grass = terrain.getGrassTexture();
 
 	_tex_shadow = fb_shadow.getTexture(0);
 	_tex_mirror = fb_mirror.getTexture(0);

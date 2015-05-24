@@ -14,12 +14,13 @@ using namespace std;
 		_texture_params = app_params->texture_params;
 		_shading_params = app_params->shading_params;
 		_snow_params = app_params->snow_params;
+		_grass_params = app_params->grass_params;
 
-		TEX_PATHS[0] = "textures/terrains/mountain/tex_grass.tga";
-		TEX_PATHS[1] = "textures/terrains/mountain/tex_sand.tga";
-		TEX_PATHS[2] = "textures/terrains/mountain/tex_rock.tga";
-		TEX_PATHS[3] = "textures/terrains/mountain/tex_snow.tga";
-		TEX_PATHS[4] = "textures/terrains/mountain/tex_rock_underwater.tga";
+		TEX_PATHS[0] = "textures/terrains/active/tex_grass.tga";
+		TEX_PATHS[1] = "textures/terrains/active/tex_sand.tga";
+		TEX_PATHS[2] = "textures/terrains/active/tex_rock.tga";
+		TEX_PATHS[3] = "textures/terrains/active/tex_snow.tga";
+		TEX_PATHS[4] = "textures/terrains/active/tex_rock_underwater.tga";
 
 		TEX_NAMES[0] = "tex_grass_";
 		TEX_NAMES[1] = "tex_sand_";
@@ -105,8 +106,8 @@ using namespace std;
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-				GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
-				glUniform1i(tex_snow_id, 11 + i);
+				GLuint tex_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
+				glUniform1i(tex_id, 11 + i);
 				glActiveTexture(GL_TEXTURE10 + i);
 				glBindTexture(GL_TEXTURE_2D, tex);
 
@@ -135,6 +136,10 @@ using namespace std;
 		_tex_shadow = tex_shadow;
 	}
 
+	void Grid::setTexGrass(GLuint* tex_grass){
+		_tex_grass = tex_grass;
+	}
+
 	void Grid::cleanup(){
 		glDeleteBuffers(1, &_vbo_position);
 		glDeleteBuffers(1, &_vbo_index);
@@ -150,6 +155,7 @@ using namespace std;
 		_texture_params->setup(_pid);
 		_shading_params->setup(_pid);
 		_snow_params->setup(_pid);
+		_grass_params->setup(_pid);
 
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
 		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
@@ -168,14 +174,18 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
 
+		glUniform1i(glGetUniformLocation(_pid, "tex_grass"), 2);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, *_tex_grass);
+
 		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 3);
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, *_tex_shadow);
 
 		for (int i = 0; i < TEXTURES_COUNT; i++){
 
-			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
-			glUniform1i(tex_snow_id, 10 + i);
+			GLuint tex_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
+			glUniform1i(tex_id, 10 + i);
 			glActiveTexture(GL_TEXTURE10 + i);
 			glBindTexture(GL_TEXTURE_2D, _texs[i]);
 		}

@@ -13,6 +13,7 @@ void initAntTwBar(AppParams* app_params) {
 	GridParams* grid_params			= app_params->grid_params;
 	NoiseParams* noise_params		= app_params->noise_params;
 	SnowParams* snow_params			= app_params->snow_params;
+	GrassParams* grass_params		= app_params->grass_params;
 	ErosionParams* erosion_params	= app_params->erosion_params;
 	TextureParams* texture_params	= app_params->texture_params;
 	ShadingParams* shading_params	= app_params->shading_params;
@@ -73,6 +74,16 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "snow_slide_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &snow_params->slide_time, " group=Snow step=1 min=0");
 	TwAddVarCB(bar, "snow_melt_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &snow_params->melt_time, " group=Snow step=1 min=0");
 	TwAddVarCB(bar, "snow_smooth_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &snow_params->smooth_time, " group=Snow step=1 min=0");
+
+	// Grass
+
+	TwAddVarCB(bar, "grass_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &grass_params->enable, " group=Grass");
+	TwAddVarCB(bar, "grass_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &grass_params->max_slope, " group=Grass step=0.01 min=0.01");
+	TwAddVarCB(bar, "grass_min_angle", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &grass_params->min_angle, " group=Grass step=0.01 min=0.01");
+	TwAddVarCB(bar, "grass_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &grass_params->min_height, " group=Grass step=0.01");
+	TwAddVarCB(bar, "grass_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &grass_params->max_height, " group=Grass step=0.01");
+	TwAddVarCB(bar, "grass_time_grow", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grass_params->time_grow, " group=Grass step=1 min=0");
+	TwAddVarCB(bar, "grass_time_smooth", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grass_params->time_smooth, " group=Grass step=1 min=0");
 
 	// Erosion
 

@@ -28,13 +28,22 @@ Terrain::Terrain()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glGenTextures(1, &_tex_grass);
+		glBindTexture(GL_TEXTURE_2D, _tex_grass);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
 void Terrain::init(AppParams* app_params) {
 
 	_noise_params = app_params->noise_params;
 	_snow_params = app_params->snow_params;
+	_grass_params = app_params->grass_params;
 	_erosion_params = app_params->erosion_params;
+
 	_snowbuffer[0].init(3);
 	_snowbuffer[0].genTextures();
 	_snowbuffer[0].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
@@ -42,6 +51,14 @@ void Terrain::init(AppParams* app_params) {
 	_snowbuffer[1].init(3);
 	_snowbuffer[1].genTextures();
 	_snowbuffer[1].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
+
+	_grassbuffer[0].init(2);
+	_grassbuffer[0].genTextures();
+	_grassbuffer[0].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
+
+	_grassbuffer[1].init(2);
+	_grassbuffer[1].genTextures();
+	_grassbuffer[1].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
 	
 	_noisebuffer[0].init(1);
 	_noisebuffer[0].genTextures();
@@ -115,6 +132,10 @@ GLuint* Terrain::getSnowTexture() {
 	return &_tex_snow;
 }
 
+GLuint* Terrain::getGrassTexture() {
+	return &_tex_grass;
+}
+
 void Terrain::erode() {
 /*	GLuint* tex_height;
 	GLuint* tex_water;
@@ -160,6 +181,16 @@ void Terrain::resize() {
 	_snowbuffer[1].genTextureImages();
 	_snowbuffer[1].genFramebuffer(BUFFER_ATTACHMENT_2, 3);
 	_snowbuffer[1].clear();
+
+	_grassbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
+	_grassbuffer[0].genTextureImages();
+	_grassbuffer[0].genFramebuffer(BUFFER_ATTACHMENT_1, 2);
+	_grassbuffer[0].clear();
+
+	_grassbuffer[1].setSize(_noise_params->resolution, _noise_params->resolution);
+	_grassbuffer[1].genTextureImages();
+	_grassbuffer[1].genFramebuffer(BUFFER_ATTACHMENT_1, 2);
+	_grassbuffer[1].clear();
 
 	_noisebuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
 	_noisebuffer[0].genTextureImages();
@@ -244,6 +275,65 @@ void Terrain::addSnow() {
 
 		copyTexture(tex_height, &_tex_height);
 		copyTexture(tex_snow, &_tex_snow);
+	}
+}
+
+void Terrain::addGrass() {
+	GLuint* tex_grass;
+	GLuint* tex_height;
+
+	const GLuint TEX_HEIGHT_INDEX = 0;
+	const GLuint TEX_GRASS_INDEX = 1;
+
+	const int ACTION_INIT = 0;
+	const int ACTION_SLIDE = 1;
+	const int ACTION_SMOOTH = 2;
+
+	CLEAR_BUFFERS(_grassbuffer);
+	SET_MODE(GRASS_MODE);
+
+	if (_grass_params->enable) {
+
+		INIT(in, out);
+		
+		tex_height = &_tex_height;
+		SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
+
+		_grassbuffer[out].bind(BUFFER_ATTACHMENT_1, 2);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.drawGrass(tex_height, tex_grass, ACTION_INIT);
+		_grassbuffer[out].unbind();
+
+		SWAP(in, out);
+		SWAP_TEXTURE(tex_height, _grassbuffer, TEX_HEIGHT_INDEX);
+		SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
+		
+		for (int t = 0; t < _grass_params->time_grow; t++) {
+
+			_grassbuffer[out].bind(BUFFER_ATTACHMENT_1, 2);
+				glClear(GL_COLOR_BUFFER_BIT);
+				_quad.drawGrass(tex_height, tex_grass, ACTION_SLIDE);
+			_grassbuffer[out].unbind();
+
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _grassbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
+		}
+
+		for (int t = 0; t < _grass_params->time_smooth; t++) {
+
+			_grassbuffer[out].bind(BUFFER_ATTACHMENT_1, 2);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.drawGrass(tex_height, tex_grass, ACTION_SMOOTH);
+			_grassbuffer[out].unbind();
+
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _grassbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
+		}
+
+		copyTexture(tex_height, &_tex_height);
+		copyTexture(tex_grass, &_tex_grass);
 	}
 }
 
