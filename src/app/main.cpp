@@ -169,9 +169,6 @@ void display(){
 		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
 
 		view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_look_mirrored, cam_up);
-
-		//view_matrix = bezier.get_view_matrix(cam_pos, cam_look, cam_up);
-		//view_matrix_mirrored = bezier.get_view_matrix_mirrored(cam_pos, cam_look, cam_up);
 	}
 			break;
 		case FREE:
