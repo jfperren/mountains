@@ -1,4 +1,5 @@
 bin/
+screenshots/
 *.exe
 *.pdb
 *.ilk
