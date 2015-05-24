@@ -1,7 +1,7 @@
 # opengl-terrain
 
 ## Screenshots
-![ScreenShot](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/opengl-1.tga)
+![ScreenShot](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/opengl-1.png)
 
 ## Compiling the project with Visual Studio
 
