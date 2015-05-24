@@ -163,8 +163,15 @@ void display(){
 
 		bezier.sample_points(cam_pos, cam_look);
 
-		view_matrix = bezier.get_view_matrix(cam_pos, cam_look, cam_up);
-		view_matrix_mirrored = bezier.get_view_matrix_mirrored(cam_pos, cam_look, cam_up);
+		vec3 cam_pos_mirrored = vec3(cam_pos[0], -cam_pos[1], cam_pos[2]);
+		vec3 cam_look_mirrored = vec3(cam_look[0], -cam_look[1], cam_look[2]);
+
+		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
+
+		view_matrix_mirrored = Eigen::lookAt(cam_pos_mirrored, cam_look_mirrored, cam_up);
+
+		//view_matrix = bezier.get_view_matrix(cam_pos, cam_look, cam_up);
+		//view_matrix_mirrored = bezier.get_view_matrix_mirrored(cam_pos, cam_look, cam_up);
 	}
 			break;
 		case FREE:
