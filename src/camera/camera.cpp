@@ -1,11 +1,13 @@
 #include "camera.h"
 
-Camera::Camera(WindowParams* window_params) : _cam_up(START_CAM_UP), _cam_pos(START_CAM_POS), 
-_cam_dir(START_CAM_DIR), _window_params(window_params), _dir_matrix(mat4::Identity())
+Camera::Camera(AppParams* app_params) : _cam_up(START_CAM_UP), _cam_pos(START_CAM_POS), 
+_cam_dir(START_CAM_DIR), _window_params(app_params->window_params), _dir_matrix(mat4::Identity())
 {
 	_cam_up = START_CAM_UP;
 	_cam_pos = START_CAM_POS;
 	_cam_dir = START_CAM_DIR;
+
+	_water_params = app_params->water_params;
 
 
 	compute_view_matrix();
@@ -73,7 +75,7 @@ mat4 Camera::get_projection_matrix() {
 }
 
 mat4 Camera::get_view_matrix_mirrored() {
-	vec3 cam_pos_mirrored = vec3(_cam_pos[0], -_cam_pos[1], _cam_pos[2]);
+	vec3 cam_pos_mirrored = vec3(_cam_pos[0], 2 * _water_params->height -_cam_pos[1], _cam_pos[2]);
 	vec3 cam_dir_mirrored = vec3(_cam_dir[0], -_cam_dir[1], _cam_dir[2]);
 
 	vec3 cam_center_mirrored = cam_pos_mirrored + cam_dir_mirrored;

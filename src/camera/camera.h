@@ -27,6 +27,7 @@ private:
 	std::map<int, bool> pressed_keys;
 
 	WindowParams* _window_params;
+	WaterParams* _water_params;
 
 public:
 	const vec3 START_CAM_UP = vec3(0.0f, 1.0f, 0.0f);
@@ -34,7 +35,7 @@ public:
 	const vec3 START_CAM_POS = vec3(0.0f, 2.0f, 4.0f);
 
 	// Constructor
-	Camera(WindowParams* window_params);
+	Camera(AppParams* app_params);
 
 	// Getters
 	mat4 get_view_matrix();

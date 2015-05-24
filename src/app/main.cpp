@@ -46,7 +46,7 @@ GLuint* _tex_water_depth;
 GLuint* _tex_shadow;
 
 // --- Camera --- //
-Camera camera(&window_params);
+Camera camera(&app_params);
 NAVIGATION_MODE navmode;
 Bezier bezier;
 
@@ -163,8 +163,8 @@ void display(){
 
 		bezier.sample_points(cam_pos, cam_look);
 
-		vec3 cam_pos_mirrored = vec3(cam_pos[0], -cam_pos[1], cam_pos[2]);
-		vec3 cam_look_mirrored = vec3(cam_look[0], -cam_look[1], cam_look[2]);
+		vec3 cam_pos_mirrored = vec3(cam_pos[0], 2*water_params.height-cam_pos[1], cam_pos[2]);
+		vec3 cam_look_mirrored = vec3(cam_look[0], 2 * water_params.height - cam_look[1], cam_look[2]);
 
 		view_matrix = Eigen::lookAt(cam_pos, cam_look, cam_up);
 

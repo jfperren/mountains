@@ -80,7 +80,7 @@ void main() {
 	float height = texture(tex_height, uv).rgb[0];
 	float snow = texture(tex_snow, uv)[0];
 
-	if (mode == ONLY_REFLECT && height < 0) {
+	if (mode == ONLY_REFLECT && height < water_height) {
 		discard;
 	}
 

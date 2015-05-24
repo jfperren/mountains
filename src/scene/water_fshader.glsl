@@ -39,6 +39,11 @@ void main() {
 		discard;
 	}
 
+	float height = texture(tex_height, uv)[0];
+	if (height > water_height) {
+		discard;
+	}
+
 	// Get the size of the screen (same as size of tex_mirror)
     ivec2 texture_size = textureSize(tex_mirror, 0);
 
