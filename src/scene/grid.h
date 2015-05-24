@@ -27,6 +27,7 @@ private:
 	SnowParams* _snow_params;
 	TextureParams* _texture_params;
 	ShadingParams* _shading_params;
+	WaterParams* _water_params;
 
 	mat4 model = mat4::Identity();
 

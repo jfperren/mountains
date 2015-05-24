@@ -12,6 +12,7 @@ using namespace std;
 		_noise_params = app_params->noise_params;
 		_grid_params = app_params->grid_params;
 		_texture_params = app_params->texture_params;
+		_water_params = app_params->water_params;
 		_shading_params = app_params->shading_params;
 		_snow_params = app_params->snow_params;
 
@@ -150,6 +151,7 @@ using namespace std;
 		_texture_params->setup(_pid);
 		_shading_params->setup(_pid);
 		_snow_params->setup(_pid);
+		_water_params->setup(_pid);
 
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
 		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
