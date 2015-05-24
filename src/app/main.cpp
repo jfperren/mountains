@@ -106,7 +106,7 @@ void display(){
 		view_matrix_mirrored = bezier.get_view_matrix_mirrored(cam_pos, cam_look, cam_up);
 	} else {
 		// Allow minecraft like mouvements for all other modes
-		camera.move();
+		camera.move(navmode);
 	}
 
 	// Render the water reflect
@@ -351,6 +351,12 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				key_used = true;
 				break;
 			case '2':
+				navmode = FPS;
+				std::cout << "[Info] Running in FPS mode\n" << std::flush;
+				twBarVisible(true);
+				key_used = true;
+				break;
+			case '3':
 				navmode = BEZIER;
 				std::cout << "[Info] Running in bezier mode\n" << std::flush;
 				bezier.print_control_points();
@@ -358,7 +364,7 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				twBarVisible(false);
 				key_used = true;
 				break;
-			case '3':
+			case '4':
 				navmode = CAMERA_PATH;
 				std::cout << "[Info] Running in camera path editing mode\n" << std::flush;
 				twBarVisible(false);

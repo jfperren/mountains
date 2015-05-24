@@ -81,7 +81,7 @@ mat4 Camera::get_view_matrix_mirrored() {
 	return lookAt(cam_pos_mirrored, cam_center_mirrored, _cam_up);
 }
 
-void Camera::move() {
+void Camera::move(NAVIGATION_MODE navmode) {
 	mat4 translation = mat4::Identity();
 
 	vec3 forward = DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]);
@@ -96,9 +96,9 @@ void Camera::move() {
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-forward)).matrix();
 	if (pressed_keys[68]) // D
 		translation *= Eigen::Affine3f(Eigen::Translation3f(right)).matrix();
-	if (pressed_keys[32]) // SPACE
+	if (pressed_keys[32] && navmode != FPS) // SPACE
 		translation *= Eigen::Affine3f(Eigen::Translation3f(up)).matrix();
-	if (pressed_keys[287]) // SHIFT
+	if (pressed_keys[287] && navmode != FPS) // SHIFT
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-up)).matrix();
 
 	_cam_pos = (translation * vec4(_cam_pos[0], _cam_pos[1], _cam_pos[2], 1.0f)).head<3>();

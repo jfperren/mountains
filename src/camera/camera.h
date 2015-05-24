@@ -49,7 +49,7 @@ public:
 	void mouse_button(int button, int action);
 	void mouse_pos(float x, float y);
 	void keyboard(int key, int action);
-	void move();
+	void move(NAVIGATION_MODE navmode);
 
 private:
 	// Helpers

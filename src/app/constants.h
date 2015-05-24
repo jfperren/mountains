@@ -22,6 +22,7 @@ const float FAR = 40.0f;
 
 typedef enum {
 	FREE,
+	FPS,
 	BEZIER,
 	CAMERA_PATH
 } NAVIGATION_MODE;
