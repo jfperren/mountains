@@ -9,33 +9,30 @@
 #include "opencv2/imgproc/types_c.h"   ///< CV_BGRA2RGBA
 #endif
 
-class Framebuffer{
+class Erosionbuffer{
 
 private:
-	bool _init;
 	int _width;
 	int _height;
+
 	GLuint _fbo;
-
-	GLuint* _tex;
-
-	GLint _internal_format;
-	GLenum _format;
-	GLenum _type;
+	
+	GLuint _tex_height;
+	GLuint _tex_snow;
+	GLuint _tex_pos;
 
 public:
-	Framebuffer();
-	Framebuffer(int image_width, int image_height);
+	Erosionbuffer();
 
+	void init();
 	void bind();
 	void unbind();
+	void clear();
 	void cleanup();
 
-	int init_texture(bool use_interpolation = false);
-	void set_texture(GLuint* texture, bool use_interpolation = false);
-	void init(GLint internal_format, GLenum format, GLenum type);
+	GLuint* get_tex_height();
+	GLuint* get_tex_snow();
+	GLuint* get_tex_pos();
 
 	void resize(float width, float height);
-	void clear();
-
 };

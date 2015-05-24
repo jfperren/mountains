@@ -7,7 +7,13 @@ using namespace std;
 		return i + j * _grid_params->resolution * _grid_params->length;
 	}
 
-	void Grid::init(GridParams* grid_params, LightParams* light_params, TextureParams* texture_params){
+	void Grid::init(AppParams* app_params){
+
+		_noise_params = app_params->noise_params;
+		_grid_params = app_params->grid_params;
+		_texture_params = app_params->texture_params;
+		_shading_params = app_params->shading_params;
+		_snow_params = app_params->snow_params;
 
 		TEX_PATHS[0] = "textures/terrains/mountain/tex_grass.tga";
 		TEX_PATHS[1] = "textures/terrains/mountain/tex_sand.tga";
@@ -15,15 +21,11 @@ using namespace std;
 		TEX_PATHS[3] = "textures/terrains/mountain/tex_snow.tga";
 		TEX_PATHS[4] = "textures/terrains/mountain/tex_rock_underwater.tga";
 
-		TEX_NAMES[0] = "tex_grass";
-		TEX_NAMES[1] = "tex_sand";
-		TEX_NAMES[2] = "tex_rock";
-		TEX_NAMES[3] = "tex_snow";
-		TEX_NAMES[4] = "tex_rock_underwater";
-
-		_light_params = light_params;
-		_grid_params = grid_params;
-		_texture_params = texture_params;
+		TEX_NAMES[0] = "tex_grass_";
+		TEX_NAMES[1] = "tex_sand_";
+		TEX_NAMES[2] = "tex_rock_";
+		TEX_NAMES[3] = "tex_snow_";
+		TEX_NAMES[4] = "tex_rock_underwater_";
 
 		// Compile the shaders
 		_pid = opengp::load_shaders("scene/grid_vshader.glsl", "scene/grid_fshader.glsl");
@@ -105,7 +107,7 @@ using namespace std;
 
 				GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
 				glUniform1i(tex_snow_id, 11 + i);
-				glActiveTexture(GL_TEXTURE11 + i);
+				glActiveTexture(GL_TEXTURE10 + i);
 				glBindTexture(GL_TEXTURE_2D, tex);
 
 				_texs.push_back(tex);
@@ -117,6 +119,22 @@ using namespace std;
 		check_error_gl();
 	}
 
+	void Grid::setTexHeight(GLuint* tex_height){
+		_tex_height = tex_height;
+	}
+
+	void Grid::setTexSnow(GLuint* tex_snow){
+		_tex_snow = tex_snow;
+	}
+
+	void Grid::setTexDirt(GLuint* tex_dirt){
+		_tex_dirt = tex_dirt;
+	}
+
+	void Grid::setTexShadow(GLuint* tex_shadow){
+		_tex_shadow = tex_shadow;
+	}
+
 	void Grid::cleanup(){
 		glDeleteBuffers(1, &_vbo_position);
 		glDeleteBuffers(1, &_vbo_index);
@@ -124,42 +142,51 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
-	void Grid::set_height_texture(GLuint tex_height) {
-		_tex_height = tex_height;
-	}
-
-
-	void Grid::draw(const mat4& view, const mat4& projection, bool only_reflect){
+	void Grid::draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);
 
-		_light_params->setup(_pid);
 		_grid_params->setup(_pid);
 		_texture_params->setup(_pid);
+		_shading_params->setup(_pid);
+		_snow_params->setup(_pid);
 
-		if (only_reflect){
-			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 1);
-		}
-		else {
-			glUniform1i(glGetUniformLocation(_pid, "only_reflect"), 0);
-		}
+		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
+		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
+
+		glUniform1i(glGetUniformLocation(_pid, "mode"), mode);
 
 		// Bind textures
+		glUniform1i(glGetUniformLocation(_pid, "tex_height"), 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _tex_height);
+		glBindTexture(GL_TEXTURE_2D, *_tex_height);
+
+		glUniform1i(glGetUniformLocation(_pid, "tex_snow"), 1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
+
+		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 3);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, *_tex_shadow);
 
 		for (int i = 0; i < TEXTURES_COUNT; i++){
 
 			GLuint tex_snow_id = glGetUniformLocation(_pid, TEX_NAMES[i].data());
-			glUniform1i(tex_snow_id, 1 + i);
-			glActiveTexture(GL_TEXTURE1 + i);
+			glUniform1i(tex_snow_id, 10 + i);
+			glActiveTexture(GL_TEXTURE10 + i);
 			glBindTexture(GL_TEXTURE_2D, _texs[i]);
 		}
 
-		// Setup MVP
+		// Setup MVPs
+
 		mat4 MVP = projection*view*model;
 		GLuint MVP_id = glGetUniformLocation(_pid, "mvp");
 		glUniformMatrix4fv(MVP_id, 1, GL_FALSE, MVP.data());
+
+		mat4 MVP_light = light_projection * light_view * model;
+
+		GLuint MVP_shadow_id = glGetUniformLocation(_pid, "mvp_light");
+		glUniformMatrix4fv(MVP_shadow_id, 1, GL_FALSE, MVP_light.data());
 
 		// Draw
 		glDrawElements(GL_TRIANGLES, _num_indices, GL_UNSIGNED_INT, 0);

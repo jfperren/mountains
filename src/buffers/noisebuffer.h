@@ -9,7 +9,7 @@
 #include "opencv2/imgproc/types_c.h"   ///< CV_BGRA2RGBA
 #endif
 
-class Framebuffer{
+class Noisebuffer{
 
 private:
 	bool _init;
@@ -24,18 +24,16 @@ private:
 	GLenum _type;
 
 public:
-	Framebuffer();
-	Framebuffer(int image_width, int image_height);
-
+	Noisebuffer();
+	
 	void bind();
+
 	void unbind();
 	void cleanup();
 
-	int init_texture(bool use_interpolation = false);
-	void set_texture(GLuint* texture, bool use_interpolation = false);
-	void init(GLint internal_format, GLenum format, GLenum type);
-
+	int init_texture();
+	void init();
+	GLuint* get_tex();
 	void resize(float width, float height);
 	void clear();
-
 };

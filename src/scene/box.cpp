@@ -1,15 +1,16 @@
 #include "box.h"
 
-void Box::init(GridParams* grid_params, WaterParams* water_params, NoiseParams* noise_params){
+void Box::init(AppParams* app_params){
+	
+	_water_params = app_params->water_params;
+	_grid_params = app_params->grid_params;
+	_noise_params = app_params->noise_params;
+
 	///--- Compile the shaders
 	_pid = opengp::load_shaders("scene/box_vshader.glsl", "scene/box_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
 
-	_water_params = water_params;
-	_grid_params = grid_params;
-	_noise_params = noise_params;
-	
 	//--- Vertex one vertex Array
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
@@ -53,9 +54,12 @@ void Box::cleanup(){
 	glDeleteProgram(_pid);
 }
 
-void Box::set_height_texture(GLuint tex_height) {
-	// Pass texture to instance
+void Box::setHeightTexture(GLuint* tex_height) {
 	_tex_height = tex_height;
+}
+
+void Box::setWaterDepthTexture(GLuint* tex_water_depth) {
+	_tex_water_depth = tex_water_depth;
 }
 
 void Box::draw(const mat4& view, const mat4& projection){
@@ -67,12 +71,18 @@ void Box::draw(const mat4& view, const mat4& projection){
 	_grid_params->setup(_pid);
 	_noise_params->setup_copy(_pid);
 
-	///--- Texture uniforms
-	GLuint tex_height_id = glGetUniformLocation(_pid, "tex_height");
-	glUniform1i(tex_height_id, 15 /*GL_TEXTURE15*/);
+	glUniform1f(glGetUniformLocation(_pid, "FAR"), FAR);
+	glUniform1f(glGetUniformLocation(_pid, "NEAR"), NEAR);
 
-	glActiveTexture(GL_TEXTURE15);
-	glBindTexture(GL_TEXTURE_2D, _tex_height);
+	// Pass textures
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_height") , 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, *_tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_water_depth"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, *_tex_water_depth);
 
 	// Setup MVP
 	mat4 MVP = projection*view*model;
