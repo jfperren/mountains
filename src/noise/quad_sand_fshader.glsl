@@ -56,7 +56,7 @@ void main() {
 		
 		float angle = abs(asin(sqrt(a) / sqrt(1 + a)));
 
-		if (height > sand_min_height && height < sand_max_height && angle < 1.32) {
+		if (height > sand_min_height && height < sand_max_height && angle < sand_max_slope) {
 			sand = 1;
 		} else {
 			sand = 0.0;

@@ -67,13 +67,18 @@ void Bezier::init(int width, int height, int travel_time) {
 	cam_pos_curve.init(_pid_bezier);
 
 	// Add points, the total number must be n_tot = 1 + 3n, n in Z
-	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
-	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
-	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
-	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
-	cam_pos_points.push_back(ControlPoint(-0.11, -0.10, 0.45, 4));
+	/*cam_pos_points.push_back(ControlPoint(1.78, 1.16, 5.44, 0));
+	cam_pos_points.push_back(ControlPoint(-2.77, 1.79, 4.53, 1));
+	cam_pos_points.push_back(ControlPoint(-3.78, 1.61, 2.47, 2));
+	cam_pos_points.push_back(ControlPoint(-2.43, 0.26, -1.32, 3));*/
+	/*cam_pos_points.push_back(ControlPoint(-0.11, -0.10, 0.45, 4));
 	cam_pos_points.push_back(ControlPoint(-0.16, 0.92, -0.11, 5));
-	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));
+	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));*/
+
+	cam_pos_points.push_back(ControlPoint(1.83, 1.21, 5.23, 0));
+	cam_pos_points.push_back(ControlPoint(-2.95, 0.40, 3.39, 1));
+	cam_pos_points.push_back(ControlPoint(-3.94, 0.25, 1.91, 2));
+	cam_pos_points.push_back(ControlPoint(-2.19, 0.028, -2.62, 3));
 
 	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
 		cam_pos_points[i].init(_pid_point, _pid_point_selection);
@@ -85,10 +90,13 @@ void Bezier::init(int width, int height, int travel_time) {
 	cam_look_curve.init(_pid_bezier);
 
 	// Add points
-	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
-	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
+	cam_look_points.push_back(ControlPoint(1.11, 0.64, 0.32, 4));
+	cam_look_points.push_back(ControlPoint(1.12, 0.64, 0.32, 5));
+	cam_look_points.push_back(ControlPoint(1.13, 0.64, 0.32, 6));
+	cam_look_points.push_back(ControlPoint(1.14, 0.64, 0.32, 7));
+	/*cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
 	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
-	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));
+	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));*/
 
 	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
 		cam_look_points[i].init(_pid_point, _pid_point_selection);
