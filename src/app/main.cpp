@@ -117,7 +117,6 @@ void resize_callback(int width, int height) {
 
 void compute_height_map() {
 	
-	terrain.applyTheme();
 	terrain.resize();
 	terrain.renderFractal();
 	terrain.addGrass();
@@ -151,7 +150,7 @@ void init(){
 	resize_callback(WIDTH, HEIGHT);
 
 #ifdef WITH_ANTTWEAKBAR
-	initAntTwBar(&app_params);
+	initAntTwBar(&app_params, &sky);
 #endif
 	check_error_gl();
 }
@@ -272,6 +271,9 @@ int main(int, char**){
 // --- Helpers --- //
 
 void initParams() {
+
+	// --- General ---
+	theme_params.theme_type				= NO_THEME;
 
 	// --- Window ---
 	window_params.width					= WIDTH;
@@ -402,7 +404,7 @@ void initSceneObjects() {
 	water.setMirrorTexture(_tex_mirror);
 	water.setDepthTexture(_tex_water_depth);
 	
-	sky.init();
+	sky.init(NO_THEME);
 	
 	check_error_gl();
 }

@@ -23,9 +23,10 @@
 #include "../tw/io.h"
 
 
-void initAntTwBar(AppParams* app_params);
+void initAntTwBar(AppParams* app_params, Sky* sky);
 void twBarVisible(bool b);
 void refreshTwBar();
+void load_theme(ThemeParams* theme_params);
 
 // --- Value Callbacks --- //
 

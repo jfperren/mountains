@@ -49,7 +49,6 @@ public:
 	void addSnow();
 	void addGrass();
 	void addSand();
-	void applyTheme();
 
 	GLuint* getHeightTexture();
 	GLuint* getDirtTexture();

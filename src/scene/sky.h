@@ -1,6 +1,7 @@
 #pragma once
 
 #include "icg_common.h"
+#include "../app/constants.h"
 
 class Sky {
 	private:
@@ -12,7 +13,7 @@ class Sky {
 		mat4 model = mat4::Identity();
 		
 	public:
-		void init();
+		void init(ThemeType theme_type);
 		void cleanup();
 		void draw(const mat4& view, const mat4& projection);
 };

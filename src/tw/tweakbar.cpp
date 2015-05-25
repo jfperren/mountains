@@ -7,19 +7,35 @@ TwBar *bar;
 string g_file_name = "";
 string g_file_name_load = "";
 
-void initAntTwBar(AppParams* app_params) {
+Sky* sky;
 
-	WindowParams* window_params		= app_params->window_params;
-	ThemeParams* theme_params		= app_params->theme_params;
-	GridParams* grid_params			= app_params->grid_params;
-	NoiseParams* noise_params		= app_params->noise_params;
-	GrassParams* grass_params		= app_params->grass_params;
-	SandParams* sand_params			= app_params->sand_params;
-	SnowParams* snow_params			= app_params->snow_params;
-	ErosionParams* erosion_params	= app_params->erosion_params;
-	TextureParams* texture_params	= app_params->texture_params;
-	ShadingParams* shading_params	= app_params->shading_params;
-	WaterParams* water_params		= app_params->water_params;
+WindowParams* window_params;
+ThemeParams* theme_params;
+GridParams* grid_params;
+NoiseParams* noise_params;
+GrassParams* grass_params;
+SandParams* sand_params;
+SnowParams* snow_params;
+ErosionParams* erosion_params;
+TextureParams* texture_params;
+ShadingParams* shading_params;
+WaterParams* water_params;
+
+void initAntTwBar(AppParams* app_params, Sky* sky_) {
+
+	sky = sky_;
+
+	window_params		= app_params->window_params;
+	theme_params		= app_params->theme_params;
+	grid_params			= app_params->grid_params;
+	noise_params		= app_params->noise_params;
+	grass_params		= app_params->grass_params;
+	sand_params			= app_params->sand_params;
+	snow_params			= app_params->snow_params;
+	erosion_params	= app_params->erosion_params;
+	texture_params	= app_params->texture_params;
+	shading_params	= app_params->shading_params;
+	water_params		= app_params->water_params;
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	// Needed to work with dynamic strings
@@ -193,6 +209,7 @@ void refreshTwBar() {
 
 void TW_CALL setIntParamCallback(const void* value, void* clientData) {
 	*((int*)clientData) = *((int*)value);
+	load_theme(theme_params);
 	compute_height_map();
 }
 
@@ -251,4 +268,133 @@ void TW_CALL LoadCB(void * /*clientData*/)
 
 	// Update scene with the changes
 	compute_height_map();
+}
+
+void load_theme(ThemeParams* theme_params) {
+	switch (theme_params->theme_type) {
+	case NO_THEME:
+		std::cout << "[Info] No theme" << std::endl;
+		break;
+	case SUNNY:
+		std::cout << "[Info] Loading theme 'Sunny'" << std::endl;
+
+		break;
+	case NIGHT:
+		std::cout << "[Info] Loading theme 'Night'" << std::endl;
+
+		// --- Window ---
+		window_params->width = WIDTH;
+		window_params->height = HEIGHT;
+
+		// --- Grid ---
+		grid_params->enable = true;
+		grid_params->resolution = 100;
+		grid_params->length = 10;
+		grid_params->width = 10;
+
+		// --- Noise ---
+		noise_params->noise_type = PERLIN_NOISE;
+		noise_params->fractal_type = FBM;
+		noise_params->noise_effect = NO_EFFECT;
+		noise_params->fractal_effect = NO_EFFECT;
+		noise_params->resolution = 2048;
+		noise_params->height = 2;
+		noise_params->width = 2;
+		noise_params->offset = 0.0f;
+		noise_params->amplitude = 2.5f;
+		noise_params->H = 1.2f;
+		noise_params->lacunarity = 2;
+		noise_params->octaves = 12;
+		/*noise_params->seed					= glfwGetTime();
+		noise_params->seed 				   -= floor(noise_params->seed);*/
+		noise_params->seed = 0.120f;
+
+		// --- grass ---
+
+		grass_params->enable = true;
+		grass_params->min_height = 0;
+		grass_params->max_height = 0.5f;
+		grass_params->max_slope = 4.5;
+		grass_params->min_angle = 1.34;
+		grass_params->time_grow = 30;
+		grass_params->time_smooth = 3;
+
+		// --- sand ---
+		sand_params->enable = true;
+		sand_params->amount = 0.02;
+		sand_params->max_amount = 2;
+		sand_params->min_height = -0.5;
+		sand_params->max_height = -0.1;
+		sand_params->max_slope = 10.0f;
+		sand_params->threshold = 0.001;
+		sand_params->slide_time = 30;
+		sand_params->melt_time = 2;
+		sand_params->smooth_time = 20;
+
+		// --- snow ---
+		snow_params->enable = true;
+		snow_params->amount = 0.2;
+		snow_params->max_amount = 2;
+		snow_params->min_height = 0.5;
+		snow_params->max_slope = 1;
+		snow_params->threshold = 0.001;
+		snow_params->slide_time = 25;
+		snow_params->melt_time = 2;
+		snow_params->smooth_time = 2;
+
+		// --- Erosion ---
+		erosion_params->deposition_rate = 0.04;
+		erosion_params->erosion_rate = 0.04;
+		erosion_params->rain_rate = 0.05;
+		erosion_params->evaporation_rate = 0.02;
+
+		erosion_params->sediment_capacity = 0.08;
+		erosion_params->direction_inertia = 0.4;
+
+		erosion_params->iterations = 1;
+
+		// --- Water ---
+		water_params->enable = true;
+		water_params->height = -0.2;
+		water_params->color = vec3(0.4f, 0.55f, 0.6f);
+		water_params->depth_alpha_factor = 3.0f;
+		water_params->depth_color_factor = 0.05f;
+		water_params->transparency = 0.4f;
+
+		water_params->reflection_factor = 0.8f;
+		water_params->waves_speed = 0.1f;
+		water_params->waves_tile_factor = 5.0f;
+		water_params->waves_amplitude = 30.0f;
+
+
+		// --- Shading ---
+		shading_params->enable_phong = true;
+		shading_params->enable_shadow = true;
+		shading_params->shadow_intensity = 0.4;
+		shading_params->Ia = vec3(0.7f, 0.7f, 0.7f);
+		shading_params->Id = vec3(0.3f, 0.3f, 0.3f);
+		shading_params->light_pos = vec3(0.5f, 1.0f, 0.5f);
+		shading_params->far = 4;
+		shading_params->near = -4;
+
+		// --- Texture ---
+		texture_params->texture_type = TEXTURE;
+		texture_params->sand_min_height = -1;
+		texture_params->sand_max_height = 0.15f;
+		texture_params->grass_max_height = 1.0f;
+		texture_params->sand_max_slope = 0.92f;
+		texture_params->grass_max_slope = 0.9f;
+
+		texture_params->grass_h_transition = 3;
+		texture_params->grass_s_transition = 50;
+		texture_params->sand_h_transition = 5;
+		texture_params->sand_s_transition = 50;
+
+		break;
+	default:
+		std::cout << "[Warning] Unknown theme" << std::endl;
+		break;
+	}
+
+	sky->init(theme_params->theme_type);
 }

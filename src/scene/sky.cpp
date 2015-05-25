@@ -1,7 +1,7 @@
 #include "sky.h"
 
 
-void Sky::init(){
+void Sky::init(ThemeType theme_type){
 	_pid = opengp::load_shaders("scene/sky_vshader.glsl", "scene/sky_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
@@ -71,14 +71,41 @@ void Sky::init(){
 		glEnableVertexAttribArray(tex_pos_id);
 		glVertexAttribPointer(tex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 	}
+
+	string dir = "active";
+	string skybox_path = "textures/skybox/";
+	string path = "";
 	
 	GLchar* faces[6];
-	faces[0] = "textures/skybox/active/XN.tga";
-	faces[1] = "textures/skybox/active/XP.tga";
-	faces[2] = "textures/skybox/active/YN.tga";
-	faces[3] = "textures/skybox/active/YP.tga";
-	faces[4] = "textures/skybox/active/ZN.tga";
-	faces[5] = "textures/skybox/active/ZP.tga";
+
+	switch (theme_type) {
+		break;
+	case SUNNY:
+		faces[0] = "textures/skybox/swagnuage/XN.tga";
+		faces[1] = "textures/skybox/swagnuage/XP.tga";
+		faces[2] = "textures/skybox/swagnuage/YN.tga";
+		faces[3] = "textures/skybox/swagnuage/YP.tga";
+		faces[4] = "textures/skybox/swagnuage/ZN.tga";
+		faces[5] = "textures/skybox/swagnuage/ZP.tga";
+		break;
+	case NIGHT:
+		faces[0] = "textures/skybox/space_night/XN.tga";
+		faces[1] = "textures/skybox/space_night/XP.tga";
+		faces[2] = "textures/skybox/space_night/YN.tga";
+		faces[3] = "textures/skybox/space_night/YP.tga";
+		faces[4] = "textures/skybox/space_night/ZN.tga";
+		faces[5] = "textures/skybox/space_night/ZP.tga";
+		break;
+	default:
+		faces[0] = "textures/skybox/active/XN.tga";
+		faces[1] = "textures/skybox/active/XP.tga";
+		faces[2] = "textures/skybox/active/YN.tga";
+		faces[3] = "textures/skybox/active/YP.tga";
+		faces[4] = "textures/skybox/active/ZN.tga";
+		faces[5] = "textures/skybox/active/ZP.tga";
+		break;
+	}
+
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glGenTextures(6, _tex_skybox);

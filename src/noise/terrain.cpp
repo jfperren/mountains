@@ -235,11 +235,6 @@ void Terrain::resize() {
 
 }
 
-void Terrain::applyTheme() {
-	// TODO
-	_theme_params[0].apply();
-}
-
 void Terrain::addSnow() {
 	GLuint* tex_snow;
 	GLuint* tex_height;
