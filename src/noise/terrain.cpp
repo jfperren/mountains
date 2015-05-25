@@ -216,14 +216,13 @@ void Terrain::addSnow() {
 	CLEAR_BUFFERS(_snowbuffer);
 	SET_MODE(SNOW_MODE);
 
+	INIT(in, out);
+
+	tex_height = &_tex_height;
+	SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
+	SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
+
 	if (_snow_params->enable) {
-
-		INIT(in, out);
-
-		tex_height = &_tex_height;
-		SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
-		SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
-
 		_snowbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
 			glClear(GL_COLOR_BUFFER_BIT);
 			_quad.fall(tex_height, tex_snow, tex_pos);
@@ -272,10 +271,9 @@ void Terrain::addSnow() {
 			SWAP_TEXTURE(tex_snow, _snowbuffer, TEX_SNOW_INDEX);
 			SWAP_TEXTURE(tex_pos, _snowbuffer, TEX_POS_INDEX);
 		}
-
-		copyTexture(tex_height, &_tex_height);
-		copyTexture(tex_snow, &_tex_snow);
 	}
+
+	copyTexture(tex_snow, &_tex_snow);
 }
 
 void Terrain::addGrass() {
@@ -292,12 +290,12 @@ void Terrain::addGrass() {
 	CLEAR_BUFFERS(_grassbuffer);
 	SET_MODE(GRASS_MODE);
 
-	if (_grass_params->enable) {
+	INIT(in, out);
 
-		INIT(in, out);
-		
-		tex_height = &_tex_height;
-		SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
+	tex_height = &_tex_height;
+	SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
+
+	if (_grass_params->enable) {
 
 		_grassbuffer[out].bind(BUFFER_ATTACHMENT_1, 2);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -331,10 +329,9 @@ void Terrain::addGrass() {
 			SWAP_TEXTURE(tex_height, _grassbuffer, TEX_HEIGHT_INDEX);
 			SWAP_TEXTURE(tex_grass, _grassbuffer, TEX_GRASS_INDEX);
 		}
-
-		copyTexture(tex_height, &_tex_height);
-		copyTexture(tex_grass, &_tex_grass);
 	}
+
+	copyTexture(tex_grass, &_tex_grass);
 }
 
 GLuint* Terrain::getHeightTexture() {

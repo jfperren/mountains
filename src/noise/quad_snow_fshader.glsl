@@ -133,11 +133,14 @@ void main() {
 						}
 					}
 				}
-				if (count < 4) snow = 0;
+				if (count < 5) {
+					snow = 0;
+				} else {
+					snow = 1;
+				}
+			} else {
+				snow = 0;
 			}
-
-			snow = min(snow, snow_amount * snow_max_amount);
-			snow = max(snow, 0);
 
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_snow = vec4(snow, 0, 0, 1);
@@ -147,28 +150,26 @@ void main() {
 			float height = texture(tex_in_height, uv)[0];
 			float snow = texture(tex_in_snow, uv)[0];
 
-			if (snow > snow_threshold) {
-				float sum = height;
-				int count = 0;
-				for(int i = -1; i <= 1; i++) {
-					for(int j = -1; j <= 1; j++) {
-						if (i != 0 || j != 0) { 
-							vec2 uv_ij = uv + vec2(i, j) * vec2(DX, DY);
-							float height_ij = texture(tex_in_height, uv_ij)[0];
-							float snow_ij = texture(tex_in_snow, uv_ij)[0];
+			
+			float sum = 8 * snow;
 
-							sum += height_ij;
+			for(int i = -1; i <= 1; i++) {
+				for(int j = -1; j <= 1; j++) {
+					if (i != 0 || j != 0) { 
+						vec2 uv_ij = uv + vec2(i, j) * vec2(DX, DY);
+						float height_ij = texture(tex_in_height, uv_ij)[0];
+						float snow_ij = texture(tex_in_snow, uv_ij)[0];
+
+						if (abs(i) + abs(j) == 1) {
+							sum += 2 * snow_ij;
+						} else {
+							sum += snow_ij;
 						}
 					}
 				}
-
-				height = sum / 9.0;
-			} else {
-				snow = 0;
 			}
 
-			snow = min(snow, snow_amount * snow_max_amount);
-			snow = max(snow, 0);
+			snow = sum / 20.0;
 
 			tex_out_height = vec4(height, 0, 0, 1);
 			tex_out_snow = vec4(snow, 0, 0, 1);

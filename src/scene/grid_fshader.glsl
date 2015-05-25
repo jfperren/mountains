@@ -101,7 +101,7 @@ void main() {
 		vec3 color_rock_underwater = texture(tex_rock_underwater_, uv * vec2(20)).rgb;
 
 		if (snow > 0) {
-			ambient = color_snow;
+			ambient = color_snow * snow + (1-snow) * color_rock;
 		} else if (grass > 0) {
 			ambient = color_grass * grass + (1-grass) * color_rock;
 		} else {
