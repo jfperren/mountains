@@ -300,7 +300,7 @@ void initParams() {
 	// --- grass ---
 
 	grass_params.enable					= true;
-	grass_params.min_height				= -0.2;
+	grass_params.min_height				= 0;
 	grass_params.max_height				= 0.5f;
 	grass_params.max_slope				= 4.5;
 	grass_params.min_angle				= 1.34;
@@ -312,8 +312,8 @@ void initParams() {
 	sand_params.amount					= 0.02;
 	sand_params.max_amount				= 2;
 	sand_params.min_height				= -0.5;
-	sand_params.max_height				= 0.05;
-	sand_params.max_slope				= 0.04;
+	sand_params.max_height				= -0.1;
+	sand_params.max_slope				= 10.0f;
 	sand_params.threshold				= 0.001;
 	sand_params.slide_time				= 30;
 	sand_params.melt_time				= 2;
