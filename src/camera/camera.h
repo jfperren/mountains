@@ -35,6 +35,8 @@ private:
 	WindowParams* _window_params;
 	WaterParams* _water_params;
 
+	float last_time;
+
 public:
 	const vec3 START_CAM_UP = vec3(0.0f, 1.0f, 0.0f);
 	const vec3 START_CAM_DIR = vec3(0.0f, -1.0f, -2.0f).normalized();

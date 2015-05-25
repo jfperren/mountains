@@ -12,9 +12,10 @@ out vec4 color;
 // --- Textures --- //
 
 layout(location = 0) uniform sampler2D tex_height;
-layout(location = 1) uniform sampler2D tex_snow;
-layout(location = 2) uniform sampler2D tex_grass;
-layout(location = 3) uniform sampler2D tex_shadow;
+layout(location = 1) uniform sampler2D tex_grass;
+layout(location = 2) uniform sampler2D tex_sand;
+layout(location = 3) uniform sampler2D tex_snow;
+layout(location = 4) uniform sampler2D tex_shadow;
 
 layout(location = 10) uniform sampler2D tex_grass_;
 layout(location = 11) uniform sampler2D tex_sand_;
@@ -36,6 +37,7 @@ uniform float shading_shadow_intensity;
 uniform int texture_type;
 
 uniform float snow_threshold;
+uniform float sand_threshold;
 
 uniform float sand_min_height;
 uniform float sand_max_height;
@@ -78,8 +80,9 @@ const vec2 poisson_disk[4] = vec2[](
 void main() {
 
 	float height = texture(tex_height, uv).rgb[0];
-	float snow = texture(tex_snow, uv)[0];
 	float grass = texture(tex_grass, uv)[0];
+	float sand = texture(tex_sand, uv)[0];
+	float snow = texture(tex_snow, uv)[0];
 
 	if (mode == ONLY_REFLECT && height < water_height) {
 		discard;
@@ -100,14 +103,19 @@ void main() {
 		vec3 color_grass = texture(tex_grass_, uv * vec2(20)).rgb;
 		vec3 color_rock_underwater = texture(tex_rock_underwater_, uv * vec2(20)).rgb;
 
-		if (snow > 0) {
-			ambient = color_snow * snow + (1-snow) * color_rock;
-		} else if (grass > 0) {
+		if (grass > 0) {
 			ambient = color_grass * grass + (1-grass) * color_rock;
 		} else {
    			ambient = color_rock;
+		} 
+
+		if (sand > 0) {
+			ambient = color_sand * sand + (1 - sand) * ambient;
 		}
-		
+
+		if (snow > 0) {
+			ambient = color_snow * snow + (1-snow) * ambient;
+		} 
 	} else if (texture_type == NONE) {
 		ambient = vec3(1, 1, 1);
 	} else {

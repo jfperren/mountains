@@ -29,6 +29,7 @@ private:
 	TextureParams* _texture_params;
 	ShadingParams* _shading_params;
 	WaterParams* _water_params;
+	SandParams* _sand_params;
 
 	mat4 model = mat4::Identity();
 
@@ -44,6 +45,7 @@ protected:
 	GLuint* _tex_grass;
 	GLuint* _tex_dirt;
 	GLuint* _tex_shadow;
+	GLuint* _tex_sand;
 
 	vector<GLuint> _texs;     
 
@@ -53,8 +55,9 @@ public:
 	void init(AppParams* app_params);
 
 	void setTexHeight(GLuint* tex_height);
-	void setTexSnow(GLuint* tex_snow);
+	void setTexSand(GLuint* tex_sand);
 	void setTexGrass(GLuint* tex_grass);
+	void setTexSnow(GLuint* tex_snow);
 	void setTexDirt(GLuint* tex_dirt);
 	void setTexShadow(GLuint* tex_shadow);
 

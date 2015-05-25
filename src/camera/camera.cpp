@@ -86,9 +86,20 @@ mat4 Camera::get_view_matrix_mirrored() {
 void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 	mat4 translation = mat4::Identity();
 
-	vec3 forward = DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]);
-	vec3 right = DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]);
-	vec3 up = DX * vec3(0.0f, 1.0f, 0.0f);
+	float current_time = glfwGetTime();
+
+	float time_diff;
+	if (last_time == 0) {
+		time_diff = 0;
+	} else {
+		time_diff = current_time - last_time;
+	}
+	
+	last_time = current_time;
+
+	vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff;
+	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff;
+	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff;
 
 	float height = grid->get_height(_cam_pos.x(), _cam_pos.y());
 

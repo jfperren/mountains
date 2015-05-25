@@ -30,6 +30,7 @@ const int SNOW_MODE = 1;
 const int DIRT_MODE = 2;
 const int GRASS_MODE = 3;
 const int COPY_MODE = 4;
+const int SAND_MODE = 5;
 
 const int NORMAL = 0;
 const int ONLY_REFLECT = 1;
@@ -126,7 +127,7 @@ typedef struct GridParams {
 		glUniform1i(glGetUniformLocation(pid, "grid_width"), width);
 		glUniform1i(glGetUniformLocation(pid, "grid_resolution"), resolution);
 	}
-};
+}; 
 
 typedef struct NoiseParams {
 	NoiseType noise_type;
@@ -200,6 +201,65 @@ static NoiseParams FLAT_NOISE = {
 	0
 };
 
+typedef struct GrassParams {
+	bool enable;
+
+	float max_height;
+	float min_height;
+	float max_slope;
+	float min_angle;
+
+	int time_grow;
+	int time_smooth;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "grass_enable"), enable);
+
+		glUniform1f(glGetUniformLocation(pid, "grass_max_height"), max_height);
+		glUniform1f(glGetUniformLocation(pid, "grass_min_height"), min_height);
+		glUniform1f(glGetUniformLocation(pid, "grass_max_slope"), max_slope);
+		glUniform1f(glGetUniformLocation(pid, "grass_min_angle"), min_angle);
+
+		glUniform1f(glGetUniformLocation(pid, "grass_time_grow"), time_grow);
+		glUniform1f(glGetUniformLocation(pid, "grass_time_smooth"), time_smooth);
+	}
+};
+
+typedef struct SandParams {
+	bool enable;
+
+	float amount;
+	float max_amount;
+	float max_slope;
+	float min_height;
+	float max_height;
+	float threshold;
+
+	int slide_time;
+	int melt_time;
+	int smooth_time;
+
+	void setup(GLuint pid) {
+		glUseProgram(pid);
+
+		glUniform1i(glGetUniformLocation(pid, "sand_enable"), enable);
+
+		glUniform1f(glGetUniformLocation(pid, "sand_amount"), amount);
+		glUniform1f(glGetUniformLocation(pid, "sand_max_slope"), max_slope);
+		glUniform1f(glGetUniformLocation(pid, "sand_min_height"), min_height);
+		glUniform1f(glGetUniformLocation(pid, "sand_max_height"), max_height);
+		glUniform1f(glGetUniformLocation(pid, "sand_max_amount"), max_amount);
+		glUniform1f(glGetUniformLocation(pid, "sand_threshold"), threshold);
+
+		glUniform1i(glGetUniformLocation(pid, "sand_slide_time"), slide_time);
+		glUniform1i(glGetUniformLocation(pid, "sand_melt_time"), melt_time);
+		glUniform1i(glGetUniformLocation(pid, "sand_smooth_time"), smooth_time);
+	}
+};
+
+
 typedef struct SnowParams {
 	bool enable;
 
@@ -229,33 +289,6 @@ typedef struct SnowParams {
 		glUniform1i(glGetUniformLocation(pid, "snow_smooth_time"), smooth_time);
 	}
 };
-
-typedef struct GrassParams {
-	bool enable;
-
-	float max_height;
-	float min_height;
-	float max_slope;
-	float min_angle;
-
-	int time_grow;
-	int time_smooth;
-
-	void setup(GLuint pid) {
-		glUseProgram(pid);
-
-		glUniform1i(glGetUniformLocation(pid, "grass_enable"), enable);
-
-		glUniform1f(glGetUniformLocation(pid, "grass_max_height"), max_height);
-		glUniform1f(glGetUniformLocation(pid, "grass_min_height"), min_height);
-		glUniform1f(glGetUniformLocation(pid, "grass_max_slope"), max_slope);
-		glUniform1f(glGetUniformLocation(pid, "grass_min_angle"), min_angle);
-
-		glUniform1f(glGetUniformLocation(pid, "grass_time_grow"), time_grow);
-		glUniform1f(glGetUniformLocation(pid, "grass_time_smooth"), time_smooth);
-	}
-};
-
 
 typedef struct ShadingParams {
 	bool enable_phong;
@@ -388,8 +421,9 @@ typedef struct AppParams {
 	WindowParams* window_params;
 	GridParams* grid_params;
 	NoiseParams* noise_params;
-	SnowParams* snow_params;
 	GrassParams* grass_params;
+	SandParams* sand_params;
+	SnowParams* snow_params;
 	ErosionParams* erosion_params;
 	TextureParams* texture_params;
 	ShadingParams* shading_params;

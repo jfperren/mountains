@@ -3,6 +3,9 @@
 void Quad::init(AppParams* app_params){
 	_snow_params = app_params->snow_params;
 	_grass_params = app_params->grass_params;
+	_sand_params = app_params->sand_params;
+	_grid_params = app_params->grid_params;
+	_noise_params = app_params->noise_params;
 }
 
 void Quad::setShaders(int mode) {
@@ -16,6 +19,8 @@ void Quad::setShaders(int mode) {
 	 _pid = opengp::load_shaders("noise/quad_grass_vshader.glsl", "noise/quad_grass_fshader.glsl");
 	} else if (mode == COPY_MODE){
 		_pid = opengp::load_shaders("noise/quad_copy_vshader.glsl", "noise/quad_copy_fshader.glsl");
+	} else if (mode == SAND_MODE) {
+		_pid = opengp::load_shaders("noise/quad_sand_vshader.glsl", "noise/quad_sand_fshader.glsl");
 	}
 
 	if (!_pid) exit(EXIT_FAILURE);
@@ -116,9 +121,15 @@ void Quad::drawSnow(GLuint* tex_height, GLuint* tex_snow, GLuint* tex_pos, int a
 
 	glUniform1i(glGetUniformLocation(_pid, "action"), action);
 
-	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / 2048);
-	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / 2048);
-	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / _noise_params->resolution);
+
+	/*
+	glUniform1f(glGetUniformLocation(_pid, "DX"), _grid_params->length / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), _grid_params->width / _noise_params->resolution);
+	float DZ = sqrt(_grid_params->width*_grid_params->width + _grid_params->length*_grid_params->length);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), DZ / _noise_params->resolution);*/
 
 	// Set texture input
 	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
@@ -141,6 +152,47 @@ void Quad::drawSnow(GLuint* tex_height, GLuint* tex_snow, GLuint* tex_pos, int a
 	glUseProgram(0);
 }
 
+void Quad::drawSand(GLuint* tex_height, GLuint* tex_sand, GLuint* tex_pos, int action){
+
+	// Bind program & vertex array
+	glUseProgram(_pid);
+	glBindVertexArray(_vao);
+
+	_sand_params->setup(_pid);
+
+	glUniform1i(glGetUniformLocation(_pid, "action"), action);
+
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / _noise_params->resolution);
+
+	/*
+	glUniform1f(glGetUniformLocation(_pid, "DX"), _grid_params->length / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), _grid_params->width / _noise_params->resolution);
+	float DZ = sqrt(_grid_params->width*_grid_params->width + _grid_params->length*_grid_params->length);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), DZ / _noise_params->resolution);*/
+
+	// Set texture input
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, *tex_height);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_sand"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, *tex_sand);
+
+	glUniform1i(glGetUniformLocation(_pid, "tex_in_pos"), 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, *tex_pos);
+
+	// Draw
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Unbind
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
 void Quad::drawDirt(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sediment,
 	GLuint* tex_flux_LR, GLuint* tex_flux_TB, GLuint* tex_velocity) {
 
@@ -150,9 +202,14 @@ void Quad::drawDirt(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sediment,
 
 	_erosion_params->setup(_pid);
 
-	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / 2048);
-	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / 2048);
-	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / _noise_params->resolution);
+	/*
+	glUniform1f(glGetUniformLocation(_pid, "DX"), _grid_params->length / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), _grid_params->width / _noise_params->resolution);
+	float DZ = sqrt(_grid_params->width*_grid_params->width + _grid_params->length*_grid_params->length);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), DZ / _noise_params->resolution);*/
 
 	// Set texture input
 	glUniform1i(glGetUniformLocation(_pid, "height_in"), 0);
@@ -197,9 +254,14 @@ void Quad::drawGrass(GLuint* tex_height, GLuint* tex_grass, int action){
 
 	glUniform1i(glGetUniformLocation(_pid, "action"), action);
 
-	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / 2048);
-	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / 2048);
-	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / 2048.0);
+	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / _noise_params->resolution);
+
+	/*glUniform1f(glGetUniformLocation(_pid, "DX"), _grid_params->length / _noise_params->resolution);
+	glUniform1f(glGetUniformLocation(_pid, "DY"), _grid_params->width / _noise_params->resolution);
+	float DZ = sqrt(_grid_params->width*_grid_params->width + _grid_params->length*_grid_params->length);
+	glUniform1f(glGetUniformLocation(_pid, "DZ"), DZ / _noise_params->resolution);*/
 
 	// Set texture input
 	glUniform1i(glGetUniformLocation(_pid, "tex_in_height"), 0);
