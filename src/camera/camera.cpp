@@ -83,19 +83,16 @@ mat4 Camera::get_view_matrix_mirrored() {
 	return lookAt(cam_pos_mirrored, cam_center_mirrored, _cam_up);
 }
 
-void Camera::move(NAVIGATION_MODE navmode) {
+void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 	mat4 translation = mat4::Identity();
 
 	vec3 forward = DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]);
 	vec3 right = DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]);
 	vec3 up = DX * vec3(0.0f, 1.0f, 0.0f);
 
-	/*GLfloat array[3];
+	float height = grid->get_height(_cam_pos.x(), _cam_pos.y());
 
-	glBindTexture(GL_TEXTURE_2D, *_tex_height); // Bind our frame buffer texture
-	glReadPixels(_cam_pos.x(), _cam_pos.y(), 1, 1, GL_R32F, GL_FLOAT, array);
-
-	std::cout << "Array: " << array[0] << ", " << array[1] << ", " << array[2] << std::endl;*/
+	std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 
 	if (pressed_keys[65]) // A
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-right)).matrix();

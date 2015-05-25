@@ -4,12 +4,18 @@
 
 #include "icg_common.h"
 #include "../app/constants.h"
+#include "../scene/grid.h";
 
 using namespace Eigen;
 
 class Camera {
 
 private:
+
+	// Helpers
+	vec2 transform_screen_coords(int x, int y);
+
+	GLuint* _tex_height;
 	vec3 _cam_up;
 	vec3 _cam_pos;
 	vec3 _cam_dir;
@@ -51,11 +57,5 @@ public:
 	void mouse_button(int button, int action);
 	void mouse_pos(float x, float y);
 	void keyboard(int key, int action);
-	void move(NAVIGATION_MODE navmode);
-
-private:
-	// Helpers
-	vec2 transform_screen_coords(int x, int y);
-
-	GLuint* _tex_height;
+	void move(NAVIGATION_MODE navmode, Grid* grid);
 };

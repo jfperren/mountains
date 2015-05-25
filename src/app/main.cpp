@@ -180,7 +180,7 @@ void display(){
 		case FREE:
 		case FPS:
 		case CAMERA_PATH:
-			camera.move(navmode);
+			camera.move(navmode, &grid);
 			view_matrix = camera.get_view_matrix();
 			view_matrix_mirrored = camera.get_view_matrix_mirrored();
 			break;

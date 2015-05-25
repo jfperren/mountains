@@ -148,6 +148,31 @@ using namespace std;
 		glDeleteProgram(_pid);
 	}
 
+	float Grid::get_height(float x, float y) {
+		float hg = _grid_params->length / 2;
+
+		if (x > hg || x < -hg || y > hg || y < -hg) {
+			return -10.0f;
+		}
+
+		x += hg;
+		y += hg;
+
+		int px_x = x / _grid_params->length * _grid_params->resolution;
+		int px_y = y / _grid_params->length * _grid_params->resolution;
+
+		px_y = _grid_params->resolution - px_y;
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, *_tex_height);
+
+		GLubyte* data = new GLubyte[WIDTH*HEIGHT * 4 * sizeof(GLubyte)];
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, data);
+
+		return data[px_y * _grid_params->resolution + px_y];
+
+	}
+
 	void Grid::draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode){
 		glUseProgram(_pid);
 		glBindVertexArray(_vao);

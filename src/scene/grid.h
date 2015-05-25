@@ -64,4 +64,6 @@ public:
 	
 
 	int get_vertex_index(int i, int j);
+
+	float get_height(float x, float y);
 };
