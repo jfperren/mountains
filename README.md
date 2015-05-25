@@ -2,7 +2,7 @@
 
 ## Screenshots
 
-![Sunny](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/suny.JPG)
+![Sunny](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/sunny.jpg)
 ![NightCall](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/nightcall.png)
 
 ## Compiling the project with Visual Studio
