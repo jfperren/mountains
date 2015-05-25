@@ -67,13 +67,13 @@ void Bezier::init(int width, int height, int travel_time) {
 	cam_pos_curve.init(_pid_bezier);
 
 	// Add points, the total number must be n_tot = 1 + 3n, n in Z
-	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
-	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
-	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
-	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
-	cam_pos_points.push_back(ControlPoint(-0.11, -0.10, 0.45, 4));
-	cam_pos_points.push_back(ControlPoint(-0.16, 0.92, -0.11, 5));
-	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));
+	cam_pos_points.push_back(ControlPoint(-5.33, 0.66, 5.058, 0));
+	cam_pos_points.push_back(ControlPoint(-1.95, -1.11, 0.48, 1));
+	cam_pos_points.push_back(ControlPoint(2.46, 0.61, 3.21, 2));
+	cam_pos_points.push_back(ControlPoint(1.48, 0.91, 0.08, 3));
+	cam_pos_points.push_back(ControlPoint(2.24, 1.66, 0.45, 4));
+	cam_pos_points.push_back(ControlPoint(1.96, 2.85, 0.22, 5));
+	cam_pos_points.push_back(ControlPoint(5.36, 2.39, 0.3, 6));
 
 	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
 		cam_pos_points[i].init(_pid_point, _pid_point_selection);
@@ -85,10 +85,10 @@ void Bezier::init(int width, int height, int travel_time) {
 	cam_look_curve.init(_pid_bezier);
 
 	// Add points
-	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
-	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
-	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
-	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));
+	cam_look_points.push_back(ControlPoint(0, 1, 0.25, 4));
+	cam_look_points.push_back(ControlPoint(0.5, 0.9, 0.24, 5));
+	cam_look_points.push_back(ControlPoint(1, 1, 0.8, 6));
+	cam_look_points.push_back(ControlPoint(1.5, 1, 0.7, 7));
 
 	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
 		cam_look_points[i].init(_pid_point, _pid_point_selection);

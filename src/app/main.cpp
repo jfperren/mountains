@@ -277,8 +277,8 @@ void initParams() {
 	// --- Grid ---
 	grid_params.enable					= true;
 	grid_params.resolution				= 100;
-	grid_params.length					= 2;
-	grid_params.width					= 2;
+	grid_params.length					= 10;
+	grid_params.width					= 10;
 
 	// --- Noise ---
 	noise_params.noise_type				= PERLIN_NOISE;
@@ -286,25 +286,26 @@ void initParams() {
 	noise_params.noise_effect			= NO_EFFECT;
 	noise_params.fractal_effect			= NO_EFFECT;
 	noise_params.resolution				= 2048;
-	noise_params.height					= 1;
-	noise_params.width					= 1;
+	noise_params.height					= 2;
+	noise_params.width					= 2;
 	noise_params.offset					= 0.0f;
-	noise_params.amplitude				= 1.0f;
+	noise_params.amplitude				= 2.5f;
 	noise_params.H						= 1.2f;
 	noise_params.lacunarity				= 2;
 	noise_params.octaves				= 12;
-	noise_params.seed					= glfwGetTime();
-	noise_params.seed 				   -= floor(noise_params.seed);
+	/*noise_params.seed					= glfwGetTime();
+	noise_params.seed 				   -= floor(noise_params.seed);*/
+	noise_params.seed					= 0.120f;
 
 	// --- grass ---
 
 	grass_params.enable					= true;
-	grass_params.min_height				= water_params.height;
-	grass_params.max_height				= 0.15;
-	grass_params.max_slope				= 1.0;
-	grass_params.min_angle				= 1.2;
-	grass_params.time_grow				= 25;
-	grass_params.time_smooth			= 2;
+	grass_params.min_height				= -0.2;
+	grass_params.max_height				= 0.5f;
+	grass_params.max_slope				= 4.5;
+	grass_params.min_angle				= 1.34;
+	grass_params.time_grow				= 30;
+	grass_params.time_smooth			= 3;
 
 	// --- sand ---
 	sand_params.enable					= true;
@@ -319,11 +320,11 @@ void initParams() {
 	sand_params.smooth_time				= 20;
 
 	// --- snow ---
-	snow_params.enable					= false;
-	snow_params.amount					= 0.02;
+	snow_params.enable					= true;
+	snow_params.amount					= 0.2;
 	snow_params.max_amount				= 2;
-	snow_params.min_height				= 0.3;
-	snow_params.max_slope				= 2;
+	snow_params.min_height				= 0.5;
+	snow_params.max_slope				= 1;
 	snow_params.threshold				= 0.001;
 	snow_params.slide_time				= 25;
 	snow_params.melt_time				= 2;
@@ -342,13 +343,13 @@ void initParams() {
 
 	// --- Water ---
 	water_params.enable					= true;
-	water_params.height					= 0;
+	water_params.height					= -0.2;
 	water_params.color					= vec3(0.4f, 0.55f, 0.6f);
 	water_params.depth_alpha_factor		= 3.0f;
 	water_params.depth_color_factor		= 0.05f;
 	water_params.transparency			= 0.4f;
 
-	water_params.reflection_factor		= 0.6f;
+	water_params.reflection_factor		= 0.8f;
 	water_params.waves_speed			= 0.1f;
 	water_params.waves_tile_factor		= 5.0f;
 	water_params.waves_amplitude		= 30.0f;
@@ -357,7 +358,7 @@ void initParams() {
 	// --- Shading ---
 	shading_params.enable_phong			= true;
 	shading_params.enable_shadow		= true;
-	shading_params.shadow_intensity		= 0.5;
+	shading_params.shadow_intensity		= 0.4;
 	shading_params.Ia					= vec3(0.7f, 0.7f, 0.7f);
 	shading_params.Id					= vec3(0.3f, 0.3f, 0.3f);
 	shading_params.light_pos			= vec3(0.5f, 1.0f, 0.5f);
