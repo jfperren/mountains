@@ -22,6 +22,20 @@ Terrain::Terrain()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+		glGenTextures(1, &_tex_grass);
+		glBindTexture(GL_TEXTURE_2D, _tex_grass);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glGenTextures(1, &_tex_sand);
+		glBindTexture(GL_TEXTURE_2D, _tex_sand);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 		glGenTextures(1, &_tex_snow);
 		glBindTexture(GL_TEXTURE_2D, _tex_snow);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -29,18 +43,14 @@ Terrain::Terrain()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glGenTextures(1, &_tex_grass);
-		glBindTexture(GL_TEXTURE_2D, _tex_grass);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
 	}
 
 void Terrain::init(AppParams* app_params) {
 
 	_noise_params = app_params->noise_params;
 	_snow_params = app_params->snow_params;
+	_sand_params = app_params->sand_params;
 	_grass_params = app_params->grass_params;
 	_erosion_params = app_params->erosion_params;
 
@@ -51,6 +61,14 @@ void Terrain::init(AppParams* app_params) {
 	_snowbuffer[1].init(3);
 	_snowbuffer[1].genTextures();
 	_snowbuffer[1].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
+
+	_sandbuffer[0].init(3);
+	_sandbuffer[0].genTextures();
+	_sandbuffer[0].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
+
+	_sandbuffer[1].init(3);
+	_sandbuffer[1].genTextures();
+	_sandbuffer[1].setFormat(GL_RG32F, GL_RED, GL_FLOAT);
 
 	_grassbuffer[0].init(2);
 	_grassbuffer[0].genTextures();
@@ -182,6 +200,16 @@ void Terrain::resize() {
 	_snowbuffer[1].genFramebuffer(BUFFER_ATTACHMENT_2, 3);
 	_snowbuffer[1].clear();
 
+	_sandbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
+	_sandbuffer[0].genTextureImages();
+	_sandbuffer[0].genFramebuffer(BUFFER_ATTACHMENT_2, 3);
+	_sandbuffer[0].clear();
+
+	_sandbuffer[1].setSize(_noise_params->resolution, _noise_params->resolution);
+	_sandbuffer[1].genTextureImages();
+	_sandbuffer[1].genFramebuffer(BUFFER_ATTACHMENT_2, 3);
+	_sandbuffer[1].clear();
+
 	_grassbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
 	_grassbuffer[0].genTextureImages();
 	_grassbuffer[0].genFramebuffer(BUFFER_ATTACHMENT_1, 2);
@@ -276,6 +304,78 @@ void Terrain::addSnow() {
 	copyTexture(tex_snow, &_tex_snow);
 }
 
+void Terrain::addSand() {
+	GLuint* tex_sand;
+	GLuint* tex_height;
+	GLuint* tex_pos;
+
+	const GLuint TEX_HEIGHT_INDEX = 0;
+	const GLuint TEX_SAND_INDEX = 1;
+	const GLuint TEX_POS_INDEX = 2;
+
+	CLEAR_BUFFERS(_sandbuffer);
+	SET_MODE(SAND_MODE);
+
+	INIT(in, out);
+
+	tex_height = &_tex_height;
+	SWAP_TEXTURE(tex_sand, _sandbuffer, TEX_SAND_INDEX);
+	SWAP_TEXTURE(tex_pos, _sandbuffer, TEX_POS_INDEX);
+
+	if (_sand_params->enable) {
+		_sandbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
+		glClear(GL_COLOR_BUFFER_BIT);
+		_quad.drawSand(tex_height, tex_sand, tex_pos, FALL);
+		_sandbuffer[out].unbind();
+
+		SWAP(in, out);
+		SWAP_TEXTURE(tex_height, _sandbuffer, TEX_HEIGHT_INDEX);
+		SWAP_TEXTURE(tex_sand, _sandbuffer, TEX_SAND_INDEX);
+		SWAP_TEXTURE(tex_pos, _sandbuffer, TEX_POS_INDEX);
+		
+		for (int t = 0; t < _sand_params->slide_time; t++) {
+			
+			_sandbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
+				glClear(GL_COLOR_BUFFER_BIT);
+				_quad.drawSand(tex_height, tex_sand, tex_pos, SLIDE);
+			_sandbuffer[out].unbind();
+
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _sandbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_sand, _sandbuffer, TEX_SAND_INDEX);
+			SWAP_TEXTURE(tex_pos, _sandbuffer, TEX_POS_INDEX);
+		}
+		
+		for (int t = 0; t < _sand_params->melt_time; t++) {
+
+			_sandbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.drawSand(tex_height, tex_sand, tex_pos, MELT);
+			_sandbuffer[out].unbind();
+
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _sandbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_sand, _sandbuffer, TEX_SAND_INDEX);
+			SWAP_TEXTURE(tex_pos, _sandbuffer, TEX_POS_INDEX);
+		}
+		
+		for (int t = 0; t < _sand_params->smooth_time; t++) {
+
+			_sandbuffer[out].bind(BUFFER_ATTACHMENT_2, 3);
+			glClear(GL_COLOR_BUFFER_BIT);
+			_quad.drawSand(tex_height, tex_sand, tex_pos, SMOOTH);
+			_sandbuffer[out].unbind();
+
+			SWAP(in, out);
+			SWAP_TEXTURE(tex_height, _sandbuffer, TEX_HEIGHT_INDEX);
+			SWAP_TEXTURE(tex_sand, _sandbuffer, TEX_SAND_INDEX);
+			SWAP_TEXTURE(tex_pos, _sandbuffer, TEX_POS_INDEX);
+		}
+	}
+
+	copyTexture(tex_sand, &_tex_sand);
+}
+
 void Terrain::addGrass() {
 	GLuint* tex_grass;
 	GLuint* tex_height;
@@ -340,6 +440,10 @@ GLuint* Terrain::getHeightTexture() {
 
 GLuint* Terrain::getDirtTexture() {
 	return &_tex_dirt;
+}
+
+GLuint* Terrain::getSandTexture() {
+	return &_tex_sand;
 }
 
 GLuint* Terrain::getSnowTexture() {

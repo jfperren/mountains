@@ -12,8 +12,9 @@ void initAntTwBar(AppParams* app_params) {
 	WindowParams* window_params		= app_params->window_params;
 	GridParams* grid_params			= app_params->grid_params;
 	NoiseParams* noise_params		= app_params->noise_params;
-	SnowParams* snow_params			= app_params->snow_params;
 	GrassParams* grass_params		= app_params->grass_params;
+	SandParams* sand_params			= app_params->sand_params;
+	SnowParams* snow_params			= app_params->snow_params;
 	ErosionParams* erosion_params	= app_params->erosion_params;
 	TextureParams* texture_params	= app_params->texture_params;
 	ShadingParams* shading_params	= app_params->shading_params;
@@ -62,6 +63,19 @@ void initAntTwBar(AppParams* app_params) {
 	TwAddVarCB(bar, "noise_octaves", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &noise_params->octaves, " group=Noise step=1 min=1");
 
 	TwAddVarCB(bar, "noise_seed", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &noise_params->seed, " group=Noise step=0.001 min=0 max=1");
+
+	// Sand
+
+	TwAddVarCB(bar, "sand_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &sand_params->enable, " group=Sand");
+	TwAddVarCB(bar, "sand_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &sand_params->amount, " group=Sand step=0.01 min=0");
+	TwAddVarCB(bar, "sand_max_amount", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &sand_params->max_amount, " group=Sand step=0.01 min=0");
+	TwAddVarCB(bar, "sand_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &sand_params->max_slope, " group=Sand step=0.01 min=0.01");
+	TwAddVarCB(bar, "sand_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &sand_params->min_height, " group=Sand step=0.01");
+	TwAddVarCB(bar, "sand_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &sand_params->max_height, " group=Sand step=0.01");
+	TwAddVarCB(bar, "sand_threshold", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &sand_params->threshold, " group=Sand step=0.001");
+	TwAddVarCB(bar, "sand_slide_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &sand_params->slide_time, " group=Sand step=1 min=0");
+	TwAddVarCB(bar, "sand_melt_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &sand_params->melt_time, " group=Sand step=1 min=0");
+	TwAddVarCB(bar, "sand_smooth_time", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &sand_params->smooth_time, " group=Sand step=1 min=0");
 
 	// Snow
 

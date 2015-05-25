@@ -16,6 +16,7 @@ using namespace std;
 		_shading_params = app_params->shading_params;
 		_snow_params = app_params->snow_params;
 		_grass_params = app_params->grass_params;
+		_sand_params = app_params->sand_params;
 
 		TEX_PATHS[0] = "textures/terrains/active/tex_grass.tga";
 		TEX_PATHS[1] = "textures/terrains/active/tex_sand.tga";
@@ -141,6 +142,10 @@ using namespace std;
 		_tex_grass = tex_grass;
 	}
 
+	void Grid::setTexSand(GLuint* tex_sand){
+		_tex_sand = tex_sand;
+	}
+
 	void Grid::cleanup(){
 		glDeleteBuffers(1, &_vbo_position);
 		glDeleteBuffers(1, &_vbo_index);
@@ -158,6 +163,7 @@ using namespace std;
 		_snow_params->setup(_pid);
 		_water_params->setup(_pid);
 		_grass_params->setup(_pid);
+		_sand_params->setup(_pid);
 
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
 		glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
@@ -169,16 +175,20 @@ using namespace std;
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
 
-		glUniform1i(glGetUniformLocation(_pid, "tex_snow"), 1);
+		glUniform1i(glGetUniformLocation(_pid, "tex_grass"), 1);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
-
-		glUniform1i(glGetUniformLocation(_pid, "tex_grass"), 2);
-		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, *_tex_grass);
 
-		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 3);
+		glUniform1i(glGetUniformLocation(_pid, "tex_sand"), 2);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, *_tex_sand);
+
+		glUniform1i(glGetUniformLocation(_pid, "tex_snow"), 3);
 		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, *_tex_snow);
+
+		glUniform1i(glGetUniformLocation(_pid, "tex_shadow"), 4);
+		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, *_tex_shadow);
 
 		for (int i = 0; i < TEXTURES_COUNT; i++){

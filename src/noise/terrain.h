@@ -16,11 +16,13 @@ private:
 	Generalbuffer _grassbuffer[2];
 	Generalbuffer _noisebuffer[2];
 	Generalbuffer _dirtbuffer[2];
+	Generalbuffer _sandbuffer[2];
 
 	Copybuffer _copybuffer;
 
 	GLuint _tex_height;
 	GLuint _tex_snow;
+	GLuint _tex_sand; 
 	GLuint _tex_dirt;
 	GLuint _tex_water;
 	GLuint _tex_grass;
@@ -31,6 +33,7 @@ private:
 	SnowParams* _snow_params;
 	GrassParams* _grass_params;
 	ErosionParams* _erosion_params;
+	SandParams* _sand_params;
 
 public:
 	Terrain();
@@ -44,10 +47,12 @@ public:
 	void erode();
 	void addSnow();
 	void addGrass();
+	void addSand();
 
 	GLuint* getHeightTexture();
 	GLuint* getDirtTexture();
 	GLuint* getSnowTexture();
+	GLuint* getSandTexture();
 	GLuint* getWaterTexture();
 	GLuint* getGrassTexture();
 
