@@ -5,6 +5,7 @@
 WindowParams window_params{ WIDTH, HEIGHT };
 NoiseParams noise_params;
 SnowParams snow_params;
+GrassParams grass_params;
 ErosionParams erosion_params;
 ShadingParams shading_params;
 WaterParams water_params;
@@ -16,10 +17,11 @@ AppParams app_params{
 	&grid_params,
 	&noise_params,
 	&snow_params,
+	&grass_params,
 	&erosion_params,
 	&texture_params,
 	&shading_params,
-	&water_params
+	&water_params,
 };
 
 // --- Scene Objects --- // 
@@ -40,6 +42,7 @@ Generalbuffer fb_shadow;
 GLuint* _tex_height;
 GLuint* _tex_snow;
 GLuint* _tex_dirt;
+GLuint* _tex_grass;
 
 GLuint* _tex_mirror;
 GLuint* _tex_water_depth;
@@ -111,6 +114,7 @@ void compute_height_map() {
 	
 	terrain.resize();
 	terrain.renderFractal();
+	terrain.addGrass();
 	terrain.addSnow();
 
 }
@@ -300,6 +304,16 @@ void initParams() {
 	snow_params.melt_time				= 10;
 	snow_params.smooth_time				= 10;
 
+	// --- grass ---
+
+	grass_params.enable					= true;
+	grass_params.min_height				= water_params.height;
+	grass_params.max_height				= 0.15;
+	grass_params.max_slope				= 1.0;
+	grass_params.min_angle				= 1.2;
+	grass_params.time_grow				= 25;
+	grass_params.time_smooth			= 2;
+
 	// --- Erosion ---
 	erosion_params.deposition_rate		= 0.04;
 	erosion_params.erosion_rate			= 0.04;
@@ -362,6 +376,7 @@ void initSceneObjects() {
 	grid.setTexSnow(_tex_snow);
 	grid.setTexDirt(_tex_dirt);
 	grid.setTexShadow(_tex_shadow);
+	grid.setTexGrass(_tex_grass);
 
 	water.init(&app_params);
 	water.setHeightTexture(_tex_height);
@@ -378,6 +393,7 @@ void initTextures() {
 	_tex_height = terrain.getHeightTexture();
 	_tex_dirt = terrain.getDirtTexture();
 	_tex_snow = terrain.getSnowTexture();
+	_tex_grass = terrain.getGrassTexture();
 
 	_tex_shadow = fb_shadow.getTexture(0);
 	_tex_mirror = fb_mirror.getTexture(0);

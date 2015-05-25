@@ -73,12 +73,12 @@ void Sky::init(){
 	}
 	
 	GLchar* faces[6];
-	faces[0] = "textures/skybox/swagnuage/XN.tga";
-	faces[1] = "textures/skybox/swagnuage/XP.tga";
-	faces[2] = "textures/skybox/swagnuage/YN.tga";
-	faces[3] = "textures/skybox/swagnuage/YP.tga";
-	faces[4] = "textures/skybox/swagnuage/ZN.tga";
-	faces[5] = "textures/skybox/swagnuage/ZP.tga";
+	faces[0] = "textures/skybox/active/XN.tga";
+	faces[1] = "textures/skybox/active/XP.tga";
+	faces[2] = "textures/skybox/active/YN.tga";
+	faces[3] = "textures/skybox/active/YP.tga";
+	faces[4] = "textures/skybox/active/ZN.tga";
+	faces[5] = "textures/skybox/active/ZP.tga";
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glGenTextures(6, _tex_skybox);

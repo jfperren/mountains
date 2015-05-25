@@ -13,6 +13,7 @@ class Terrain {
 
 private:
 	Generalbuffer _snowbuffer[2];
+	Generalbuffer _grassbuffer[2];
 	Generalbuffer _noisebuffer[2];
 	Generalbuffer _dirtbuffer[2];
 
@@ -22,11 +23,13 @@ private:
 	GLuint _tex_snow;
 	GLuint _tex_dirt;
 	GLuint _tex_water;
+	GLuint _tex_grass;
 
 	Quad _quad;
 
 	NoiseParams* _noise_params;
 	SnowParams* _snow_params;
+	GrassParams* _grass_params;
 	ErosionParams* _erosion_params;
 
 public:
@@ -40,11 +43,13 @@ public:
 	void renderFractal();
 	void erode();
 	void addSnow();
+	void addGrass();
 
 	GLuint* getHeightTexture();
 	GLuint* getDirtTexture();
 	GLuint* getSnowTexture();
 	GLuint* getWaterTexture();
+	GLuint* getGrassTexture();
 
 	void resize();
 };

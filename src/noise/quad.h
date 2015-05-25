@@ -13,6 +13,7 @@ private:
 
 	SnowParams* _snow_params;
 	ErosionParams* _erosion_params;
+	GrassParams* _grass_params;
 
 public:
 	void init(AppParams* app_params);
@@ -23,6 +24,7 @@ public:
 	void drawDirt(GLuint* tex_height, GLuint* tex_sediment, GLuint* tex_water,
 		GLuint* tex_flux_LR, GLuint* tex_flux_TB, GLuint* tex_velocity);
 	void drawSnow(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos, int mode);
+	void drawGrass(GLuint* tex_noise, GLuint* tex_grass, int mode);
 	void drawTexture(GLuint* texture, float amplitude = 1, float offset = 0);
 
 	// Snow

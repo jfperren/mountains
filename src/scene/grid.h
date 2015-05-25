@@ -25,6 +25,7 @@ private:
 	NoiseParams* _noise_params;
 	GridParams* _grid_params;
 	SnowParams* _snow_params;
+	GrassParams* _grass_params;
 	TextureParams* _texture_params;
 	ShadingParams* _shading_params;
 	WaterParams* _water_params;
@@ -40,6 +41,7 @@ protected:
    
 	GLuint* _tex_height; 
 	GLuint* _tex_snow;
+	GLuint* _tex_grass;
 	GLuint* _tex_dirt;
 	GLuint* _tex_shadow;
 
@@ -52,6 +54,7 @@ public:
 
 	void setTexHeight(GLuint* tex_height);
 	void setTexSnow(GLuint* tex_snow);
+	void setTexGrass(GLuint* tex_grass);
 	void setTexDirt(GLuint* tex_dirt);
 	void setTexShadow(GLuint* tex_shadow);
 
