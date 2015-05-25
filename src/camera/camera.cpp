@@ -101,9 +101,10 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff;
 	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff;
 
-	float height = grid->get_height(_cam_pos.x(), _cam_pos.y());
+	//float height = grid->get_height(_cam_pos.x(), _cam_pos.y());
+	float height = 1;
 
-	std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
+	//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 
 	if (pressed_keys[65]) // A
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-right)).matrix();
