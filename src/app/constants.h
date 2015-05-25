@@ -85,6 +85,12 @@ typedef enum {
 } NAVIGATION_MODE;
 
 typedef enum {
+	NO_THEME,
+	SUNNY,
+	NIGHT
+} ThemeType;
+
+typedef enum {
 	NO_NOISE,
 	RANDOM_NOISE,
 	PERLIN_NOISE,
@@ -199,6 +205,16 @@ static NoiseParams FLAT_NOISE = {
 	0,
 	0,
 	0
+};
+
+typedef struct ThemeParams {
+	ThemeType theme_type;
+
+	void apply() {
+		theme_type = NIGHT;
+		std::cout << "themes_params apply()" << std::endl;
+		// TODO
+	}
 };
 
 typedef struct GrassParams {
@@ -419,6 +435,7 @@ typedef struct TextureParams {
 
 typedef struct AppParams {
 	WindowParams* window_params;
+	ThemeParams* theme_params;
 	GridParams* grid_params;
 	NoiseParams* noise_params;
 	GrassParams* grass_params;

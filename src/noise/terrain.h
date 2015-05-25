@@ -29,6 +29,7 @@ private:
 
 	Quad _quad;
 
+	ThemeParams* _theme_params;
 	NoiseParams* _noise_params;
 	SnowParams* _snow_params;
 	GrassParams* _grass_params;
@@ -48,6 +49,7 @@ public:
 	void addSnow();
 	void addGrass();
 	void addSand();
+	void applyTheme();
 
 	GLuint* getHeightTexture();
 	GLuint* getDirtTexture();

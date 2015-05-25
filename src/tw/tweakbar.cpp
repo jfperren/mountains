@@ -10,6 +10,7 @@ string g_file_name_load = "";
 void initAntTwBar(AppParams* app_params) {
 
 	WindowParams* window_params		= app_params->window_params;
+	ThemeParams* theme_params		= app_params->theme_params;
 	GridParams* grid_params			= app_params->grid_params;
 	NoiseParams* noise_params		= app_params->noise_params;
 	GrassParams* grass_params		= app_params->grass_params;
@@ -25,6 +26,12 @@ void initAntTwBar(AppParams* app_params) {
 	TwCopyStdStringToClientFunc(CopyStdStringToClient);
 	TwWindowSize(window_params->width, window_params->height);
 	bar = TwNewBar("Settings");
+
+	// Theme
+
+	TwEnumVal theme_type_array[] = { { NO_THEME, "NO_THEME" }, { SUNNY, "SUNNY" }, { NIGHT, "NIGHT" } };
+	TwType theme_type = TwDefineEnum("ThemeType", theme_type_array, 3);
+	TwAddVarCB(bar, "theme", theme_type, setIntParamCallback, getIntParamCallback, &theme_params->theme_type, " group=General ");
 	
 	// Grid
 

@@ -49,6 +49,8 @@ Terrain::Terrain()
 
 void Terrain::init(AppParams* app_params) {
 
+	_theme_params = app_params->theme_params;
+
 	_noise_params = app_params->noise_params;
 	_snow_params = app_params->snow_params;
 	_sand_params = app_params->sand_params;
@@ -231,6 +233,11 @@ void Terrain::resize() {
 	_noisebuffer[1].genFramebuffer(BUFFER_ATTACHMENT_0, 1);
 	_noisebuffer[1].clear();
 
+}
+
+void Terrain::applyTheme() {
+	// TODO
+	_theme_params[0].apply();
 }
 
 void Terrain::addSnow() {

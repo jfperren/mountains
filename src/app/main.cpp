@@ -3,6 +3,7 @@
 // --- Params --- // 
 
 WindowParams window_params{ WIDTH, HEIGHT };
+ThemeParams theme_params;
 NoiseParams noise_params;
 GrassParams grass_params;
 SandParams sand_params;
@@ -15,6 +16,7 @@ GridParams grid_params;
 
 AppParams app_params{
 	&window_params,
+	&theme_params,
 	&grid_params,
 	&noise_params,
 	&grass_params,
@@ -115,6 +117,7 @@ void resize_callback(int width, int height) {
 
 void compute_height_map() {
 	
+	terrain.applyTheme();
 	terrain.resize();
 	terrain.renderFractal();
 	terrain.addGrass();
