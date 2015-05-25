@@ -198,6 +198,7 @@ void display(){
 	fb_mirror.bind(BUFFER_ATTACHMENT_0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		grid.draw(view_matrix_mirrored, projection_matrix, light_view_matrix, light_projection_matrix, ONLY_REFLECT);
+		sky.draw(view_matrix_mirrored, projection_matrix);
 	fb_mirror.unbind();
 
 	check_error_gl();
@@ -318,7 +319,7 @@ void initParams() {
 	water_params.depth_color_factor		= 0.05f;
 	water_params.transparency			= 0.4f;
 
-	water_params.reflection_factor		= 1.0f;
+	water_params.reflection_factor		= 0.6f;
 	water_params.waves_speed			= 0.1f;
 	water_params.waves_tile_factor		= 5.0f;
 	water_params.waves_amplitude		= 30.0f;
