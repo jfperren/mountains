@@ -1,8 +1,9 @@
 # opengl-terrain
 
 ## Screenshots
+
+![Sunny](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/suny.JPG)
 ![NightCall](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/nightcall.png)
-![Sunny](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/suny.jpg)
 
 ## Compiling the project with Visual Studio
 
