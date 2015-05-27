@@ -141,9 +141,22 @@ void writeFile(string file_name, WindowParams* window_params,
 		myfile << "texture_params.sand_s_transition " << texture_params->sand_s_transition << endl;
 
 		/* Bezier */
+
+		std::vector<ControlPoint> cam_pos_points = bezier->get_cam_pos_points();
+		std::vector<ControlPoint> cam_look_points = bezier->get_cam_look_points();
+
 		myfile << "\n# --- Bezier --- #\n" << endl;
-		Bezier b;
-		myfile << "texture_params.texture_type " << texture_params->texture_type << endl;
+
+		myfile << "\n# --- cam_look_points --- #\n" << endl;
+		for (size_t i = 0; i < cam_look_points.size(); i++)
+			cout << "bezier.cam_look_points " << cam_look_points[i].get_x_coord() << " " << cam_look_points[i].get_y_coord() << " " <<
+			cam_look_points[i].get_z_coord() << " " << cam_look_points[i].get_id() << endl;
+
+		myfile << "\n# --- cam_pos_points --- #\n" << endl;
+		for (size_t i = 0; i < cam_pos_points.size(); i++)
+			myfile << "bezier.cam_pos_points " << cam_pos_points[i].get_x_coord() << " " << cam_pos_points[i].get_y_coord() << " " <<
+				cam_pos_points[i].get_z_coord() << " " << cam_pos_points[i].get_id() << endl;
+
 
 		/* End of data */
 		myfile << "\n# --- END OF DATA --- #" << endl;
