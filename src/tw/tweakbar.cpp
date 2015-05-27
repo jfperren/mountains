@@ -8,6 +8,7 @@ string g_file_name = "";
 string g_file_name_load = "";
 
 Sky* sky;
+Bezier* bezier;
 
 WindowParams* window_params;
 ThemeParams* theme_params;
@@ -21,9 +22,10 @@ TextureParams* texture_params;
 ShadingParams* shading_params;
 WaterParams* water_params;
 
-void initAntTwBar(AppParams* app_params, Sky* sky_) {
+void initAntTwBar(AppParams* app_params, Sky* sky_, Bezier* bezier_) {
 
 	sky = sky_;
+	bezier = bezier_;
 
 	window_params		= app_params->window_params;
 	theme_params		= app_params->theme_params;
@@ -253,7 +255,7 @@ void TW_CALL SaveCB(void * /*clientData*/)
 		g_file_name_load = g_file_name; // optional
 	}
 
-	writeFile(g_file_name, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
+	writeFile(g_file_name, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 }
 
 void TW_CALL LoadCB(void * /*clientData*/)
@@ -263,7 +265,7 @@ void TW_CALL LoadCB(void * /*clientData*/)
 		cout << "[Error] Cannot load from empty name." << endl;
 	}
 	else {
-		loadFromFile(g_file_name_load, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
+		loadFromFile(g_file_name_load, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 	}
 
 	// Update scene with the changes
@@ -285,14 +287,14 @@ void load_theme(ThemeParams* theme_params) {
 
 		std::cout << "[Info] Loading theme 'Night'" << std::endl;
 
-		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "NIGHT.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "NIGHT.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 
 		break;
 	case SUN_SET:
 
 		std::cout << "[Info] Loading theme 'Sun set'" << std::endl;
 
-		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUN_SET.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUN_SET.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 
 		break;
 	default:

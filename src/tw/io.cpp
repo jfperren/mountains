@@ -11,7 +11,10 @@ void writeFile(string file_name, WindowParams* window_params,
 	ErosionParams* erosion_params,
 	TextureParams* texture_params,
 	ShadingParams* shading_params,
-	WaterParams* water_params) {
+	WaterParams* water_params,
+	Bezier* bezier) {
+
+
 	ofstream myfile(file_name);
 
 	if (myfile.is_open()) {
@@ -137,6 +140,11 @@ void writeFile(string file_name, WindowParams* window_params,
 		myfile << "texture_params.sand_h_transition " << texture_params->sand_h_transition << endl;
 		myfile << "texture_params.sand_s_transition " << texture_params->sand_s_transition << endl;
 
+		/* Bezier */
+		myfile << "\n# --- Bezier --- #\n" << endl;
+		Bezier b;
+		myfile << "texture_params.texture_type " << texture_params->texture_type << endl;
+
 		/* End of data */
 		myfile << "\n# --- END OF DATA --- #" << endl;
 
@@ -159,7 +167,8 @@ void loadFromFile(string file_name, WindowParams* window_params,
 	ErosionParams* erosion_params,
 	TextureParams* texture_params,
 	ShadingParams* shading_params,
-	WaterParams* water_params) {
+	WaterParams* water_params,
+	Bezier* bezier) {
 
 	string line;
 	ifstream myfile(file_name);

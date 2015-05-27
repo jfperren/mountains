@@ -23,7 +23,7 @@
 #include "../tw/io.h"
 
 
-void initAntTwBar(AppParams* app_params, Sky* sky);
+void initAntTwBar(AppParams* app_params, Sky* sky, Bezier* bezier);
 void twBarVisible(bool b);
 void refreshTwBar();
 void load_theme(ThemeParams* theme_params);

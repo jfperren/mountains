@@ -230,3 +230,23 @@ void Bezier::print_control_points() {
 		cout << '(' << cam_look_points[i].get_x_coord() << ", " << cam_look_points[i].get_y_coord() << ", " << cam_look_points[i].get_z_coord() << ", " << cam_look_points[i].get_id() << ")\n";
 	cout << '}' << std::endl;
 }
+
+/* For IO */ 
+
+/* Delete content of cam_pos_points and set it to the given new value */
+void Bezier::set_cam_pos_points(std::vector<ControlPoint> cam_pos_points_) {
+	cam_pos_points.clear();
+	cam_pos_points = cam_pos_points;
+}
+
+void Bezier::set_cam_look_points(std::vector<ControlPoint> cam_look_points_) {
+	cam_look_points.clear();
+	cam_look_points = cam_look_points_;
+}
+
+std::vector<ControlPoint> Bezier::get_cam_pos_points() {
+	return cam_pos_points;
+}
+std::vector<ControlPoint> Bezier::get_cam_look_points() {
+	return cam_look_points;
+}

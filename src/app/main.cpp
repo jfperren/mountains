@@ -150,7 +150,7 @@ void init(){
 	resize_callback(WIDTH, HEIGHT);
 
 #ifdef WITH_ANTTWEAKBAR
-	initAntTwBar(&app_params, &sky);
+	initAntTwBar(&app_params, &sky, &bezier);
 #endif
 	check_error_gl();
 }
@@ -272,7 +272,7 @@ int main(int, char**){
 
 void initParams() {
 
-	loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "DEFAULT.terrain", &window_params, &theme_params, &grid_params, &noise_params, &grass_params, &sand_params, &snow_params, &erosion_params, &texture_params, &shading_params, &water_params);
+	loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "DEFAULT.terrain", &window_params, &theme_params, &grid_params, &noise_params, &grass_params, &sand_params, &snow_params, &erosion_params, &texture_params, &shading_params, &water_params, &bezier);
 
 	
 }

@@ -46,4 +46,10 @@ public:
 	mat4 get_view_matrix(const vec3 &eye, const vec3 &center, const vec3 &up);
 	mat4 get_view_matrix_mirrored(const vec3 &eye, const vec3 &center, const vec3 &up);
 	void print_control_points();
+
+	/* For IO */
+	void set_cam_pos_points(std::vector<ControlPoint> cam_pos_points);
+	void set_cam_look_points(std::vector<ControlPoint> cam_look_points);
+	std::vector<ControlPoint> get_cam_pos_points();
+	std::vector<ControlPoint> get_cam_look_points();
 };
