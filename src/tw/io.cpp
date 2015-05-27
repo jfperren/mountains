@@ -48,7 +48,6 @@ void writeFile(string file_name, WindowParams* window_params,
 		myfile << "noise_params.resolution " << noise_params->resolution << endl;
 		myfile << "noise_params.height " << noise_params->height << endl;
 		myfile << "noise_params.width " << noise_params->width << endl;
-		myfile << "grid_params.length " << grid_params->length << endl;
 		myfile << "noise_params.offset " << noise_params->offset << endl;
 		myfile << "noise_params.amplitude " << noise_params->amplitude << endl;
 		myfile << "noise_params.H " << noise_params->H << endl;
@@ -195,14 +194,86 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			istream_iterator<string> end;
 			vector<string> results(it, end);
 
+			string variable = results[0];
+
 
 			/* General */
-			if (!results[0].compare("theme_params.theme_type")) {
+			if (!variable.compare("theme_params.theme_type")) {
 				int type = ::atoi(results[1].c_str());
 				// TODO fix, doesn't work
 				theme_params->theme_type = ThemeType(type);
-				cout << "theme_params = " << type << endl;
 			}
+			
+			/* Window */
+			else if (!variable.compare("window_params.width")) {
+				// TODO save window properties?
+				window_params->width = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("window_params.height")) {
+				window_params->height = ::atoi(results[1].c_str());
+			} 
+			
+			/* Grid */
+			else if (!variable.compare("grid_params.enable")) {
+				grid_params->enable = (results[1].c_str());
+			}
+			else if (!variable.compare("grid_params.resolution")) {
+				grid_params->resolution = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("grid_params.length")) {
+				grid_params->length = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("grid_params.width")) {
+				grid_params->width = ::atoi(results[1].c_str());
+			}
+			
+			/* Noise */
+			else if (!variable.compare("noise_params.noise_type")) {
+				// TODO fix
+				noise_params->noise_type = NoiseType(::atoi(results[1].c_str()));
+			}
+			else if (!variable.compare("noise_params.fractal_type")) {
+				// TODO fix
+				noise_params->fractal_type = FractalType(::atoi(results[1].c_str()));
+			}
+			else if (!variable.compare("noise_params.noise_effect")) {
+				// TODO fix
+				noise_params->noise_effect = Effect(::atoi(results[1].c_str()));
+			}
+			else if (!variable.compare("noise_params.fractal_effect")) {
+				// TODO fix
+				noise_params->fractal_effect = Effect(::atoi(results[1].c_str()));
+			}
+			else if (!variable.compare("noise_params.resolution")) {
+				noise_params->resolution = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.height")) {
+				noise_params->height = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.width")) {
+				noise_params->width = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.offset")) {
+				noise_params->offset = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.amplitude	")) {
+				noise_params->amplitude = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.H	")) {
+				noise_params->H = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.lacunarity	")) {
+				noise_params->lacunarity = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.octaves")) {
+				noise_params->octaves = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("noise_params.seed")) {
+				noise_params->seed = ::atof(results[1].c_str());
+			}
+
+
+
 			else {
 				cout << "[Warning] No match (l." << line_no << "): the variable was <" << results[0] << ">" << endl;
 			}
