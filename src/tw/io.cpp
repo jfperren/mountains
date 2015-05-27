@@ -256,10 +256,10 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			else if (!variable.compare("noise_params.offset")) {
 				noise_params->offset = ::atof(results[1].c_str());
 			}
-			else if (!variable.compare("noise_params.amplitude	")) {
+			else if (!variable.compare("noise_params.amplitude")) {
 				noise_params->amplitude = ::atof(results[1].c_str());
 			}
-			else if (!variable.compare("noise_params.H	")) {
+			else if (!variable.compare("noise_params.H")) {
 				noise_params->H = ::atof(results[1].c_str());
 			}
 			else if (!variable.compare("noise_params.lacunarity	")) {
@@ -270,6 +270,29 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			}
 			else if (!variable.compare("noise_params.seed")) {
 				noise_params->seed = ::atof(results[1].c_str());
+			}
+
+			/* Grass*/
+			else if (!variable.compare("grass_params.enable")) {
+				grass_params->enable = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("grass_params.min_height")) {
+				grass_params->min_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("grass_params.max_height")) {
+				grass_params->max_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("grass_params.max_slope")) {
+				grass_params->max_slope = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("grass_params.min_angle")) {
+				grass_params->min_angle = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("grass_params.time_grow")) {
+				grass_params->time_grow = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("grass_params.time_smooth")) {
+				grass_params->time_smooth = ::atof(results[1].c_str());
 			}
 
 
