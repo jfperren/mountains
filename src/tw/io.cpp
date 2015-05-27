@@ -263,7 +263,15 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				noise_params->octaves = ::atoi(results[1].c_str());
 			}
 			else if (!variable.compare("noise_params.seed")) {
-				noise_params->seed = ::atof(results[1].c_str());
+				float seed_from_file = ::atof(results[1].c_str());
+				if (seed_from_file > 1 || seed_from_file < 0) {
+					// If seed is invalid, use a random one
+					// Compute seed with 3 floating digits, ranging from 0 to 1
+					seed_from_file = glfwGetTime();
+					seed_from_file -= floor(seed_from_file);
+					seed_from_file = floor(seed_from_file * 1000) / 1000;
+				}
+				noise_params->seed = seed_from_file;
 			}
 
 			/* Grass*/
