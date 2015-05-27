@@ -31,7 +31,7 @@ noise_params.amplitude 1
 noise_params.H 1.2
 noise_params.lacunarity 2
 noise_params.octaves 12
-noise_params.seed 0.188
+noise_params.seed 0.215
 
 # --- Grass --- #
 
