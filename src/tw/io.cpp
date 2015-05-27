@@ -262,7 +262,7 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			else if (!variable.compare("noise_params.H")) {
 				noise_params->H = ::atof(results[1].c_str());
 			}
-			else if (!variable.compare("noise_params.lacunarity	")) {
+			else if (!variable.compare("noise_params.lacunarity")) {
 				noise_params->lacunarity = ::atoi(results[1].c_str());
 			}
 			else if (!variable.compare("noise_params.octaves")) {
@@ -474,13 +474,9 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			else {
 				cout << "[Warning] No match (l." << line_no << "): the variable was <" << results[0] << ">" << endl;
 			}
-			/*else if (!results[0].compare("fractal_H")) {
-				//fractal_params->H = ::atof(results[1].c_str());
-			}*/
-
 		}
 
-		//myfile.close();
+		myfile.close();
 		std::cout << "[Info] Data loaded from " << file_name << endl;
 	}
 	else {
