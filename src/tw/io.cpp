@@ -356,6 +356,28 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				snow_params->smooth_time = ::atoi(results[1].c_str());
 			}
 
+			/* Erosion */
+			else if (!variable.compare("erosion_params.deposition_rate")) {
+				erosion_params->deposition_rate = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("erosion_params.erosion_rate")) {
+				erosion_params->erosion_rate = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("erosion_params.rain_rate")) {
+				erosion_params->rain_rate = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("erosion_params.evaporation_rate")) {
+				erosion_params->evaporation_rate = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("erosion_params.sediment_capacity")) {
+				erosion_params->sediment_capacity = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("erosion_params.direction_inertia")) {
+				erosion_params->direction_inertia = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("erosion_params.iterations")) {
+				erosion_params->iterations = ::atoi(results[1].c_str());
+			}
 
 
 			else {
