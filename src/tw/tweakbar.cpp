@@ -286,7 +286,7 @@ void load_theme(ThemeParams* theme_params) {
 
 		break;
 	default:
-		std::cout << "[Warning] Unknown theme" << std::endl;
+		std::cout << "[Warning] Unknown theme: " << theme_params << std::endl;
 		break;
 	}
 

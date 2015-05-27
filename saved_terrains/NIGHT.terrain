@@ -3,7 +3,7 @@
 
 # --- General --- #
 
-theme_params.theme_type 0
+theme_params.theme_type 2
 
 # --- Window --- #
 
@@ -14,8 +14,8 @@ window_params.height 1000
 
 grid_params.enable 1
 grid_params.resolution 100
-grid_params.length 2
-grid_params.width 2
+grid_params.length 10
+grid_params.width 10
 
 # --- Noise --- #
 
@@ -24,24 +24,24 @@ noise_params.fractal_type 0
 noise_params.noise_effect 0
 noise_params.fractal_effect 0
 noise_params.resolution 2048
-noise_params.height 1
-noise_params.width 1
+noise_params.height 2
+noise_params.width 2
 noise_params.offset 0
-noise_params.amplitude 1
+noise_params.amplitude 2.5
 noise_params.H 1.2
 noise_params.lacunarity 2
 noise_params.octaves 12
-noise_params.seed 0.215
+noise_params.seed 0.12
 
 # --- Grass --- #
 
 grass_params.enable 1
 grass_params.min_height 0
-grass_params.max_height 0.15
-grass_params.max_slope 1
-grass_params.min_angle 1.2
-grass_params.time_grow 25
-grass_params.time_smooth 2
+grass_params.max_height 0.5
+grass_params.max_slope 4.5
+grass_params.min_angle 1.34
+grass_params.time_grow 30
+grass_params.time_smooth 3
 
 # --- Sand --- #
 
@@ -49,8 +49,8 @@ sand_params.enable 1
 sand_params.amount 0.02
 sand_params.max_amount 2
 sand_params.min_height -0.5
-sand_params.max_height 0.05
-sand_params.max_slope 0.04
+sand_params.max_height -0.1
+sand_params.max_slope 10
 sand_params.threshold 0.001
 sand_params.slide_time 30
 sand_params.melt_time 2
@@ -58,11 +58,11 @@ sand_params.smooth_time 20
 
 # --- Snow --- #
 
-snow_params.enable 0
-snow_params.amount 0.02
+snow_params.enable 1
+snow_params.amount 0.2
 snow_params.max_amount 2
-snow_params.min_height 0.3
-snow_params.max_slope 2
+snow_params.min_height 0.5
+snow_params.max_slope 1
 snow_params.threshold 0.001
 snow_params.slide_time 25
 snow_params.melt_time 2
@@ -81,12 +81,12 @@ erosion_params.iterations 1
 # --- Water --- #
 
 water_params.enable 1
-water_params.height 0
+water_params.height -0.2
 water_params.color 0.4 0.55 0.6
 water_params.depth_alpha_factor 3
 water_params.depth_color_factor 0.05
 water_params.transparency 0.4
-water_params.reflection_factor 0.6
+water_params.reflection_factor 0.8
 water_params.waves_speed 0.1
 water_params.waves_tile_factor 5
 water_params.waves_amplitude 30
@@ -95,7 +95,7 @@ water_params.waves_amplitude 30
 
 shading_params.enable_phong 1
 shading_params.enable_shadow 1
-shading_params.shadow_intensity 0.5
+shading_params.shadow_intensity 0.4
 shading_params.Ia 0.7 0.7 0.7
 shading_params.Id 0.3 0.3 0.3
 shading_params.light_pos 0.5 1 0.5
