@@ -147,13 +147,15 @@ void writeFile(string file_name, WindowParams* window_params,
 
 		myfile << "\n# --- Bezier --- #\n" << endl;
 
-		for (size_t i = 0; i < cam_pos_points.size(); i++)
+		for (size_t i = 0; i < cam_pos_points.size(); i++) {
 			myfile << "bezier.cam_pos_points " << cam_pos_points[i].get_x_coord() << " " << cam_pos_points[i].get_y_coord() << " " <<
 				cam_pos_points[i].get_z_coord() << " " << cam_pos_points[i].get_id() << endl;
+		}
 
-		for (size_t i = 0; i < cam_look_points.size(); i++)
+		for (size_t i = 0; i < cam_look_points.size(); i++) {
 			myfile << "bezier.cam_look_points " << cam_look_points[i].get_x_coord() << " " << cam_look_points[i].get_y_coord() << " " <<
-			cam_look_points[i].get_z_coord() << " " << cam_look_points[i].get_id() << endl;
+				cam_look_points[i].get_z_coord() << " " << cam_look_points[i].get_id() << endl;
+		}
 
 
 		/* End of data */
@@ -188,6 +190,10 @@ void loadFromFile(string file_name, WindowParams* window_params,
 	{
 
 		int line_no = 0;
+
+		/* Bezier points points holders */
+		std::vector<ControlPoint> cam_pos_points;
+		std::vector<ControlPoint> cam_look_points;
 
 		while (getline(myfile, line))
 		{
@@ -491,6 +497,15 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				texture_params->sand_s_transition = ::atoi(results[1].c_str());
 			}
 
+			/* Bezier reading
+				Note: implicit loop over all bezier control/look points
+			*/
+			else if (!variable.compare("bezier.cam_pos_points")) {
+				cam_pos_points.push_back(ControlPoint(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()), ::atoi(results[4].c_str())));
+			}
+			else if (!variable.compare("texture_params.sand_s_transition")) {
+				cam_look_points.push_back(ControlPoint(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()), ::atoi(results[4].c_str())));
+			}
 
 			else {
 				cout << "[Warning] No match (l." << line_no << "): the variable was <" << results[0] << ">" << endl;
@@ -498,6 +513,11 @@ void loadFromFile(string file_name, WindowParams* window_params,
 		}
 
 		myfile.close();
+
+		/* Bezier processing */
+		bezier->set_cam_pos_points(cam_pos_points);
+		bezier->set_cam_look_points(cam_look_points);
+
 		std::cout << "[Info] Data loaded from " << file_name << endl;
 	}
 	else {
