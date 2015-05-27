@@ -115,4 +115,18 @@ texture_params.grass_s_transition 50
 texture_params.sand_h_transition 5
 texture_params.sand_s_transition 50
 
+# --- Bezier --- #
+
+bezier.cam_pos_points 0.3 0.5 -1.3 0
+bezier.cam_pos_points 0.19 0.26 -0.92 1
+bezier.cam_pos_points 0.11 0.1 -0.45 2
+bezier.cam_pos_points 0 0 0 3
+bezier.cam_pos_points -0.11 -0.1 0.45 4
+bezier.cam_pos_points -0.16 0.92 -0.11 5
+bezier.cam_pos_points 1.5 0.15 0.57 6
+bezier.cam_look_points 0 0 0.25 7
+bezier.cam_look_points 0.17 0.51 0.24 8
+bezier.cam_look_points 0 0.89 0.27 9
+bezier.cam_look_points 0 0 0.25 10
+
 # --- END OF DATA --- #

@@ -67,13 +67,13 @@ void Bezier::init(int width, int height, int travel_time) {
 	cam_pos_curve.init(_pid_bezier);
 
 	// Add points, the total number must be n_tot = 1 + 3n, n in Z
-	cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
+	/*cam_pos_points.push_back(ControlPoint(0.3, 0.5, -1.3, 0));
 	cam_pos_points.push_back(ControlPoint(0.19, 0.26, -0.92, 1));
 	cam_pos_points.push_back(ControlPoint(0.11, 0.10, -0.45, 2));
 	cam_pos_points.push_back(ControlPoint(0.0, 0.0, 0.0, 3));
 	cam_pos_points.push_back(ControlPoint(-0.11, -0.10, 0.45, 4));
 	cam_pos_points.push_back(ControlPoint(-0.16, 0.92, -0.11, 5));
-	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));
+	cam_pos_points.push_back(ControlPoint(1.5, 0.15, 0.57, 6));*/
 
 	for (unsigned int i = 0; i < cam_pos_points.size(); i++) {
 		cam_pos_points[i].init(_pid_point, _pid_point_selection);
@@ -85,10 +85,10 @@ void Bezier::init(int width, int height, int travel_time) {
 	cam_look_curve.init(_pid_bezier);
 
 	// Add points
-	cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
+	/*cam_look_points.push_back(ControlPoint(0, 0, 0.25, 7));
 	cam_look_points.push_back(ControlPoint(0.17, 0.51, 0.24, 8));
 	cam_look_points.push_back(ControlPoint(0.0, 0.89, 0.27, 9));
-	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));
+	cam_look_points.push_back(ControlPoint(0.0, 0, 0.25, 10));*/
 
 	for (unsigned int i = 0; i < cam_look_points.size(); i++) {
 		cam_look_points[i].init(_pid_point, _pid_point_selection);
@@ -98,6 +98,8 @@ void Bezier::init(int width, int height, int travel_time) {
 
 	selected_point = -1;
 }
+
+
 
 void Bezier::cleanup() {
 	glDeleteProgram(_pid_bezier);
@@ -236,7 +238,7 @@ void Bezier::print_control_points() {
 /* Delete content of cam_pos_points and set it to the given new value */
 void Bezier::set_cam_pos_points(std::vector<ControlPoint> cam_pos_points_) {
 	cam_pos_points.clear();
-	cam_pos_points = cam_pos_points;
+	cam_pos_points = cam_pos_points_;
 }
 
 void Bezier::set_cam_look_points(std::vector<ControlPoint> cam_look_points_) {
