@@ -327,6 +327,35 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				sand_params->smooth_time = ::atoi(results[1].c_str());
 			}
 
+			/* Snow */
+			else if (!variable.compare("snow_params.enable")) {
+				snow_params->enable = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.amount")) {
+				snow_params->amount = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.max_amount")) {
+				snow_params->max_amount = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.min_height")) {
+				snow_params->min_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.max_slope")) {
+				snow_params->max_slope = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.threshold")) {
+				snow_params->threshold = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.slide_time")) {
+				snow_params->slide_time = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.melt_time")) {
+				snow_params->melt_time = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("snow_params.smooth_time")) {
+				snow_params->smooth_time = ::atoi(results[1].c_str());
+			}
+
 
 
 			else {
