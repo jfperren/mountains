@@ -3,7 +3,8 @@
 const int WIDTH = 1600;
 const int HEIGHT = 1000;
 
-const string IO_HEADER_STRING = "# --- HEADER: terrain data --- #\n# --- Credits: Alain Milliet, Julien Perrenoud, Robin Genolet --- #";
+const string IO_HEADER_STRING = "# --- HEADER: terrain data --- #";
+const string IO_HEADER_CREDITS = "# --- Credits: Alain Milliet, Julien Perrenoud, Robin Genolet --- #";
 const string IO_PATH_TO_SAVED_TERRAINS = "../saved_terrains/";
 
 const int DRAW_NOISE = 0;
@@ -86,9 +87,9 @@ typedef enum {
 } NAVIGATION_MODE;
 
 typedef enum {
-	NO_THEME,
-	SUNNY,
-	NIGHT
+	NO_THEME = 0,
+	SUNNY = 1,
+	NIGHT = 2
 } ThemeType;
 
 typedef enum {

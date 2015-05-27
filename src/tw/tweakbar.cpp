@@ -260,11 +260,10 @@ void TW_CALL LoadCB(void * /*clientData*/)
 {
 	if (!g_file_name_load.compare("")) {
 		// Empty name
-		cout << "Error: Cannot load from empty name" << endl;
+		cout << "[Error] Cannot load from empty name." << endl;
 	}
 	else {
-		// TODO
-		//loadFromFile(g_file_name_load, &noise_params, &fractal_values);
+		loadFromFile(g_file_name_load, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
 	}
 
 	// Update scene with the changes
