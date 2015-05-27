@@ -147,15 +147,13 @@ void writeFile(string file_name, WindowParams* window_params,
 
 		myfile << "\n# --- Bezier --- #\n" << endl;
 
-		myfile << "\n# --- cam_look_points --- #\n" << endl;
-		for (size_t i = 0; i < cam_look_points.size(); i++)
-			cout << "bezier.cam_look_points " << cam_look_points[i].get_x_coord() << " " << cam_look_points[i].get_y_coord() << " " <<
-			cam_look_points[i].get_z_coord() << " " << cam_look_points[i].get_id() << endl;
-
-		myfile << "\n# --- cam_pos_points --- #\n" << endl;
 		for (size_t i = 0; i < cam_pos_points.size(); i++)
 			myfile << "bezier.cam_pos_points " << cam_pos_points[i].get_x_coord() << " " << cam_pos_points[i].get_y_coord() << " " <<
 				cam_pos_points[i].get_z_coord() << " " << cam_pos_points[i].get_id() << endl;
+
+		for (size_t i = 0; i < cam_look_points.size(); i++)
+			myfile << "bezier.cam_look_points " << cam_look_points[i].get_x_coord() << " " << cam_look_points[i].get_y_coord() << " " <<
+			cam_look_points[i].get_z_coord() << " " << cam_look_points[i].get_id() << endl;
 
 
 		/* End of data */
