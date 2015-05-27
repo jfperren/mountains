@@ -199,9 +199,7 @@ void loadFromFile(string file_name, WindowParams* window_params,
 
 			/* General */
 			if (!variable.compare("theme_params.theme_type")) {
-				int type = ::atoi(results[1].c_str());
-				// TODO fix, doesn't work
-				theme_params->theme_type = ThemeType(type);
+				theme_params->theme_type = ThemeType(::atoi(results[1].c_str()));
 			}
 			
 			/* Window */
@@ -229,19 +227,15 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			
 			/* Noise */
 			else if (!variable.compare("noise_params.noise_type")) {
-				// TODO fix
 				noise_params->noise_type = NoiseType(::atoi(results[1].c_str()));
 			}
 			else if (!variable.compare("noise_params.fractal_type")) {
-				// TODO fix
 				noise_params->fractal_type = FractalType(::atoi(results[1].c_str()));
 			}
 			else if (!variable.compare("noise_params.noise_effect")) {
-				// TODO fix
 				noise_params->noise_effect = Effect(::atoi(results[1].c_str()));
 			}
 			else if (!variable.compare("noise_params.fractal_effect")) {
-				// TODO fix
 				noise_params->fractal_effect = Effect(::atoi(results[1].c_str()));
 			}
 			else if (!variable.compare("noise_params.resolution")) {
@@ -439,7 +433,6 @@ void loadFromFile(string file_name, WindowParams* window_params,
 
 			/* Texture */
 			else if (!variable.compare("texture_params.texture_type")) {
-				// TODO fix
 				texture_params->texture_type = TextureType(::atoi(results[1].c_str()));
 			}
 			else if (!variable.compare("texture_params.sand_min_height")) {
