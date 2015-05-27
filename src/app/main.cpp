@@ -298,8 +298,11 @@ void initParams() {
 	noise_params.H						= 1.2f;
 	noise_params.lacunarity				= 2;
 	noise_params.octaves				= 12;
+
+	// Compute seed with 3 floating digits
 	noise_params.seed					= glfwGetTime();
 	noise_params.seed 				   -= floor(noise_params.seed);
+	noise_params.seed					= floor(noise_params.seed * 1000) / 1000;
 
 	// --- grass ---
 
