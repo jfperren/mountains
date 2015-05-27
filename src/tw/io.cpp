@@ -292,7 +292,39 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				grass_params->time_grow = ::atoi(results[1].c_str());
 			}
 			else if (!variable.compare("grass_params.time_smooth")) {
-				grass_params->time_smooth = ::atof(results[1].c_str());
+				grass_params->time_smooth = ::atoi(results[1].c_str());
+			}
+
+			/* Sand */
+			else if (!variable.compare("sand_params.enable")) {
+				sand_params->enable = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.amount")) {
+				sand_params->amount = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.max_amount")) {
+				sand_params->max_amount = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.min_height")) {
+				sand_params->min_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.max_height")) {
+				sand_params->max_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.max_slope")) {
+				sand_params->max_slope = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.threshold")) {
+				sand_params->threshold = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.slide_time")) {
+				sand_params->slide_time = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.melt_time")) {
+				sand_params->melt_time = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("sand_params.smooth_time")) {
+				sand_params->smooth_time = ::atoi(results[1].c_str());
 			}
 
 
