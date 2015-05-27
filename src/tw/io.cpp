@@ -437,6 +437,39 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				shading_params->near = ::atof(results[1].c_str());
 			}
 
+			/* Texture */
+			else if (!variable.compare("texture_params.texture_type")) {
+				// TODO fix
+				texture_params->texture_type = TextureType(::atoi(results[1].c_str()));
+			}
+			else if (!variable.compare("texture_params.sand_min_height")) {
+				texture_params->sand_min_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.sand_max_height")) {
+				texture_params->sand_max_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.grass_max_height")) {
+				texture_params->grass_max_height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.sand_max_slope")) {
+				texture_params->sand_max_slope = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.grass_max_slope")) {
+				texture_params->grass_max_slope = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.grass_h_transition")) {
+				texture_params->grass_h_transition = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.grass_s_transition")) {
+				texture_params->grass_s_transition = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.sand_h_transition")) {
+				texture_params->sand_h_transition = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("texture_params.sand_s_transition")) {
+				texture_params->sand_s_transition = ::atoi(results[1].c_str());
+			}
+
 
 			else {
 				cout << "[Warning] No match (l." << line_no << "): the variable was <" << results[0] << ">" << endl;
