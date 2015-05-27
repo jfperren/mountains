@@ -96,6 +96,14 @@ void Sky::init(ThemeType theme_type){
 		faces[4] = "textures/skybox/space_night/ZN.tga";
 		faces[5] = "textures/skybox/space_night/ZP.tga";
 		break;
+	case SUN_SET:
+		faces[0] = "textures/skybox/sunset/XN.tga";
+		faces[1] = "textures/skybox/sunset/XP.tga";
+		faces[2] = "textures/skybox/sunset/YN.tga";
+		faces[3] = "textures/skybox/sunset/YP.tga";
+		faces[4] = "textures/skybox/sunset/ZN.tga";
+		faces[5] = "textures/skybox/sunset/ZP.tga";
+		break;
 	default:
 		faces[0] = "textures/skybox/active/XN.tga";
 		faces[1] = "textures/skybox/active/XP.tga";

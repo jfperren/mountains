@@ -87,9 +87,10 @@ typedef enum {
 } NAVIGATION_MODE;
 
 typedef enum {
-	NO_THEME = 0,
-	SUNNY = 1,
-	NIGHT = 2
+	NO_THEME,
+	SUNNY,
+	NIGHT,
+	SUN_SET
 } ThemeType;
 
 typedef enum {

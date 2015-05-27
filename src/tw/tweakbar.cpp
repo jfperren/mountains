@@ -45,8 +45,8 @@ void initAntTwBar(AppParams* app_params, Sky* sky_) {
 
 	// Theme
 
-	TwEnumVal theme_type_array[] = { { NO_THEME, "NO_THEME" }, { SUNNY, "SUNNY" }, { NIGHT, "NIGHT" } };
-	TwType theme_type = TwDefineEnum("ThemeType", theme_type_array, 3);
+	TwEnumVal theme_type_array[] = { { NO_THEME, "NO_THEME" }, { SUNNY, "SUNNY" }, { NIGHT, "NIGHT" }, { SUN_SET, "SUN_SET" } };
+	TwType theme_type = TwDefineEnum("ThemeType", theme_type_array, 4);
 	TwAddVarCB(bar, "theme", theme_type, setIntParamCallback, getIntParamCallback, &theme_params->theme_type, " group=General ");
 	
 	// Grid
@@ -273,19 +273,30 @@ void TW_CALL LoadCB(void * /*clientData*/)
 void load_theme(ThemeParams* theme_params) {
 	switch (theme_params->theme_type) {
 	case NO_THEME:
+
 		std::cout << "[Info] No theme" << std::endl;
 		break;
 	case SUNNY:
+
 		std::cout << "[Info] Loading theme 'Sunny'" << std::endl;
 
 		break;
 	case NIGHT:
+
 		std::cout << "[Info] Loading theme 'Night'" << std::endl;
 
 		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "NIGHT.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
 
 		break;
+	case SUN_SET:
+
+		std::cout << "[Info] Loading theme 'Sun set'" << std::endl;
+
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUN_SET.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params);
+
+		break;
 	default:
+
 		std::cout << "[Warning] Unknown theme: " << theme_params << std::endl;
 		break;
 	}
