@@ -1,52 +1,150 @@
 #include "io.h"
 
 /* Writes noise, fractal and water info to file_name */
-void writeFile(string file_name, NoiseParams *noise_params, WaterParams *water_params) {
-	/*ofstream myfile(file_name);
+void writeFile(string file_name, WindowParams* window_params,
+	ThemeParams* theme_params,
+	GridParams* grid_params,
+	NoiseParams* noise_params,
+	GrassParams* grass_params,
+	SandParams* sand_params,
+	SnowParams* snow_params,
+	ErosionParams* erosion_params,
+	TextureParams* texture_params,
+	ShadingParams* shading_params,
+	WaterParams* water_params) {
+	ofstream myfile(file_name);
 
 	if (myfile.is_open()) {
 
-	/* Write header
-	myfile << IO_HEADER_STRING << endl;
+		/* Write header */
+		myfile << IO_HEADER_STRING << endl;
 
-	/* The order is not important
+		/* The order is only relevant for clarity and readability */
 
-	/* Noise
-	myfile << "noise_type " << noise_params->type << endl;
-	myfile << "noise_width " << noise_params->width << endl;
-	myfile << "noise_height " << noise_params->height << endl;
-	myfile << "noise_offset " << noise_params->offset << endl;
-	myfile << "noise_amplitude " << noise_params->amplitude << endl;
-	myfile << "noise_seed " << noise_params->seed << endl;
+		/* General */
+		myfile << "\n# --- General --- #\n" << endl;
+		myfile << "theme_params.theme_type: NO_THEME" << endl;
 
-	/* Fractal
-	if (fractal_params->enable) {
-	myfile << "fractal_enable " << "true" << endl;
-	myfile << "fractal_H " << fractal_params->H << endl;
-	myfile << "fractal_lacunarity " << fractal_params->lacunarity << endl;
-	myfile << "fractal_octaves " << fractal_params->octaves << endl;
-	myfile << "fractal_offset " << fractal_params->offset << endl;
-	myfile << "fractal_amplitude " << fractal_params->amplitude << endl;
+		/* Window */
+		myfile << "\n# --- Window --- #\n" << endl;
+		myfile << "window_params.width: " << window_params->width << endl;
+		myfile << "window_params.height: " << window_params->height << endl;
 
+		/* Grid */
+		myfile << "\n# --- Grid --- #\n" << endl;
+		myfile << "grid_params.enable: " << grid_params->enable << endl;
+		myfile << "grid_params.resolution: " << grid_params->resolution << endl;
+		myfile << "grid_params.length: " << grid_params->length << endl;
+		myfile << "grid_params.width: " << grid_params->width << endl;
+
+		/* Noise */
+		myfile << "\n# --- Noise --- #\n" << endl;
+		myfile << "noise_params.noise_type: " << noise_params->noise_type << endl;
+		myfile << "noise_params.fractal_type: " << noise_params->fractal_type << endl;
+		myfile << "noise_params.noise_effect: " << noise_params->noise_effect << endl;
+		myfile << "noise_params.fractal_effect: " << noise_params->fractal_effect << endl;
+		myfile << "noise_params.resolution: " << noise_params->resolution << endl;
+		myfile << "noise_params.height: " << noise_params->height << endl;
+		myfile << "noise_params.width: " << noise_params->width << endl;
+		myfile << "grid_params.length: " << grid_params->length << endl;
+		myfile << "noise_params.offset: " << noise_params->offset << endl;
+		myfile << "noise_params.amplitude: " << noise_params->amplitude << endl;
+		myfile << "noise_params.H: " << noise_params->H << endl;
+		myfile << "noise_params.lacunarity: " << noise_params->lacunarity << endl;
+		myfile << "noise_params.octaves: " << noise_params->octaves << endl;
+		myfile << "noise_params.seed: " << noise_params->seed << endl;
+
+		/* Grass */
+		myfile << "\n# --- Grass --- #\n" << endl;
+		myfile << "grass_params.enable: " << grass_params->enable << endl;
+		myfile << "grass_params.min_height: " << grass_params->min_height << endl;
+		myfile << "grass_params.max_height: " << grass_params->max_height << endl;
+		myfile << "grass_params.max_slope: " << grass_params->max_slope << endl;
+		myfile << "grass_params.min_angle: " << grass_params->min_angle << endl;
+		myfile << "grass_params.time_grow: " << grass_params->time_grow << endl;
+		myfile << "grass_params.time_smooth: " << grass_params->time_smooth << endl;
+
+		/* Sand */
+		myfile << "\n# --- Sand --- #\n" << endl;
+		myfile << "sand_params.enable: " << sand_params->enable << endl;
+		myfile << "sand_params.amount: " << sand_params->amount << endl;
+		myfile << "sand_params.max_amount: " << sand_params->max_amount << endl;
+		myfile << "sand_params.min_height: " << sand_params->min_height << endl;
+		myfile << "sand_params.max_height: " << sand_params->max_height << endl;
+		myfile << "sand_params.max_slope: " << sand_params->max_slope << endl;
+		myfile << "sand_params.threshold: " << sand_params->threshold << endl;
+		myfile << "sand_params.slide_time: " << sand_params->slide_time << endl;
+		myfile << "sand_params.melt_time: " << sand_params->melt_time << endl;
+		myfile << "sand_params.smooth_time: " << sand_params->smooth_time << endl;
+
+		/* Snow */
+		myfile << "\n# --- Snow --- #\n" << endl;
+		myfile << "snow_params.enable: " << snow_params->enable << endl;
+		myfile << "snow_params.amount: " << snow_params->amount << endl;
+		myfile << "snow_params.max_amount: " << snow_params->max_amount << endl;
+		myfile << "snow_params.min_height: " << snow_params->min_height << endl;
+		myfile << "snow_params.max_slope: " << snow_params->max_slope << endl;
+		myfile << "snow_params.threshold: " << snow_params->threshold << endl;
+		myfile << "snow_params.slide_time: " << snow_params->slide_time << endl;
+		myfile << "snow_params.melt_time: " << snow_params->melt_time << endl;
+		myfile << "snow_params.smooth_time: " << snow_params->smooth_time << endl;
+
+		/* Erosion */
+		myfile << "\n# --- Erosion --- #\n" << endl;
+		myfile << "erosion_params.deposition_rate: " << erosion_params->deposition_rate << endl;
+		myfile << "erosion_params.erosion_rate: " << erosion_params->erosion_rate << endl;
+		myfile << "erosion_params.rain_rate: " << erosion_params->rain_rate << endl;
+		myfile << "erosion_params.evaporation_rate: " << erosion_params->evaporation_rate << endl;
+		myfile << "erosion_params.sediment_capacity: " << erosion_params->sediment_capacity << endl;
+		myfile << "erosion_params.direction_inertia: " << erosion_params->direction_inertia << endl;
+		myfile << "erosion_params.iterations: " << erosion_params->iterations << endl;
+
+		/* Water */
+		myfile << "\n# --- Water --- #\n" << endl;
+		myfile << "water_params.enable: " << water_params->enable << endl;
+		myfile << "water_params.height: " << water_params->height << endl;
+		myfile << "water_params.color: " << water_params->color << endl;
+		myfile << "water_params.depth_alpha_factor: " << water_params->depth_alpha_factor << endl;
+		myfile << "water_params.depth_color_factor: " << water_params->depth_color_factor << endl;
+		myfile << "water_params.transparency: " << water_params->transparency << endl;
+		myfile << "water_params.reflection_factor: " << water_params->reflection_factor << endl;
+		myfile << "water_params.waves_speed: " << water_params->waves_speed << endl;
+		myfile << "water_params.waves_tile_factor: " << water_params->waves_tile_factor << endl;
+		myfile << "water_params.waves_amplitude: " << water_params->waves_amplitude << endl;
+
+		/* Shading */
+		myfile << "\n# --- Shading --- #\n" << endl;
+		myfile << "shading_params.enable_phong: " << shading_params->enable_phong << endl;
+		myfile << "shading_params.enable_shadow: " << shading_params->enable_shadow << endl;
+		myfile << "shading_params.shadow_intensity: " << shading_params->shadow_intensity << endl;
+		myfile << "shading_params.Ia: " << shading_params->Ia << endl;
+		myfile << "shading_params.Id: " << shading_params->Id << endl;
+		myfile << "shading_params.light_pos: " << shading_params->light_pos << endl;
+		myfile << "shading_params.far: " << shading_params->far << endl;
+		myfile << "shading_params.near: " << shading_params->near << endl;
+
+		/* Texture */
+		myfile << "\n# --- Texture --- #\n" << endl;
+		myfile << "texture_params.texture_type: " << texture_params->texture_type << endl;
+		myfile << "texture_params.sand_min_height: " << texture_params->sand_min_height << endl;
+		myfile << "texture_params.sand_max_height: " << texture_params->sand_max_height << endl;
+		myfile << "texture_params.grass_max_height: " << texture_params->grass_max_height << endl;
+		myfile << "texture_params.sand_max_slope: " << texture_params->sand_max_slope << endl;
+		myfile << "texture_params.grass_max_slope: " << texture_params->grass_max_slope << endl;
+		myfile << "texture_params.grass_h_transition: " << texture_params->grass_h_transition << endl;
+		myfile << "texture_params.grass_s_transition: " << texture_params->grass_s_transition << endl;
+		myfile << "texture_params.sand_h_transition: " << texture_params->sand_h_transition << endl;
+		myfile << "texture_params.sand_s_transition: " << texture_params->sand_s_transition << endl;
+
+		/* End of data */
+		myfile << "\n# --- END OF DATA --- #" << endl;
+
+		myfile.close();
+		std::cout << "[Info] Data saved to " << file_name << endl;
 	}
 	else {
-	myfile << "fractal_enable " << "false" << endl;
+		std::cout << "[Error] Could not save data: the file " << file_name << " could not be opened." << endl;
 	}
-
-	/* Water
-	myfile << "water_height " << water_params->height << endl;
-	myfile << "water_transparency " << water_params->transparency << endl;
-	myfile << "water_depth_alpha_factor " << water_params->depth_alpha_factor << endl;
-	myfile << "water_depth_color_factor " << water_params->depth_color_factor << endl;
-	myfile << "water_color " << water_params->color[0] << ' ' << water_params->color[1] << ' ' << water_params->color[2] << endl;
-
-
-	myfile.close();
-	std::cout << "[Info] Data saved to " << file_name << endl;
-	}
-	else {
-	std::cout << "[Error] Could not save data: the file " << file_name << " could not be opened." << endl;
-	}*/
 }
 
 void loadFromFile(string file_name, NoiseParams *noise_params, WaterParams *water_params) {
@@ -213,8 +311,7 @@ string get_unique_name() {
 		<< now->tm_mday << '-'
 		<< now->tm_hour << '-'
 		<< now->tm_min << '-'
-		<< now->tm_sec
-		<< ".tga";
+		<< now->tm_sec;
 
 	return ss.str();
 }

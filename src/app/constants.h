@@ -3,7 +3,8 @@
 const int WIDTH = 1600;
 const int HEIGHT = 1000;
 
-const string IO_HEADER_STRING = "HEADER: terrain data";
+const string IO_HEADER_STRING = "# --- HEADER: terrain data --- #\n# --- Credits: Alain Milliet, Julien Perrenoud, Robin Genolet --- #";
+const string IO_PATH_TO_SAVED_TERRAINS = "../saved_terrains/";
 
 const int DRAW_NOISE = 0;
 const int COPY_NOISE = 1;
