@@ -104,7 +104,7 @@ void writeFile(string file_name, WindowParams* window_params,
 		myfile << "\n# --- Water --- #\n" << endl;
 		myfile << "water_params.enable " << water_params->enable << endl;
 		myfile << "water_params.height " << water_params->height << endl;
-		myfile << "water_params.color " << water_params->color << endl;
+		myfile << "water_params.color " << water_params->color[0] << ' ' << water_params->color[1] << ' ' << water_params->color[2] << endl;
 		myfile << "water_params.depth_alpha_factor " << water_params->depth_alpha_factor << endl;
 		myfile << "water_params.depth_color_factor " << water_params->depth_color_factor << endl;
 		myfile << "water_params.transparency " << water_params->transparency << endl;
@@ -118,9 +118,9 @@ void writeFile(string file_name, WindowParams* window_params,
 		myfile << "shading_params.enable_phong " << shading_params->enable_phong << endl;
 		myfile << "shading_params.enable_shadow " << shading_params->enable_shadow << endl;
 		myfile << "shading_params.shadow_intensity " << shading_params->shadow_intensity << endl;
-		myfile << "shading_params.Ia " << shading_params->Ia << endl;
-		myfile << "shading_params.Id " << shading_params->Id << endl;
-		myfile << "shading_params.light_pos " << shading_params->light_pos << endl;
+		myfile << "shading_params.Ia " << shading_params->Ia[0] << ' ' << shading_params->Ia[1] << ' ' << shading_params->Ia[2] << endl;
+		myfile << "shading_params.Id " << shading_params->Id[0] << ' ' << shading_params->Id[1] << ' ' << shading_params->Id[2] << endl;
+		myfile << "shading_params.light_pos " << shading_params->light_pos[0] << ' ' << shading_params->light_pos[1] << ' ' << shading_params->light_pos[2] << endl;
 		myfile << "shading_params.far " << shading_params->far << endl;
 		myfile << "shading_params.near " << shading_params->near << endl;
 
@@ -377,6 +377,64 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			}
 			else if (!variable.compare("erosion_params.iterations")) {
 				erosion_params->iterations = ::atoi(results[1].c_str());
+			}
+
+			/* Water */
+			else if (!variable.compare("water_params.enable")) {
+				water_params->enable = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.height")) {
+				water_params->height = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.color")) {
+				water_params->color = vec3(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()));
+			}
+			else if (!variable.compare("water_params.depth_alpha_factor")) {
+				water_params->depth_alpha_factor = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.depth_color_factor")) {
+				water_params->depth_color_factor = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.transparency")) {
+				water_params->transparency = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.reflection_factor")) {
+				water_params->reflection_factor = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.waves_speed")) {
+				water_params->waves_speed = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.waves_tile_factor")) {
+				water_params->waves_tile_factor = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("water_params.waves_amplitude")) {
+				water_params->waves_amplitude = ::atof(results[1].c_str());
+			}
+
+			/* Shading */
+			else if (!variable.compare("shading_params.enable_phong")) {
+				shading_params->enable_phong = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("shading_params.enable_shadow")) {
+				shading_params->enable_shadow = ::atoi(results[1].c_str());
+			}
+			else if (!variable.compare("shading_params.shadow_intensity")) {
+				shading_params->shadow_intensity = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("shading_params.Ia")) {
+				shading_params->Ia = vec3(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()));
+			}
+			else if (!variable.compare("shading_params.Id")) {
+				shading_params->Id = vec3(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()));
+			}
+			else if (!variable.compare("shading_params.light_pos")) {
+				shading_params->light_pos = vec3(::atof(results[1].c_str()), ::atof(results[2].c_str()), ::atof(results[3].c_str()));
+			}
+			else if (!variable.compare("shading_params.far")) {
+				shading_params->far = ::atof(results[1].c_str());
+			}
+			else if (!variable.compare("shading_params.near")) {
+				shading_params->near = ::atof(results[1].c_str());
 			}
 
 
