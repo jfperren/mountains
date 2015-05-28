@@ -107,86 +107,114 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 
 	last_time = current_time;
 
-	if (pressed_keys[87]) { // W
-		last_key = 87;
-		last_time_pressed_ws = glfwGetTime();
-	}
-	if (pressed_keys[83]) {// S
-		last_key = 83;
-		last_time_pressed_ws = glfwGetTime();
-	}
-	if (pressed_keys[68]) {// D
-		last_key = 68;
-		last_time_pressed_ad = glfwGetTime();
-	}
-	if (pressed_keys[65]) {// A
-		last_key = 65;
-		last_time_pressed_ad = glfwGetTime();
-	}
-	if (navmode != FPS) {
-		if (pressed_keys[32]) {// SPACE or SHIF
-			last_key = 32;
-			last_time_pressed_updo = glfwGetTime();
+	if (navmode == INERTIA) {
+		if (pressed_keys[87]) { // W
+			last_key = 87;
+			last_time_pressed_ws = glfwGetTime();
 		}
-		if (pressed_keys[287]){ // SHIFT
-			last_key = 287;
-			last_time_pressed_updo = glfwGetTime();
+		if (pressed_keys[83]) {// S
+			last_key = 83;
+			last_time_pressed_ws = glfwGetTime();
+		}
+		if (pressed_keys[68]) {// D
+			last_key = 68;
+			last_time_pressed_ad = glfwGetTime();
+		}
+		if (pressed_keys[65]) {// A
+			last_key = 65;
+			last_time_pressed_ad = glfwGetTime();
+		}
+		if (navmode != FPS) {
+			if (pressed_keys[32]) {// SPACE or SHIF
+				last_key = 32;
+				last_time_pressed_updo = glfwGetTime();
+			}
+			if (pressed_keys[287]){ // SHIFT
+				last_key = 287;
+				last_time_pressed_updo = glfwGetTime();
+			}
+		}
+
+		time_diff_inertia_ws = 1 - (current_time - last_time_pressed_ws);
+		time_diff_inertia_ad = 1 - (current_time - last_time_pressed_ad);
+		time_diff_inertia_updo = 1 - (current_time - last_time_pressed_updo);
+
+		if (time_diff_inertia_ws < 0){
+			time_diff_inertia_ws = 0;
+		}
+
+		if (time_diff_inertia_ad < 0){
+			time_diff_inertia_ad = 0;
+		}
+
+		if (time_diff_inertia_updo < 0){
+			time_diff_inertia_updo = 0;
+		}
+
+
+		//std::cout << "last_time_pressed_ws: " << last_time_pressed_ws << ", time_diff_inertia_ws : " << time_diff_inertia_ws << std::endl;
+
+		if (time_diff == 0)	time_diff = 1;
+
+		vec3 forward = 10 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff + 5 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff_inertia_ws;
+		vec3 right = 10 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff + 5 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff_inertia_ad;
+		vec3 up = 10 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff + 5 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff_inertia_updo;
+
+		//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
+
+		if (time_diff_inertia_ws != 0) {
+			if (last_key == 87) {// W
+				translation *= Eigen::Affine3f(Eigen::Translation3f(forward)).matrix();
+			}
+			if (last_key == 83) {// S
+				translation *= Eigen::Affine3f(Eigen::Translation3f(-forward)).matrix();
+			}
+		}
+
+		if (time_diff_inertia_ad != 0) {
+			if (last_key == 65) { // A
+				translation *= Eigen::Affine3f(Eigen::Translation3f(-right)).matrix();
+			}
+			if (last_key == 68) { // D
+				translation *= Eigen::Affine3f(Eigen::Translation3f(right)).matrix();
+			}
+		}
+		if (navmode != FPS) {
+			if (time_diff_inertia_updo != 0) {
+				if (last_key == 32) {// SPACE
+					translation *= Eigen::Affine3f(Eigen::Translation3f(up)).matrix();
+				}
+				if (last_key == 287) {// SHIFT
+					translation *= Eigen::Affine3f(Eigen::Translation3f(-up)).matrix();
+				}
+			}
 		}
 	}
+	else {
+		// for navmode == FREE mainly
 
-	time_diff_inertia_ws = 1 - (current_time - last_time_pressed_ws);
-	time_diff_inertia_ad = 1 - (current_time - last_time_pressed_ad);
-	time_diff_inertia_updo = 1 - (current_time - last_time_pressed_updo);
+		vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff;
+		vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff;
+		vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff;
 
-	if (time_diff_inertia_ws < 0){
-		time_diff_inertia_ws = 0;
-	}
+		//float height = grid->get_height(_cam_pos.x(), _cam_pos.y());
+		float height = 1;
 
-	if (time_diff_inertia_ad < 0){
-		time_diff_inertia_ad = 0;
-	}
+		//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 
-	if (time_diff_inertia_updo < 0){
-		time_diff_inertia_updo = 0;
-	}
-
-
-	//std::cout << "last_time_pressed_ws: " << last_time_pressed_ws << ", time_diff_inertia_ws : " << time_diff_inertia_ws << std::endl;
-
-	if (time_diff == 0)	time_diff = 1;
-
-	vec3 forward = 10 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff + 5 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff_inertia_ws;
-	vec3 right = 10 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff + 5 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff_inertia_ad;
-	vec3 up = 10 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff + 5 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff_inertia_updo;
-
-	//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
-
-	if (time_diff_inertia_ws != 0) {
-		if (last_key == 87) {// W
-			translation *= Eigen::Affine3f(Eigen::Translation3f(forward)).matrix();
-		}
-		if (last_key == 83) {// S
-			translation *= Eigen::Affine3f(Eigen::Translation3f(-forward)).matrix();
-		}
-	}
-	
-	if (time_diff_inertia_ad != 0) {
-		if (last_key == 65) { // A
+		if (pressed_keys[65]) // A
 			translation *= Eigen::Affine3f(Eigen::Translation3f(-right)).matrix();
-		}
-		if (last_key == 68) { // D
+		if (pressed_keys[87]) // W
+			translation *= Eigen::Affine3f(Eigen::Translation3f(forward)).matrix();
+		if (pressed_keys[83]) // S
+			translation *= Eigen::Affine3f(Eigen::Translation3f(-forward)).matrix();
+		if (pressed_keys[68]) // D
 			translation *= Eigen::Affine3f(Eigen::Translation3f(right)).matrix();
-		}
-	}
-	if (navmode != FPS) {
-		if (time_diff_inertia_updo != 0) {
-			if (last_key == 32) {// SPACE
-				translation *= Eigen::Affine3f(Eigen::Translation3f(up)).matrix();
-			}
-			if (last_key == 287) {// SHIFT
-				translation *= Eigen::Affine3f(Eigen::Translation3f(-up)).matrix();
-			}
-		}
+		if (pressed_keys[32] && navmode != FPS) // SPACE
+			translation *= Eigen::Affine3f(Eigen::Translation3f(up)).matrix();
+		if (pressed_keys[287] && navmode != FPS) // SHIFT
+			translation *= Eigen::Affine3f(Eigen::Translation3f(-up)).matrix();
+
 	}
 	
 

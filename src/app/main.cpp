@@ -429,6 +429,11 @@ void GLFWCALL OnKey(int glfwKey, int glfwAction)
 				twBarVisible(false);
 				key_used = true;
 				break;
+			case '5':
+				navmode = INERTIA;
+				std::cout << "[Info] Running in camera path editing mode\n" << std::flush;
+				key_used = true;
+				break;
 			case 87 /* w */:
 				if (navmode == BEZIER) {
 					unsigned int new_value = bezier.get_travel_time() - 1;

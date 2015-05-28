@@ -85,7 +85,8 @@ typedef enum {
 	FREE,
 	FPS,
 	BEZIER,
-	CAMERA_PATH
+	CAMERA_PATH,
+	INERTIA
 } NAVIGATION_MODE;
 
 typedef enum {
