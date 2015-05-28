@@ -2,6 +2,7 @@
 
 ## Screenshots
 
+![SunSet](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/sunset.png)
 ![Sunny](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/sunny.jpg)
 ![NightCall](https://github.com/jfperren/procedural-terrain/blob/master/saved_screenshots/nightcall.png)
 
