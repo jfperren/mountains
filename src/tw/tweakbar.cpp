@@ -250,12 +250,12 @@ void TW_CALL SaveCB(void * /*clientData*/)
 {
 	if (!g_file_name.compare("")) {
 		std::stringstream sstm;
-		sstm << IO_PATH_TO_SAVED_TERRAINS + "mountain-" << get_unique_name() << ".terrain";
+		sstm <<  "mountain-" << get_unique_name() << ".terrain";
 		g_file_name = sstm.str();
 		g_file_name_load = g_file_name; // optional
 	}
 
-	writeFile(g_file_name, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+	writeFile(IO_PATH_TO_SAVED_TERRAINS + g_file_name, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 }
 
 void TW_CALL LoadCB(void * /*clientData*/)
@@ -265,7 +265,7 @@ void TW_CALL LoadCB(void * /*clientData*/)
 		cout << "[Error] Cannot load from empty name." << endl;
 	}
 	else {
-		loadFromFile(g_file_name_load, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + g_file_name_load, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 	}
 
 	// Update scene with the changes
