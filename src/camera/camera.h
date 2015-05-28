@@ -36,6 +36,8 @@ private:
 	WaterParams* _water_params;
 
 	float last_time;
+	float last_time_pressed;
+	int glfwAction;
 
 public:
 	const vec3 START_CAM_UP = vec3(0.0f, 1.0f, 0.0f);
