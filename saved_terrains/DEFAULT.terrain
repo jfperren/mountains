@@ -36,7 +36,7 @@ noise_params.seed 0.086
 # --- Grass --- #
 
 grass_params.enable 1
-grass_params.min_height 0
+grass_params.min_height 0.03
 grass_params.max_height 0.3
 grass_params.max_slope 2
 grass_params.min_angle 1.2
