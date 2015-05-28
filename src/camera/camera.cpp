@@ -99,7 +99,7 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 		time_diff = current_time - last_time;
 	}
 
-	std::cout << "current_time: " << current_time << ", last_time: " << last_time << ", time_diff: " << time_diff << std::endl;
+	//std::cout << "current_time: " << current_time << ", last_time: " << last_time << ", time_diff: " << time_diff << std::endl;
 	
 	last_time = current_time;
 	if (glfwAction == GLFW_PRESS) {
@@ -114,7 +114,7 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 		}
 	}
 
-	std::cout << "last_time_pressed: " << last_time_pressed << ", time_diff_inertia: " << time_diff_inertia << std::endl;
+	//std::cout << "last_time_pressed: " << last_time_pressed << ", time_diff_inertia: " << time_diff_inertia << std::endl;
 
 	if (time_diff == 0)	time_diff = 1;
 
