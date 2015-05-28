@@ -301,5 +301,7 @@ void load_theme(ThemeParams* theme_params) {
 		break;
 	}
 
-	sky->init(theme_params->theme_type);
+	// Let the user keep the theme sky box when switching to NO_THEME for editing purposes
+	if (theme_params->theme_type != NO_THEME)
+		sky->init(theme_params->theme_type);
 }
