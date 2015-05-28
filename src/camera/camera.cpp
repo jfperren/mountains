@@ -118,9 +118,9 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 
 	if (time_diff == 0)	time_diff = 1;
 
-	vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff * time_diff_inertia;
-	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff * time_diff_inertia;
-	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff * time_diff_inertia;
+	vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff; // *time_diff_inertia;
+	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff; // *time_diff_inertia;
+	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff; // *time_diff_inertia;
 
 	//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 

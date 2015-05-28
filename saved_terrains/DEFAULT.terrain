@@ -13,7 +13,7 @@ window_params.height 1000
 # --- Grid --- #
 
 grid_params.enable 1
-grid_params.resolution 100
+grid_params.resolution 500
 grid_params.length 2
 grid_params.width 2
 
