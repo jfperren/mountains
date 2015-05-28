@@ -123,9 +123,6 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff;
 	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff;
 
-	//float height = grid->get_height(_cam_pos.x(), _cam_pos.y());
-	float height = 1;
-
 	//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 
 	if (pressed_keys[65]) // A
@@ -136,12 +133,21 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 		translation *= Eigen::Affine3f(Eigen::Translation3f(-forward)).matrix();
 	if (pressed_keys[68]) // D
 		translation *= Eigen::Affine3f(Eigen::Translation3f(right)).matrix();
-	if (pressed_keys[32] && navmode != FPS) // SPACE
-		translation *= Eigen::Affine3f(Eigen::Translation3f(up)).matrix();
-	if (pressed_keys[287] && navmode != FPS) // SHIFT
-		translation *= Eigen::Affine3f(Eigen::Translation3f(-up)).matrix();
+	if (navmode != FPS) {
+		if (pressed_keys[32]) // SPACE
+			translation *= Eigen::Affine3f(Eigen::Translation3f(up)).matrix();
+		if (pressed_keys[287]) // SHIFT
+			translation *= Eigen::Affine3f(Eigen::Translation3f(-up)).matrix();
+	}
+	
 
 	_cam_pos = (translation * vec4(_cam_pos[0], _cam_pos[1], _cam_pos[2], 1.0f)).head<3>();
+
+	if (navmode == FPS) {
+		float height = grid->get_height(_cam_pos.x(), _cam_pos.z());
+		std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
+		_cam_pos.y() = height + 0.2;
+	}
 
 	compute_view_matrix();
 }
