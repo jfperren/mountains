@@ -60,6 +60,9 @@ vec2 Camera::transform_screen_coords(int x, int y) {
 }
 
 void Camera::keyboard(int key, int action) {
+
+	glfwAction = action;
+
 	if (action == GLFW_RELEASE)
 		pressed_keys[key] = false;
 	if (action == GLFW_PRESS)
@@ -88,16 +91,35 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 
 	float current_time = glfwGetTime();
 
+	float time_diff_inertia = 1;
 	float time_diff;
 	if (last_time == 0) {
 		time_diff = 0;
 	} else {
 		time_diff = current_time - last_time;
 	}
+
+	std::cout << "current_time: " << current_time << ", last_time: " << last_time << ", time_diff: " << time_diff << std::endl;
 	
 	last_time = current_time;
+	if (glfwAction == GLFW_PRESS) {
+		last_time_pressed = glfwGetTime();
+	}
+	else {
+		if (last_time_pressed == 0) {
+			//time_diff_inertia = 0;
+		}
+		else {
+			time_diff_inertia = 1 / (glfwGetTime() - last_time_pressed);
+		}
+	}
 
-	vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff;
+	std::cout << "last_time_pressed: " << last_time_pressed << ", time_diff_inertia: " << time_diff_inertia << std::endl;
+
+	if (time_diff == 0)
+		time_diff = 1;
+
+	vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff * time_diff_inertia;
 	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff;
 	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff;
 
