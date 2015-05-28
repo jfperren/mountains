@@ -1,12 +1,11 @@
 #pragma once
 
 #include "icg_common.h"
-#include "../buffers/noisebuffer.h"
 #include "../buffers/copybuffer.h"
-#include "../buffers/erosionbuffer.h"
 #include "../buffers/generalbuffer.h"
 #include "quad.h"
 #include "../app/constants.h"
+#include "../app/params.h"
 
 
 class Terrain {
@@ -33,7 +32,6 @@ private:
 	NoiseParams* _noise_params;
 	SnowParams* _snow_params;
 	GrassParams* _grass_params;
-	ErosionParams* _erosion_params;
 	SandParams* _sand_params;
 
 public:

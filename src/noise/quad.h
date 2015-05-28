@@ -2,6 +2,8 @@
 
 #include "icg_common.h"
 #include "../app/constants.h"
+#include "../app/params.h"
+
 
 class Quad {
 
@@ -12,7 +14,6 @@ private:
 	GLuint _tex; ///< Texture ID
 
 	SnowParams* _snow_params;
-	ErosionParams* _erosion_params;
 	GrassParams* _grass_params;
 	SandParams* _sand_params;
 	GridParams* _grid_params;
@@ -24,8 +25,6 @@ public:
 	void genVertexArray();
 
 	void drawNoise(NoiseParams* noise_params, float noise_amplitude, GLuint* in_texture = nullptr);
-	void drawDirt(GLuint* tex_height, GLuint* tex_sediment, GLuint* tex_water,
-		GLuint* tex_flux_LR, GLuint* tex_flux_TB, GLuint* tex_velocity);
 	void drawSand(GLuint* tex_noise, GLuint* tex_sand, GLuint* tex_pos, int mode);
 	void drawSnow(GLuint* tex_noise, GLuint* tex_snow, GLuint* tex_pos, int mode);
 	void drawGrass(GLuint* tex_noise, GLuint* tex_grass, int mode);

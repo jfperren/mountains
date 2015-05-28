@@ -68,16 +68,6 @@ snow_params.slide_time 25
 snow_params.melt_time 2
 snow_params.smooth_time 2
 
-# --- Erosion --- #
-
-erosion_params.deposition_rate 0.04
-erosion_params.erosion_rate 0.04
-erosion_params.rain_rate 0.05
-erosion_params.evaporation_rate 0.02
-erosion_params.sediment_capacity 0.08
-erosion_params.direction_inertia 0.4
-erosion_params.iterations 1
-
 # --- Water --- #
 
 water_params.enable 1
@@ -105,14 +95,6 @@ shading_params.near -4
 # --- Texture --- #
 
 texture_params.texture_type 2
-texture_params.sand_min_height -1
-texture_params.sand_max_height 0.15
-texture_params.grass_max_height 1
-texture_params.sand_max_slope 0.92
-texture_params.grass_max_slope 0.9
-texture_params.grass_h_transition 3
-texture_params.grass_s_transition 50
-texture_params.sand_h_transition 5
-texture_params.sand_s_transition 50
+texture_params.skybox_type 3
 
 # --- END OF DATA --- #

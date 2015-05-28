@@ -1,19 +1,18 @@
 #include "io.h"
 
 /* Writes parameters to file_name */
-void writeFile(string file_name, WindowParams* window_params,
-	ThemeParams* theme_params,
-	GridParams* grid_params,
-	NoiseParams* noise_params,
-	GrassParams* grass_params,
-	SandParams* sand_params,
-	SnowParams* snow_params,
-	ErosionParams* erosion_params,
-	TextureParams* texture_params,
-	ShadingParams* shading_params,
-	WaterParams* water_params,
-	Bezier* bezier) {
+void writeFile(string file_name, AppParams* app_params, Bezier* bezier) {
 
+	ThemeParams*  theme_params = app_params->theme_params;
+	WindowParams* window_params = app_params->window_params;
+	GridParams* grid_params = app_params->grid_params;
+	NoiseParams* noise_params = app_params->noise_params;
+	SnowParams* snow_params = app_params->snow_params;
+	SandParams* sand_params = app_params->sand_params;
+	GrassParams* grass_params = app_params->grass_params;
+	WaterParams* water_params = app_params->water_params;
+	TextureParams* texture_params = app_params->texture_params;
+	ShadingParams* shading_params = app_params->shading_params;
 
 	ofstream myfile(file_name);
 
@@ -93,16 +92,6 @@ void writeFile(string file_name, WindowParams* window_params,
 		myfile << "snow_params.melt_time " << snow_params->melt_time << endl;
 		myfile << "snow_params.smooth_time " << snow_params->smooth_time << endl;
 
-		/* Erosion */
-		myfile << "\n# --- Erosion --- #\n" << endl;
-		myfile << "erosion_params.deposition_rate " << erosion_params->deposition_rate << endl;
-		myfile << "erosion_params.erosion_rate " << erosion_params->erosion_rate << endl;
-		myfile << "erosion_params.rain_rate " << erosion_params->rain_rate << endl;
-		myfile << "erosion_params.evaporation_rate " << erosion_params->evaporation_rate << endl;
-		myfile << "erosion_params.sediment_capacity " << erosion_params->sediment_capacity << endl;
-		myfile << "erosion_params.direction_inertia " << erosion_params->direction_inertia << endl;
-		myfile << "erosion_params.iterations " << erosion_params->iterations << endl;
-
 		/* Water */
 		myfile << "\n# --- Water --- #\n" << endl;
 		myfile << "water_params.enable " << water_params->enable << endl;
@@ -130,15 +119,7 @@ void writeFile(string file_name, WindowParams* window_params,
 		/* Texture */
 		myfile << "\n# --- Texture --- #\n" << endl;
 		myfile << "texture_params.texture_type " << texture_params->texture_type << endl;
-		myfile << "texture_params.sand_min_height " << texture_params->sand_min_height << endl;
-		myfile << "texture_params.sand_max_height " << texture_params->sand_max_height << endl;
-		myfile << "texture_params.grass_max_height " << texture_params->grass_max_height << endl;
-		myfile << "texture_params.sand_max_slope " << texture_params->sand_max_slope << endl;
-		myfile << "texture_params.grass_max_slope " << texture_params->grass_max_slope << endl;
-		myfile << "texture_params.grass_h_transition " << texture_params->grass_h_transition << endl;
-		myfile << "texture_params.grass_s_transition " << texture_params->grass_s_transition << endl;
-		myfile << "texture_params.sand_h_transition " << texture_params->sand_h_transition << endl;
-		myfile << "texture_params.sand_s_transition " << texture_params->sand_s_transition << endl;
+		myfile << "texture_params.skybox_type " << texture_params->skybox_type << endl;
 
 		/* Bezier */
 
@@ -168,18 +149,18 @@ void writeFile(string file_name, WindowParams* window_params,
 }
 
 /* Loads parameters from file_name */
-void loadFromFile(string file_name, WindowParams* window_params,
-	ThemeParams* theme_params,
-	GridParams* grid_params,
-	NoiseParams* noise_params,
-	GrassParams* grass_params,
-	SandParams* sand_params,
-	SnowParams* snow_params,
-	ErosionParams* erosion_params,
-	TextureParams* texture_params,
-	ShadingParams* shading_params,
-	WaterParams* water_params,
-	Bezier* bezier) {
+void loadFromFile(string file_name, AppParams* app_params, Bezier* bezier) {
+
+	ThemeParams*  theme_params = app_params->theme_params;
+	WindowParams* window_params = app_params->window_params;
+	GridParams* grid_params = app_params->grid_params;
+	NoiseParams* noise_params = app_params->noise_params;
+	SnowParams* snow_params = app_params->snow_params;
+	SandParams* sand_params = app_params->sand_params;
+	GrassParams* grass_params = app_params->grass_params;
+	WaterParams* water_params = app_params->water_params;
+	TextureParams* texture_params = app_params->texture_params;
+	ShadingParams* shading_params = app_params->shading_params;
 
 	string line;
 	ifstream myfile(file_name);
@@ -381,29 +362,6 @@ void loadFromFile(string file_name, WindowParams* window_params,
 				snow_params->smooth_time = ::atoi(results[1].c_str());
 			}
 
-			/* Erosion */
-			else if (!variable.compare("erosion_params.deposition_rate")) {
-				erosion_params->deposition_rate = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("erosion_params.erosion_rate")) {
-				erosion_params->erosion_rate = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("erosion_params.rain_rate")) {
-				erosion_params->rain_rate = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("erosion_params.evaporation_rate")) {
-				erosion_params->evaporation_rate = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("erosion_params.sediment_capacity")) {
-				erosion_params->sediment_capacity = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("erosion_params.direction_inertia")) {
-				erosion_params->direction_inertia = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("erosion_params.iterations")) {
-				erosion_params->iterations = ::atoi(results[1].c_str());
-			}
-
 			/* Water */
 			else if (!variable.compare("water_params.enable")) {
 				water_params->enable = ::atoi(results[1].c_str());
@@ -466,32 +424,8 @@ void loadFromFile(string file_name, WindowParams* window_params,
 			else if (!variable.compare("texture_params.texture_type")) {
 				texture_params->texture_type = TextureType(::atoi(results[1].c_str()));
 			}
-			else if (!variable.compare("texture_params.sand_min_height")) {
-				texture_params->sand_min_height = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.sand_max_height")) {
-				texture_params->sand_max_height = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.grass_max_height")) {
-				texture_params->grass_max_height = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.sand_max_slope")) {
-				texture_params->sand_max_slope = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.grass_max_slope")) {
-				texture_params->grass_max_slope = ::atof(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.grass_h_transition")) {
-				texture_params->grass_h_transition = ::atoi(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.grass_s_transition")) {
-				texture_params->grass_s_transition = ::atoi(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.sand_h_transition")) {
-				texture_params->sand_h_transition = ::atoi(results[1].c_str());
-			}
-			else if (!variable.compare("texture_params.sand_s_transition")) {
-				texture_params->sand_s_transition = ::atoi(results[1].c_str());
+			else if (!variable.compare("texture_params.skybox_type")) {
+				texture_params->skybox_type = SkyboxType(::atoi(results[1].c_str()));
 			}
 
 			/* Bezier reading */

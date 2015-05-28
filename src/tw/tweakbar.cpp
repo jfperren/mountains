@@ -10,6 +10,7 @@ string g_file_name_load = "";
 Sky* sky;
 Bezier* bezier;
 
+AppParams* _app_params;
 WindowParams* window_params;
 ThemeParams* theme_params;
 GridParams* grid_params;
@@ -17,7 +18,6 @@ NoiseParams* noise_params;
 GrassParams* grass_params;
 SandParams* sand_params;
 SnowParams* snow_params;
-ErosionParams* erosion_params;
 TextureParams* texture_params;
 ShadingParams* shading_params;
 WaterParams* water_params;
@@ -27,6 +27,7 @@ void initAntTwBar(AppParams* app_params, Sky* sky_, Bezier* bezier_) {
 	sky = sky_;
 	bezier = bezier_;
 
+	_app_params			= app_params;
 	window_params		= app_params->window_params;
 	theme_params		= app_params->theme_params;
 	grid_params			= app_params->grid_params;
@@ -34,7 +35,6 @@ void initAntTwBar(AppParams* app_params, Sky* sky_, Bezier* bezier_) {
 	grass_params		= app_params->grass_params;
 	sand_params			= app_params->sand_params;
 	snow_params			= app_params->snow_params;
-	erosion_params	= app_params->erosion_params;
 	texture_params	= app_params->texture_params;
 	shading_params	= app_params->shading_params;
 	water_params		= app_params->water_params;
@@ -124,18 +124,6 @@ void initAntTwBar(AppParams* app_params, Sky* sky_, Bezier* bezier_) {
 	TwAddVarCB(bar, "grass_time_grow", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grass_params->time_grow, " group=Grass step=1 min=0");
 	TwAddVarCB(bar, "grass_time_smooth", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &grass_params->time_smooth, " group=Grass step=1 min=0");
 
-	// Erosion
-
-	TwAddVarCB(bar, "deposition_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->deposition_rate, " group=Erosion step=0.001 min=0 max=1");
-	TwAddVarCB(bar, "erosion_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->erosion_rate, " group=Erosion step=0.001 min=0 max=1");
-	TwAddVarCB(bar, "evaporation_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->evaporation_rate, " group=Erosion step=0.001 min=0 max=1");
-	TwAddVarCB(bar, "rain_rate", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->rain_rate, " group=Erosion step=0.001 min=0 max=1");
-
-	TwAddVarCB(bar, "sediment_capacity", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->sediment_capacity, " group=Erosion step=0.001 min=0 max=1");
-	TwAddVarCB(bar, "direction_intertia", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &erosion_params->direction_inertia, " group=Erosion step=0.001  min=0 max=1");
-
-	TwAddVarCB(bar, "iterations", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &erosion_params->iterations, " group=Erosion step=5 min=0");
-
 	// Water 
 
 	TwAddVarCB(bar, "water_enable", TW_TYPE_BOOL8, setBoolParamCallback, getBoolParamCallback, &water_params->enable, " group=Water");
@@ -157,16 +145,10 @@ void initAntTwBar(AppParams* app_params, Sky* sky_, Bezier* bezier_) {
 	TwType texture_type_type = TwDefineEnum("TextureType", texture_type_array, 3);
 	TwAddVarCB(bar, "texture_type", texture_type_type, setIntParamCallback, getIntParamCallback, &texture_params->texture_type, " group=Texture ");
 
-	TwAddVarCB(bar, "sand_min_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->sand_min_height, " group=Texture step=0.05");
-	TwAddVarCB(bar, "sand_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->sand_max_height, " group=Texture step=0.05");
-	TwAddVarCB(bar, "grass_max_height", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->grass_max_height, " group=Texture step=0.05");
-	TwAddVarCB(bar, "sand_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->sand_max_slope, " group=Texture step=0.02");
-	TwAddVarCB(bar, "grass_max_slope", TW_TYPE_FLOAT, setFloatParamCallback, getFloatParamCallback, &texture_params->grass_max_slope, " group=Texture step=0.02");
-
-	TwAddVarCB(bar, "grass_h_transition", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &texture_params->grass_h_transition, " group=Texture step=1");
-	TwAddVarCB(bar, "grass_s_transition", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &texture_params->grass_s_transition, " group=Texture step=1");
-	TwAddVarCB(bar, "sand_h_transition", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &texture_params->sand_h_transition, " group=Texture step=1");
-	TwAddVarCB(bar, "sand_s_transition", TW_TYPE_INT32, setIntParamCallback, getIntParamCallback, &texture_params->sand_s_transition, " group=Texture step=1");
+	TwEnumVal skybox_type_array[] = { { NO_SKY, "NO_SKY" }, { BLUE, "BLUE" }, { CLOUDS, "CLOUDS" }, { SUNSET, "SUNSET" }, { SEA, "SEA" },
+		{ LAKE, "LAKE" }, { NIGHTSKY, "NIGHTSKY" } };
+	TwType skybox_type_type = TwDefineEnum("SkyboxType", skybox_type_array, 7);
+	TwAddVarCB(bar, "skybox_type", skybox_type_type, setIntParamCallback, getIntParamCallback, &texture_params->skybox_type, " group=Texture ");
 
 	// Shading
 
@@ -255,7 +237,7 @@ void TW_CALL SaveCB(void * /*clientData*/)
 		g_file_name_load = g_file_name; // optional
 	}
 
-	writeFile(g_file_name, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+	writeFile(g_file_name, _app_params, bezier);
 }
 
 void TW_CALL LoadCB(void * /*clientData*/)
@@ -265,7 +247,7 @@ void TW_CALL LoadCB(void * /*clientData*/)
 		cout << "[Error] Cannot load from empty name." << endl;
 	}
 	else {
-		loadFromFile(g_file_name_load, window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+		loadFromFile(g_file_name_load, _app_params, bezier);
 	}
 
 	// Update scene with the changes
@@ -280,20 +262,20 @@ void load_theme(ThemeParams* theme_params) {
 	case SUNNY:
 		std::cout << "[Info] Loading theme 'Sunny'" << std::endl;
 
-		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUNNY.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUNNY.terrain", _app_params, bezier);
 
 
 		break;
 	case NIGHT:
 		std::cout << "[Info] Loading theme 'Night'" << std::endl;
 
-		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "NIGHT.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "NIGHT.terrain", _app_params, bezier);
 
 		break;
 	case SUN_SET:
 		std::cout << "[Info] Loading theme 'Sun set'" << std::endl;
 
-		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUN_SET.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUN_SET.terrain", _app_params, bezier);
 
 		break;
 	default:
@@ -301,5 +283,5 @@ void load_theme(ThemeParams* theme_params) {
 		break;
 	}
 
-	sky->init(theme_params->theme_type);
+	sky->loadSky();
 }

@@ -14,7 +14,7 @@
 #include "../camera/camera.h"
 #include "../app/main.h"
 #include "../scene/grid.h"
-#include "../buffers/framebuffer.h"
+#include "../app/params.h"
 #include "../noise/quad.h"
 #include "../noise/terrain.h"
 #include "../scene/water.h"

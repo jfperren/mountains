@@ -8,21 +8,19 @@ NoiseParams noise_params;
 GrassParams grass_params;
 SandParams sand_params;
 SnowParams snow_params;
-ErosionParams erosion_params;
 ShadingParams shading_params;
 WaterParams water_params;
 TextureParams texture_params;
 GridParams grid_params;
 
 AppParams app_params{
-	&window_params,
 	&theme_params,
+	&window_params,
 	&grid_params,
 	&noise_params,
 	&grass_params,
 	&sand_params,
 	&snow_params,
-	&erosion_params,
 	&texture_params,
 	&shading_params,
 	&water_params,
@@ -116,12 +114,12 @@ void resize_callback(int width, int height) {
 }
 
 void compute_height_map() {
-	
 	terrain.resize();
 	terrain.renderFractal();
 	terrain.addGrass();
 	terrain.addSnow();
 	terrain.addSand();
+	sky.loadSky();
 }
 
 void init(){
@@ -272,9 +270,8 @@ int main(int, char**){
 
 void initParams() {
 
-	loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "DEFAULT.terrain", &window_params, &theme_params, &grid_params, &noise_params, &grass_params, &sand_params, &snow_params, &erosion_params, &texture_params, &shading_params, &water_params, &bezier);
+	loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "DEFAULT.terrain", &app_params, &bezier);
 
-	
 }
 
 void initSceneObjects() {
@@ -288,7 +285,6 @@ void initSceneObjects() {
 	grid.init(&app_params);
 	grid.setTexHeight(_tex_height);
 	grid.setTexSnow(_tex_snow);
-	grid.setTexDirt(_tex_dirt);
 	grid.setTexShadow(_tex_shadow);
 	grid.setTexGrass(_tex_grass);
 	grid.setTexSand(_tex_sand);
@@ -298,7 +294,7 @@ void initSceneObjects() {
 	water.setMirrorTexture(_tex_mirror);
 	water.setDepthTexture(_tex_water_depth);
 	
-	sky.init(NO_THEME);
+	sky.init(&app_params);
 	
 	check_error_gl();
 }
