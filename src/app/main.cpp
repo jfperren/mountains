@@ -181,6 +181,7 @@ void display(){
 	}
 			break;
 		case FREE:
+		case INERTIA:
 		case FPS:
 		case CAMERA_PATH:
 			camera.move(navmode, &grid);
