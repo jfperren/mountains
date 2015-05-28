@@ -275,31 +275,29 @@ void TW_CALL LoadCB(void * /*clientData*/)
 void load_theme(ThemeParams* theme_params) {
 	switch (theme_params->theme_type) {
 	case NO_THEME:
-
 		std::cout << "[Info] No theme" << std::endl;
 		break;
 	case SUNNY:
-
 		std::cout << "[Info] Loading theme 'Sunny'" << std::endl;
+
+		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUNNY.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
+
 
 		break;
 	case NIGHT:
-
 		std::cout << "[Info] Loading theme 'Night'" << std::endl;
 
 		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "NIGHT.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 
 		break;
 	case SUN_SET:
-
 		std::cout << "[Info] Loading theme 'Sun set'" << std::endl;
 
 		loadFromFile(IO_PATH_TO_SAVED_TERRAINS + "SUN_SET.terrain", window_params, theme_params, grid_params, noise_params, grass_params, sand_params, snow_params, erosion_params, texture_params, shading_params, water_params, bezier);
 
 		break;
 	default:
-
-		std::cout << "[Warning] Unknown theme: " << theme_params << std::endl;
+		std::cout << "[Warning] Unknown theme: " << theme_params << " nothing loaded" << std::endl;
 		break;
 	}
 
