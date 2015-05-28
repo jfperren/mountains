@@ -107,21 +107,20 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 	}
 	else {
 		if (last_time_pressed == 0) {
-			//time_diff_inertia = 0;
+			time_diff_inertia = 0;
 		}
 		else {
-			time_diff_inertia = 1 / (glfwGetTime() - last_time_pressed);
+			time_diff_inertia = current_time - last_time_pressed;
 		}
 	}
 
 	std::cout << "last_time_pressed: " << last_time_pressed << ", time_diff_inertia: " << time_diff_inertia << std::endl;
 
-	if (time_diff == 0)
-		time_diff = 1;
+	if (time_diff == 0)	time_diff = 1;
 
 	vec3 forward = 80 * DX * vec3(_cam_dir[0], 0.0f, _cam_dir[2]) * time_diff * time_diff_inertia;
-	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff;
-	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff;
+	vec3 right = 80 * DX * vec3(-_cam_dir[2], 0.0f, _cam_dir[0]) * time_diff * time_diff_inertia;
+	vec3 up = 80 * DX * vec3(0.0f, 1.0f, 0.0f) * time_diff * time_diff_inertia;
 
 	//std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 
@@ -145,7 +144,6 @@ void Camera::move(NAVIGATION_MODE navmode, Grid* grid) {
 
 	if (navmode == FPS) {
 		float height = grid->get_height(_cam_pos.x(), _cam_pos.z());
-		std::cout << "Camera: (" << _cam_pos.x() << ", " << _cam_pos.z() << ") Height: " << height << std::endl;
 		_cam_pos.y() = height + 0.2;
 	}
 
