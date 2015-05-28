@@ -86,13 +86,8 @@ void main() {
 	vec3 mirror_color = texture(tex_mirror, uv_screen_inv + vec2(water_waves_amplitude*normal[0], water_waves_amplitude*normal[1])/texture_size).rgb;
 	vec3 ambiant_color = vec3(mix(texture_color, mirror_color, vec3(water_reflection_factor)));
 
-	//normal[1] = 0.001;
 	vec3 diffuse_color =  water_color * (dot(normalize(normal), normalize(shading_light_pos)));
-
-	
-
 
 	// Put everything together
 	color = vec4(0.8 * ambiant_color + 0.2 * diffuse_color, alpha);
-	//color = vec4(normal, 1);
 }

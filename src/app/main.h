@@ -1,6 +1,8 @@
 #pragma once
 
 #include "icg_common.h"
+#include "constants.h"
+#include "params.h"
 #include "../camera/camera.h"
 #include "../scene/grid.h"
 #include "../camera/bezier.h"
@@ -11,9 +13,8 @@
 #include "../scene/sky.h"
 #include "../tw/tweakbar.h"
 #include "../scene/box.h"
-#include "../app/constants.h"
 #include "../tw/io.h"
-#include "../buffers/erosionbuffer.h"
+
 
 using namespace std;
 

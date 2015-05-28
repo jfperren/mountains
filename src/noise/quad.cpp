@@ -193,58 +193,6 @@ void Quad::drawSand(GLuint* tex_height, GLuint* tex_sand, GLuint* tex_pos, int a
 	glUseProgram(0);
 }
 
-void Quad::drawDirt(GLuint* tex_height, GLuint* tex_water, GLuint* tex_sediment,
-	GLuint* tex_flux_LR, GLuint* tex_flux_TB, GLuint* tex_velocity) {
-
-	// Bind program & vertex array
-	glUseProgram(_pid);
-	glBindVertexArray(_vao);
-
-	_erosion_params->setup(_pid);
-
-	glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);
-	glUniform1f(glGetUniformLocation(_pid, "DY"), 1.0 / _noise_params->resolution);
-	glUniform1f(glGetUniformLocation(_pid, "DZ"), sqrt(2) / _noise_params->resolution);
-	/*
-	glUniform1f(glGetUniformLocation(_pid, "DX"), _grid_params->length / _noise_params->resolution);
-	glUniform1f(glGetUniformLocation(_pid, "DY"), _grid_params->width / _noise_params->resolution);
-	float DZ = sqrt(_grid_params->width*_grid_params->width + _grid_params->length*_grid_params->length);
-	glUniform1f(glGetUniformLocation(_pid, "DZ"), DZ / _noise_params->resolution);*/
-
-	// Set texture input
-	glUniform1i(glGetUniformLocation(_pid, "height_in"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, *tex_height);
-
-	glUniform1i(glGetUniformLocation(_pid, "water_in"), 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, *tex_water);
-
-	glUniform1i(glGetUniformLocation(_pid, "sediment_in"), 2);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, *tex_sediment);
-
-	glUniform1i(glGetUniformLocation(_pid, "flux_LR_in"), 3);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, *tex_flux_LR);
-
-	glUniform1i(glGetUniformLocation(_pid, "flux_TB_in"), 4);
-	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, *tex_flux_TB);
-
-	glUniform1i(glGetUniformLocation(_pid, "velocity_in"), 5);
-	glActiveTexture(GL_TEXTURE5);
-	glBindTexture(GL_TEXTURE_2D, *tex_velocity);
-
-	// Draw
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	// Unbind
-	glBindVertexArray(0);
-	glUseProgram(0);
-
-}
-
 void Quad::drawGrass(GLuint* tex_height, GLuint* tex_grass, int action){
 	// Bind program & vertex array
 	glUseProgram(_pid);

@@ -1,7 +1,10 @@
 #include "sky.h"
 
 
-void Sky::init(ThemeType theme_type){
+void Sky::init(AppParams* app_params){
+
+	_texture_params = app_params->texture_params;
+
 	_pid = opengp::load_shaders("scene/sky_vshader.glsl", "scene/sky_fshader.glsl");
 	if (!_pid) exit(EXIT_FAILURE);
 	glUseProgram(_pid);
@@ -72,56 +75,33 @@ void Sky::init(ThemeType theme_type){
 		glVertexAttribPointer(tex_pos_id, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
 	}
 
-	string dir = "active";
-	string skybox_path = "textures/skybox/";
-	string path = "";
-	
-	GLchar* faces[6];
+	loadSky();
 
-	switch (theme_type) {
-		break;
-	case SUNNY:
-		faces[0] = "textures/skybox/swagnuage/XN.tga";
-		faces[1] = "textures/skybox/swagnuage/XP.tga";
-		faces[2] = "textures/skybox/swagnuage/YN.tga";
-		faces[3] = "textures/skybox/swagnuage/YP.tga";
-		faces[4] = "textures/skybox/swagnuage/ZN.tga";
-		faces[5] = "textures/skybox/swagnuage/ZP.tga";
-		break;
-	case NIGHT:
-		faces[0] = "textures/skybox/space_night/XN.tga";
-		faces[1] = "textures/skybox/space_night/XP.tga";
-		faces[2] = "textures/skybox/space_night/YN.tga";
-		faces[3] = "textures/skybox/space_night/YP.tga";
-		faces[4] = "textures/skybox/space_night/ZN.tga";
-		faces[5] = "textures/skybox/space_night/ZP.tga";
-		break;
-	case SUN_SET:
-		faces[0] = "textures/skybox/sunset/XN.tga";
-		faces[1] = "textures/skybox/sunset/XP.tga";
-		faces[2] = "textures/skybox/sunset/YN.tga";
-		faces[3] = "textures/skybox/sunset/YP.tga";
-		faces[4] = "textures/skybox/sunset/ZN.tga";
-		faces[5] = "textures/skybox/sunset/ZP.tga";
-		break;
-	default:
-		faces[0] = "textures/skybox/active/XN.tga";
-		faces[1] = "textures/skybox/active/XP.tga";
-		faces[2] = "textures/skybox/active/YN.tga";
-		faces[3] = "textures/skybox/active/YP.tga";
-		faces[4] = "textures/skybox/active/ZN.tga";
-		faces[5] = "textures/skybox/active/ZP.tga";
-		break;
-	}
+	check_error_gl();
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+void Sky::loadSky() {
+	
+	const string path = IO_PATH_TO_SKYBOXES + SKYBOX_DIR[_texture_params->skybox_type];
+
+	string faces[6];
+
+	faces[0] = path + "XN.tga";
+	faces[1] = path + "XP.tga";
+	faces[2] = path + "YN.tga";
+	faces[3] = path + "YP.tga";
+	faces[4] = path + "ZN.tga";
+	faces[5] = path + "ZP.tga";
 
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	glGenTextures(6, _tex_skybox);
-	//glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, *_tex_skybox);
-	
+
 	for (GLuint i = 0; i < 6; i++){
 		glBindTexture(GL_TEXTURE_2D, _tex_skybox[i]);
-		glfwLoadTexture2D(faces[i], 0);
+		glfwLoadTexture2D(faces[i].data(), 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -134,10 +114,6 @@ void Sky::init(ThemeType theme_type){
 	glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	check_error_gl();
-	glBindVertexArray(0);
-	glUseProgram(0);
 }
 
 void Sky::cleanup(){

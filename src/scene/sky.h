@@ -2,6 +2,7 @@
 
 #include "icg_common.h"
 #include "../app/constants.h"
+#include "../app/params.h"
 
 class Sky {
 	private:
@@ -11,9 +12,12 @@ class Sky {
 		GLuint _pid;
 
 		mat4 model = mat4::Identity();
+
+		TextureParams* _texture_params;
 		
 	public:
-		void init(ThemeType theme_type);
+		void init(AppParams* app_params);
 		void cleanup();
 		void draw(const mat4& view, const mat4& projection);
+		void loadSky();
 };

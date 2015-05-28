@@ -2,6 +2,7 @@
 
 #include "icg_common.h"
 #include "../app/constants.h"
+#include "../app/params.h"
 
 using namespace std;
 
@@ -43,7 +44,6 @@ protected:
 	GLuint* _tex_height; 
 	GLuint* _tex_snow;
 	GLuint* _tex_grass;
-	GLuint* _tex_dirt;
 	GLuint* _tex_shadow;
 	GLuint* _tex_sand;
 
@@ -58,7 +58,6 @@ public:
 	void setTexSand(GLuint* tex_sand);
 	void setTexGrass(GLuint* tex_grass);
 	void setTexSnow(GLuint* tex_snow);
-	void setTexDirt(GLuint* tex_dirt);
 	void setTexShadow(GLuint* tex_shadow);
 
 	void draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode);

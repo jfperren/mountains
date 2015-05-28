@@ -2,6 +2,7 @@
 
 #include "icg_common.h"
 #include "../app/constants.h"
+#include "../app/params.h"
 
 class Water {
 

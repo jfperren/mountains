@@ -130,10 +130,6 @@ using namespace std;
 		_tex_snow = tex_snow;
 	}
 
-	void Grid::setTexDirt(GLuint* tex_dirt){
-		_tex_dirt = tex_dirt;
-	}
-
 	void Grid::setTexShadow(GLuint* tex_shadow){
 		_tex_shadow = tex_shadow;
 	}
@@ -186,11 +182,11 @@ using namespace std;
 		glBindVertexArray(_vao);
 
 		_grid_params->setup(_pid);
-		_texture_params->setup(_pid);
 		_shading_params->setup(_pid);
 		_snow_params->setup(_pid);
 		_water_params->setup(_pid);
 		_grass_params->setup(_pid);
+		_texture_params->setup(_pid);
 		_sand_params->setup(_pid);
 
 		glUniform1f(glGetUniformLocation(_pid, "DX"), 1.0 / _noise_params->resolution);

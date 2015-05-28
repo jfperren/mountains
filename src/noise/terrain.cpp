@@ -50,12 +50,10 @@ Terrain::Terrain()
 void Terrain::init(AppParams* app_params) {
 
 	_theme_params = app_params->theme_params;
-
 	_noise_params = app_params->noise_params;
 	_snow_params = app_params->snow_params;
 	_sand_params = app_params->sand_params;
 	_grass_params = app_params->grass_params;
-	_erosion_params = app_params->erosion_params;
 
 	_snowbuffer[0].init(3);
 	_snowbuffer[0].genTextures();
@@ -148,49 +146,6 @@ void Terrain::renderFractal() {
 
 	copyNoise(tex_height, &_tex_height, _noise_params->amplitude, _noise_params->offset);
 }
-
-void Terrain::erode() {
-	GLuint* tex_height;			const GLuint TEX_HEIGHT_INDEX = 0;
-	GLuint* tex_water;			const GLuint TEX_WATER_INDEX = 1;
-	GLuint* tex_sediment;		const GLuint TEX_SEDIMENT_INDEX = 2;
-	GLuint* tex_flux_LR;		const GLuint TEX_FLUX_LR_INDEX = 3;
-	GLuint* tex_flux_TB;		const GLuint TEX_FLUX_TB_INDEX = 4;
-	GLuint* tex_velocity;		const GLuint TEX_VELOCITY_INDEX = 5;
-
-	CLEAR_BUFFERS(_noisebuffer);
-	SET_MODE(DIRT_MODE);
-
-	INIT(in, out);
-
-	tex_height = &_tex_height;
-	SWAP_TEXTURE(tex_water, _dirtbuffer, TEX_WATER_INDEX);
-	SWAP_TEXTURE(tex_sediment, _dirtbuffer, TEX_SEDIMENT_INDEX);
-	SWAP_TEXTURE(tex_flux_LR, _dirtbuffer, TEX_FLUX_LR_INDEX);
-	SWAP_TEXTURE(tex_flux_TB, _dirtbuffer, TEX_FLUX_TB_INDEX);
-	SWAP_TEXTURE(tex_velocity, _dirtbuffer, TEX_VELOCITY_INDEX);
-
-	for (int t = 0; t < _erosion_params->iterations; t++) {
-
-		_dirtbuffer[out].bind(BUFFER_DIRT, BUFFER_DIRT_COUNT);
-		glClear(GL_COLOR_BUFFER_BIT);
-		_quad.drawDirt(tex_height, tex_water, tex_sediment, tex_flux_LR, tex_flux_TB, tex_velocity);
-		_dirtbuffer[out].unbind();
-
-		SWAP(in, out);
-		SWAP_TEXTURE(tex_height, _dirtbuffer, TEX_HEIGHT_INDEX);
-		SWAP_TEXTURE(tex_water, _dirtbuffer, TEX_WATER_INDEX);
-		SWAP_TEXTURE(tex_sediment, _dirtbuffer, TEX_SEDIMENT_INDEX);
-		SWAP_TEXTURE(tex_flux_LR, _dirtbuffer, TEX_FLUX_LR_INDEX);
-		SWAP_TEXTURE(tex_flux_TB, _dirtbuffer, TEX_FLUX_TB_INDEX);
-		SWAP_TEXTURE(tex_velocity, _dirtbuffer, TEX_VELOCITY_INDEX);
-	}
-
-	copyTexture(tex_height, &_tex_height);
-	copyTexture(tex_water, &_tex_water);
-	copyTexture(tex_sediment, &_tex_dirt);
-}
-
-
 
 void Terrain::resize() {
 	_snowbuffer[0].setSize(_noise_params->resolution, _noise_params->resolution);
