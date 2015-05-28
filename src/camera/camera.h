@@ -36,7 +36,10 @@ private:
 	WaterParams* _water_params;
 
 	float last_time;
-	float last_time_pressed;
+	float last_time_pressed_ws;
+	float last_time_pressed_ad;
+	float last_time_pressed_updo;
+	float last_key;
 	int glfwAction;
 
 public:
