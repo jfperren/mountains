@@ -154,28 +154,31 @@ using namespace std;
 	}
 
 	float Grid::get_height(float x, float y) {
-		float hg = _grid_params->length / 2;
+		float hl = _grid_params->length / 2;
+		float hw = _grid_params->width / 2;
 
-		if (x > hg || x < -hg || y > hg || y < -hg) {
-			return -10.0f;
+		//std::cout << "x : " << x << ", " << "	y : " << y << "   hl : " << hl << "   hw : " << hw << std::endl;
+
+		if (x > hw || x < -hw || y > hl || y < -hl) {
+			return 1.5f;
 		}
 
-		x += hg;
-		y += hg;
+		x += hw;
+		y += hl;
 
-		int px_x = x / _grid_params->length * _grid_params->resolution;
-		int px_y = y / _grid_params->length * _grid_params->resolution;
-
-		px_y = _grid_params->resolution - px_y;
+		int px_x = _noise_params->resolution * x / _grid_params->width;
+		int px_y = _noise_params->resolution * y / _grid_params->length;
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, *_tex_height);
 
-		GLubyte* data = new GLubyte[WIDTH*HEIGHT * 4 * sizeof(GLubyte)];
+		GLfloat* data = (GLfloat*)calloc(_noise_params->resolution * _noise_params->resolution, sizeof(GLfloat));
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, data);
 
-		return data[px_y * _grid_params->resolution + px_y];
+		GLfloat retval = data[px_y * _noise_params->resolution + px_x];
 
+		delete[] data;
+		return retval;
 	}
 
 	void Grid::draw(const mat4& view, const mat4& projection, const mat4& light_view, const mat4& light_projection, int mode){
