@@ -1,4 +1,8 @@
-# opengl-terrain
+# Mountains
+
+This project was done in scope of the course "Introduction to Computer Graphics" at the Swiss Polytechnic Institute of Technology, in spring 2015. The goal was to learn OpenGL (with C++), how the graphic pipeline works, and how to program shaders in GLSL.
+
+The project is on stand by but I'd love to improve it and port it to WebGL when I have the time.
 
 ## Screenshots
 
